@@ -15,3 +15,6 @@ recall/
 recap/
 remember/
 session-history/
+
+# local template backups (recoverable via git history)
+*.OLD.xlsx

@@ -104,18 +104,74 @@ def num(ws, addr, default=0.0):
     return float(v) if isinstance(v, (int, float)) else default
 
 
-def solve_price(total_cost, ebit, nego):
-    """受注価格 = Total cost(총원가) ÷ (1−EBIT);  Offer = 受注価格 ÷ (1−Nego).
-
-    SV 売値는 L24=220×일수로 고정(시트 수식), 機械 = 受注価格 − SV(L23=L26−L24)로
-    차액을 흡수한다. 개별 마진은 꼬여도 전체 EBIT는 위 식대로 유지된다.
-    """
+def solve_offer(total_cost, ebit, nego):
+    """--offer 미지정시 폴백: 受注価格=총원가/(1-EBIT), Offer=受注価格/(1-Nego)."""
     L26 = total_cost / (1 - ebit)
     N26 = L26 / (1 - nego) if (1 - nego) else L26
-    return round(L26), round(N26)
+    return round(N26)
+
+
+def read_sv_persons(quotation):
+    """現地SV費 시트에서 SV 인원별 (이름, 見積MD=AS, 契約MD=AT) 추출.
+
+    見積MD(歴日·移動日含み)=計(C-MD), 契約MD(実労働日)=実働.
+    移動=見積MD−契約MD, 休日=0 (사용자 확정 룰). 行/列 번호는 고정하지 않고
+    헤더('見積'+'MD' / '契約'+'MD')·항목명으로 문맥에서 찾는다.
+    """
+    try:
+        wb = openpyxl.load_workbook(quotation, data_only=True)
+    except Exception:
+        return []
+    sname = next((s for s in wb.sheetnames if '現地SV' in s or 'SV費' in s), None)
+    if not sname:
+        return []
+    ws = wb[sname]
+    col_est = col_con = None
+    for row in ws.iter_rows(min_row=1, max_row=6):
+        for c in row:
+            if isinstance(c.value, str):
+                v = c.value
+                if col_est is None and '見積' in v and 'MD' in v:
+                    col_est = c.column
+                if col_con is None and '契約' in v and 'MD' in v:
+                    col_con = c.column
+    if col_est is None:
+        return []
+    persons = []
+    for r in range(1, ws.max_row + 1):
+        nm = ws.cell(r, 1).value
+        if isinstance(nm, str) and '合計' in nm:
+            break
+        est = ws.cell(r, col_est).value
+        if isinstance(est, (int, float)) and est > 0:
+            con = ws.cell(r, col_con).value if col_con else est
+            con = float(con) if isinstance(con, (int, float)) else float(est)
+            persons.append((str(nm).strip() if nm else '', float(est), con))
+    return persons
+
+
+def fill_sv_md(ws, persons):
+    """SV-MD 카운트 표(rows 31-36, SV A-F) 채우기. 実働=AT·休日=0·移動=AS−AT, 計=SUM 수식.
+
+    G37(合計) → D7('=G37') → D11 → L24=D16×D11=220×MD 로 자동 반영. SV항목명은 익명(SV A,B…).
+    """
+    from openpyxl.comments import Comment
+    for i in range(6):
+        r = 31 + i
+        if i < len(persons):
+            nm, est, con = persons[i]
+            ws['D%d' % r] = round(con)               # 実働 (契約MD)
+            ws['E%d' % r] = 0                         # 休日
+            ws['F%d' % r] = round(est - con)         # 移動 (見積MD−契約MD)
+            ws['B%d' % r].comment = Comment(
+                '現地SV費: %s (見積MD=%s, 契約MD=%s)' % (nm, round(est), round(con)), 'PTJ-skill')
+        else:
+            ws['D%d' % r] = None; ws['E%d' % r] = None; ws['F%d' % r] = None
+    return sum(round(e) for _, e, _ in persons)      # 計 합계 = 見積MD 합계
 
 
 def cmd_build(a):
+    from openpyxl.comments import Comment
     wb = openpyxl.load_workbook(a.quotation)
     wbv = openpyxl.load_workbook(a.quotation, data_only=True)
     if '見積纏め' in wb.sheetnames:
@@ -136,8 +192,6 @@ def cmd_build(a):
     if a.name:
         ws['B22'] = a.name
 
-    from openpyxl.comments import Comment
-
     def clear(row, cols):
         for c in cols:
             ws['%s%d' % (c, row)] = None
@@ -149,41 +203,42 @@ def cmd_build(a):
     ws['J14'] = fc if a.start == 'manf' else 0
     ws['B23'] = '機械'
     ws['B24'] = 'SV'
+    ws['K26'] = a.ebit                            # EBIT 입력 셀; L26='=J26/(1-K26)' 수식이 참조
 
     if a.start == 'manf':
         # 製造原価 start: H=製造原価 입력 → FC 자동 → J=Total cost(=총원가)
         clear(23, 'CDEFG'); clear(24, 'CDEFG')
         ws['H23'] = a.main; ws['I23'] = '=H23*$J$14'; ws['J23'] = '=H23+I23'
         ws['H24'] = a.sv;   ws['I24'] = '=H24*$J$14'; ws['J24'] = '=H24+I24'
-        ws['H23'].comment = Comment('見積計算書（まとめ） 製造原価 (機械분; 항목명으로 문맥에서 찾기)', 'PTJ-skill')
-        ws['H24'].comment = Comment('見積計算書（まとめ） 製造原価 (SV분; 항목명으로 문맥에서 찾기)', 'PTJ-skill')
+        ws['H23'].comment = Comment('見積計算書（まとめ） 製造原価 (機械분)', 'PTJ-skill')
+        ws['H24'].comment = Comment('見積計算書（まとめ） 製造原価 (SV분)', 'PTJ-skill')
         total_cost = (a.main + a.sv) * (1 + fc)
     else:
-        # 総原価 start: J=Total cost(=총원가) 직접, 앞단 비움
-        clear(23, 'CDEFGHI'); clear(24, 'CDEFGHI')
+        # 総原価 start: J=Total cost(=총원가) 직접, 총원가 앞단(C~I) 전부 비움(사용자 룰)
+        clear(23, 'CDEFGHI'); clear(24, 'CDEFGHI'); clear(25, 'CDEFGHI')
         ws['J23'] = a.main; ws['J24'] = a.sv
-        ws['J23'].comment = Comment('見積計算書（まとめ） 総原価 (機械분; 항목명으로 문맥에서 찾기)', 'PTJ-skill')
-        ws['J24'].comment = Comment('見積計算書（まとめ） 総原価 (SV분; 항목명으로 문맥에서 찾기)', 'PTJ-skill')
+        ws['J23'].comment = Comment('見積計算書（まとめ） 総原価 (機械분)', 'PTJ-skill')
+        ws['J24'].comment = Comment('見積計算書（まとめ） 総原価 (SV분)', 'PTJ-skill')
         total_cost = a.main + a.sv
 
-    ws['D7'] = 0
-    ws['D8'] = a.svdays
     # 추천예비품(선택): Total cost 직접
     if a.spare_cost is not None:
         clear(25, 'CDEFGHI')
         ws['J25'] = a.spare_cost
         total_cost += a.spare_cost
-    if a.spare_l25 is not None:
-        ws['L25'] = a.spare_l25
-    if a.spare_n25 is not None:
-        ws['N25'] = a.spare_n25
 
-    # 受注価格 = 총원가 ÷ (1−EBIT);  Offer ÷ (1−Nego). SV 売値 220×일수 고정·機械 흡수.
-    L26, N26 = solve_price(total_cost, a.ebit, a.nego)
-    ws['L26'] = L26
+    # SV-MD 카운트: 現地SV費 참조 → SV A-F·計合計 → D7('=G37') → L24=220×MD 자동
+    persons = read_sv_persons(a.quotation)
+    sv_md = fill_sv_md(ws, persons)
+    if a.svdays is not None:                      # 수동 override (template 기본은 '=G37')
+        ws['D7'] = a.svdays
+        sv_md = a.svdays
+
+    # Offer price (N26, 녹색 입력). 미지정시 nego로 폴백. L26·機械/SV 분배는 모두 수식.
+    N26 = round(a.offer) if a.offer is not None else solve_offer(total_cost, a.ebit, a.nego)
     ws['N26'] = N26
-    ws['O22'] = ('기준: %s start / Total cost=%s / EBIT %.1f%% / Nego %.1f%% / SV=220×日(差額은 機械吸収)'
-                 % (a.start, round(total_cost), a.ebit * 100, a.nego * 100))
+    ws['O22'] = ('기준: %s start / Total cost=%s / EBIT %.1f%% / Offer(N26)=%s / SV %sMD(220×日,差額은機械吸収)'
+                 % (a.start, round(total_cost), a.ebit * 100, N26, round(sv_md)))
 
     # 정리: 외부링크 + 깨진 정의된이름
     rep, next_ = strip_external_links(wb, wbv)
@@ -191,8 +246,8 @@ def cmd_build(a):
 
     wb.save(a.out)
     print('SAVED:', a.out)
-    print('  start=%s 機械=%s SV=%s Total cost=%s SVdays=%s' % (a.start, a.main, a.sv, round(total_cost), a.svdays))
-    print('  L26(受注価格, EBIT %.1f%%)=%s  N26(Offer, Nego %.1f%%)=%s' % (a.ebit * 100, L26, a.nego * 100, N26))
+    print('  start=%s 機械=%s SV=%s Total cost=%s' % (a.start, a.main, a.sv, round(total_cost)))
+    print('  EBIT(K26)=%.1f%%  Offer(N26)=%s  SV인원=%d  計C-MD=%s' % (a.ebit * 100, N26, len(persons), round(sv_md)))
     print('  외부참조치환=%d 외부링크제거=%d 깨진정의된이름삭제=%d' % (rep, next_, rmn))
     print('  → verify 로 검증하세요.')
 
@@ -219,33 +274,34 @@ def cmd_verify(a):
     print(' [info] 견적시트 #REF! 합계: %d (견적부서 수식 자체 오류, 본 스킬과 무관)' % ref_total)
     print(' [%s] 見積纏め 시트 존재' % ('OK' if ws else 'FAIL'))
     if ws:
-        for a_ in ['B22', 'L26', 'N26', 'D8']:
+        for a_, lbl in [('B22', '案件명'), ('J23', '機械총원가'), ('J24', 'SV총원가'),
+                        ('K26', 'EBIT'), ('N26', 'Offer price')]:
             v = ws[a_].value
             flag = 'OK' if v not in (None, '') else '확인'
-            print('   [%s] %s = %r' % (flag, a_, v))
+            print('   [%s] %s %s = %r' % (flag, a_, lbl, v))
         # 시작점 감지: J列(Total cost)이 숫자면 total, 아니면(H列 입력) manf
-        J14 = num(ws, 'J14')
-
-        def cost(hc, jc):
-            jv = ws[jc].value
-            if isinstance(jv, (int, float)):
-                return float(jv)               # total start: J 직접
-            hv = ws[hc].value
-            return hv * (1 + J14) if isinstance(hv, (int, float)) else 0.0  # manf: J=H×(1+FC)
-
         start = 'total' if isinstance(ws['J23'].value, (int, float)) else 'manf'
-        mc = cost('H23', 'J23'); sc = cost('H24', 'J24'); spare = num(ws, 'J25')
+        mc = num(ws, 'J23'); sc = num(ws, 'J24'); spare = num(ws, 'J25')
+        if start == 'manf':                        # J=H×(1+FC) 환산
+            J14 = num(ws, 'J14')
+            mc = num(ws, 'H23') * (1 + J14); sc = num(ws, 'H24') * (1 + J14)
         total_cost = mc + sc + spare
-        L26 = num(ws, 'L26'); N26 = num(ws, 'N26')
-        L24 = num(ws, 'D16', 220.0) * (num(ws, 'D7') + num(ws, 'D8'))   # SV 売値 = 220×일수
-        flag = 'OK' if (mc or sc) else '확인'
-        print('   [%s] start=%s 機械=%s SV=%s Total cost=%s  SV売値(220×日)=%s'
-              % (flag, start, round(mc), round(sc), round(total_cost), round(L24)))
-        if L26:
-            print('   [info] 재계산 EBIT%% = %.2f%%  Nego%% = %.2f%%  機械(=受注価格-SV)=%s'
-                  % ((L26 - total_cost) / L26 * 100,
-                     (N26 - L26) / N26 * 100 if N26 else 0,
-                     round(L26 - L24)))
+        # SV-MD (rows 31-36): 実働(D)+休日(E)+移動(F)=計
+        md = [(ws['B%d' % r].value, num(ws, 'D%d' % r), num(ws, 'E%d' % r), num(ws, 'F%d' % r))
+              for r in range(31, 37) if isinstance(ws['D%d' % r].value, (int, float))]
+        tot_md = sum(d + e + f for _, d, e, f in md)
+        print('   [%s] start=%s 機械=%s SV=%s Total cost=%s'
+              % ('OK' if (mc or sc) else '확인', start, round(mc), round(sc), round(total_cost)))
+        print('   [%s] SV-MD %d명 計C-MD=%s (実働%s+休日%s+移動%s)  D7=%r → L24=220×MD'
+              % ('OK' if md else '확인', len(md), round(tot_md),
+                 round(sum(d for _, d, _, _ in md)), round(sum(e for _, _, e, _ in md)),
+                 round(sum(f for _, _, _, f in md)), ws['D7'].value))
+        ebit = num(ws, 'K26'); N26 = num(ws, 'N26')
+        L26 = total_cost / (1 - ebit) if ebit and (1 - ebit) else 0
+        if L26 and N26:
+            print('   [info] (Excel재계산예상) 受注価格 L26≈%s · 全体nego≈%.2f%% · 機械Offer=N26-SV(220×%sMD)'
+                  % (round(L26), (N26 - L26) / N26 * 100, round(tot_md)))
+        print('   [note] L26·L23·N23·K%%·M%% 는 시트 수식 → Excel Enable Editing 후 재계산값 확인')
 
 
 def main():
@@ -257,14 +313,15 @@ def main():
                    help='시작점: total=総原価(J) / manf=製造原価(H)+FC자동→J')
     b.add_argument('--main', type=float, required=True)
     b.add_argument('--sv', type=float, required=True)
-    b.add_argument('--svdays', type=int, default=0)
+    b.add_argument('--svdays', type=int, default=None,
+                   help='SV C-MD 수동 override. 기본은 現地SV費에서 자동(D7=G37)')
+    b.add_argument('--offer', type=float, default=None,
+                   help='Offer price(N26, 녹색 입력). 미지정시 --nego로 폴백 산출')
     b.add_argument('--name'); b.add_argument('--date'); b.add_argument('--author', default='Kim YJ')
     b.add_argument('--fc', type=float, default=None)
     b.add_argument('--ebit', type=float, default=0.03)
     b.add_argument('--nego', type=float, default=0.0)
     b.add_argument('--spare-cost', type=float, default=None, dest='spare_cost')
-    b.add_argument('--spare-l25', type=float, default=None, dest='spare_l25')
-    b.add_argument('--spare-n25', type=float, default=None, dest='spare_n25')
     b.set_defaults(func=cmd_build)
     v = sub.add_parser('verify')
     v.add_argument('file')
