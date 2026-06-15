@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# skills with their own separate git repo (nested, synced independently)
+primetals-text-style/
+
 # agentmemory plugin skills — installed via plugin, not synced here
 commit-context/
 commit-history/
