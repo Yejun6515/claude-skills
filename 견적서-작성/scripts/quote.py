@@ -133,7 +133,11 @@ def ensure_logo(path):
 def find_templates(arg=None):
     if arg and os.path.isdir(arg):
         return arg
-    # search upward from CWD for a _templates folder holding the masters
+    # 1) 스킬에 번들된 마스터 (self-contained global skill 기본 경로)
+    bundled = os.path.join(os.path.dirname(HERE), "assets")
+    if os.path.exists(os.path.join(bundled, "machine_master.xlsx")):
+        return bundled
+    # 2) (폴백) CWD 위로 _templates 폴더 탐색
     d = os.getcwd()
     for _ in range(6):
         for cand in (os.path.join(d, "_templates"),
@@ -142,7 +146,7 @@ def find_templates(arg=None):
             if os.path.exists(os.path.join(cand, "machine_master.xlsx")):
                 return cand
         d = os.path.dirname(d)
-    raise SystemExit("ERROR: _templates with master files not found. Pass --templates DIR.")
+    raise SystemExit("ERROR: machine_master.xlsx not found in skill assets or --templates DIR.")
 
 
 def cmd_new(argv):
@@ -167,6 +171,26 @@ def _coerce(v):
 # Supervising Services 결제조건 (machine). Master 기본값은 A(50/50). B는 100%/time-sheet.
 SV_PAY_B_D67 = ("100% of the total price: Shall be paid by T/T within 1 month "
                 "after the signing of a time sheet.")
+
+
+def _apply_spare_heading(ws, spare):
+    """1.(1).1 헤더(E22): Recommended Spare parts 품목이 없으면
+    'Equipment + Recommended Spare parts' → 'Equipment' 로 정리.
+
+    spare=None → 자동감지(품목 E24:E27에 'spare' 문자 있으면 유지), True 강제유지, False 강제삭제.
+    spare-master 등 헤더에 'Spare'가 없으면 no-op.
+    """
+    head = str(ws["E22"].value or "")
+    if "Recommended Spare" not in head:        # 기계 마스터 헤더에만 적용 (spare 마스터 no-op)
+        return None
+    if spare is None:
+        items = " ".join(str(ws["E%d" % r].value or "") for r in range(24, 28)).lower()
+        spare = "spare" in items
+    if not spare:
+        ws["E22"] = "Equipment"
+        print("FILL spare 품목 없음 → E22 헤더 'Equipment' 로 정리")
+        return False
+    return True
 
 
 def _apply_sv_payment(ws, opt):
@@ -212,6 +236,8 @@ def cmd_fill(argv):
     # direct cell writes
     for coord, val in cells.items():
         ws[coord] = _coerce(val)
+    # 1.(1).1 Equipment 헤더: spare 품목 없으면 'Recommended Spare parts' 제거
+    _apply_spare_heading(ws, vals.get("spare"))
     # Supervising Services 결제조건 선택 (machine)
     _apply_sv_payment(ws, vals.get("sv_payment"))
     wb.save(out)
@@ -252,12 +278,25 @@ def cmd_verify(argv):
             warns.append("장비 금액(W24:W27)이 비어있음")
         else:
             oks.append(f"장비 소계 Σ(W24:W27)={eqsum:,.0f}")
+        # Ref.No 개정 버전 표기 확인 (재제출이면 -R1, -R2)
+        ref = str(ws["W2"].value or "")
+        warns.append(f"Ref.No={ref!r} — 재제출(개정)이면 '-R1','-R2'로 버전 표기했는지 확인")
+        # 1.(1).1 헤더 vs spare 품목 정합성
+        head = str(ws["E22"].value or "")
+        has_spare_item = any("spare" in str(ws[f"E{r}"].value or "").lower() for r in range(24, 28))
+        if "Spare" in head and not has_spare_item:
+            warns.append("E22 헤더에 'Recommended Spare parts' 있으나 품목에 Spare 없음 → 'Equipment'로 정리 (fill의 spare:false)")
+        elif "Spare" not in head and has_spare_item:
+            warns.append("Spare 품목 있는데 E22 헤더에 'Recommended Spare parts' 누락 — 헤더 확인")
+        # SV 단가 알라밍 — 기준 220,000/MD. 항상 확인, 다르면 경고.
         mds = _num(ws["L34"].value)
         rate = _num(ws["N34"].value)
-        if mds and rate:
-            oks.append(f"SV {rate:,.0f}×{mds}MD={rate*mds:,.0f}")
+        if not rate:
+            warns.append("⚠ [SV] 단가(N34) 비어있음 — 기준 220,000/MD 확인")
+        elif rate == 220000:
+            warns.append(f"[SV] 단가 220,000/MD(표준 일비) × {mds or 0:g}MD = {220000*(mds or 0):,.0f} — MD수·派遣조건 확인")
         else:
-            warns.append("SV MD수(L34) 또는 단가(N34) 비어있음")
+            warns.append(f"⚠ [SV] 단가 N34={rate:,.0f}/MD 가 표준 220,000과 다름 — 의도 확인 (×{mds or 0:g}MD={rate*(mds or 0):,.0f})")
         # validity > date  (free text -> just surface)
         warns.append(f"Validity 날짜(D85)={ws['D85'].value!r} 가 견적일({ws['W3'].value!r})보다 미래인지 확인")
         warns.append("결제 % 합(Equipment=100, SV 단독) 및 L/C 조건이 이 고객에 맞는지 확인 (자동통과 금지)")
