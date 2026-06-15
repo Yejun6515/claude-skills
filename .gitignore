@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 
+# local working data (generated at runtime by some skills)
+values.json
+*.tmp
+
 # skills with their own separate git repo (nested, synced independently)
 primetals-text-style/
 

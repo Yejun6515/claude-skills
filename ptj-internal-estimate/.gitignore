@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# 실데이터/출력물 절대 커밋 금지 (빈 템플릿 nemae_template.xlsx만 허용)
+*_draft.xlsx
+*_out.xlsx
+[시험]*
+Copy of *
+*見積計算書*.xlsx
+~$*
+
+# OS
+.DS_Store
+Thumbs.db
