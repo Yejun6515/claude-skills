@@ -1,0 +1,13 @@
+# Python caches
+__pycache__/
+*.pyc
+
+# agentmemory plugin skills — installed via plugin, not synced here
+commit-context/
+commit-history/
+forget/
+handoff/
+recall/
+recap/
+remember/
+session-history/
