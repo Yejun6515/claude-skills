@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PT Krakatau POSCO — Equipment Status &amp; Phase 2 Expansion Survey</title>
+<style>
+  /* Primetals brand palette (theme "Primetals") — text color + font per primetals-text-style skill */
+  :root{
+    --navy:#0C2340;    /* Dark Blue (PT) — titles / headers / dark banner */
+    --orange:#E87722;  /* Orange (PT) — signature accent: badges, rules, emphasis */
+    --teal:#00587C;    /* Teal (PT) — links */
+    --steel:#425563;   /* Dark Blue Grey (PT) — sub-headers */
+    --ink:#000000;     /* Black — body default */
+    --mut:#97999B;     /* Dark Grey (PT) — secondary / muted */
+    --green:#7A9A01;   /* Green (PT) — positive */
+    --red:#CE0037;     /* Red (PT) — negative / warning */
+    --line:#D0D0CE;    /* Light Grey (PT) — borders */
+    --line2:#ECECEA;   /* faint inner border */
+    --bg:#F4F5F5; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,sans-serif;background:var(--bg);
+       color:var(--ink);line-height:1.6;font-size:15px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px 70px}
+  header.top{background:linear-gradient(135deg,#0C2340,#163a5c);color:#fff;
+       padding:34px 22px 28px;margin-bottom:26px;border-bottom:4px solid var(--orange)}
+  header.top .inner{max-width:980px;margin:0 auto}
+  header.top .kicker{font-size:12.5px;letter-spacing:1.5px;color:#E87722;text-transform:uppercase;margin-bottom:8px}
+  header.top h1{margin:0;font-size:25px;font-weight:700;letter-spacing:-.3px}
+  header.top .sub{margin-top:10px;font-size:13.5px;color:#C7CDD4}
+  header.top .meta{margin-top:14px;font-size:12.5px;color:#9AA6B2;display:flex;gap:18px;flex-wrap:wrap}
+  h2{font-size:19px;color:var(--navy);margin:34px 0 12px;padding-bottom:7px;
+     border-bottom:2px solid var(--line);display:flex;align-items:center;gap:9px}
+  h2 .n{background:var(--orange);color:#fff;font-size:13px;width:24px;height:24px;border-radius:6px;
+        display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+  h3{font-size:15.5px;color:var(--steel);margin:20px 0 8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+        padding:20px 22px;margin:14px 0;box-shadow:0 1px 2px rgba(12,35,64,.05)}
+  .summary{border-left:4px solid var(--orange)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;background:#fff;
+        border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  th{background:#F2F2F1;color:var(--navy);text-align:left;padding:10px 12px;font-weight:700;font-size:13px;border-bottom:1px solid var(--line)}
+  td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#FAFAF9}
+  .grp{background:#0C2340 !important;color:#fff}
+  .grp td{color:#fff;font-weight:700;font-size:13px;letter-spacing:.5px}
+  .tag{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .t-op{background:#EFF3DC;color:#5E7A00}
+  .t-plan{background:#FCEBDD;color:#C25E15}
+  .t-new{background:#E4F2F8;color:var(--teal)}
+  ul{margin:8px 0 8px 4px;padding-left:20px}
+  li{margin:5px 0}
+  .kv{display:grid;grid-template-columns:170px 1fr;gap:6px 16px;font-size:14px}
+  .kv dt{color:var(--mut);font-weight:600}
+  .kv dd{margin:0}
+  .note{font-size:12.5px;color:var(--mut)}
+  .flag{font-size:11.5px;color:var(--orange);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}.kv{grid-template-columns:1fr}}
+  .timeline{list-style:none;margin:10px 0;padding:0}
+  .timeline li{position:relative;padding:0 0 16px 26px;border-left:2px solid var(--line);margin-left:6px}
+  .timeline li::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;
+       border-radius:50%;background:var(--orange);border:2px solid #fff}
+  .timeline .yr{font-weight:700;color:var(--navy)}
+  .callout{background:#FCF4EC;border:1px solid #F2D9C0;border-left:4px solid var(--orange);
+           border-radius:10px;padding:14px 18px;margin:14px 0}
+  .callout.blue{background:#EAF3F7;border-color:#C5DEE8;border-left-color:var(--teal)}
+  .src{font-size:12.5px;color:var(--mut)}
+  .src a{color:var(--teal);text-decoration:none}
+  .src a:hover{text-decoration:underline}
+  .src li{margin:4px 0}
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+  code.em{background:#F0F1F1;border-radius:4px;padding:1px 6px;font-size:13px;color:var(--navy)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="kicker">Primetals Technologies · Market / Customer Equipment Survey</div>
+    <h1>PT Krakatau POSCO — Equipment Status &amp; Phase 2 Expansion Plan</h1>
+    <div class="sub">Cilegon integrated steel works, Indonesia — current installed equipment and Phase 2 expansion outlook</div>
+    <div class="meta">
+      <span>Date : 2026-06-09</span>
+      <span>Basis : PTKR (Primetals Korea) email (BonKyoung Koo) + public sources</span>
+      <span>To : Markus / Tanaka-san</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 0. Executive summary -->
+  <div class="card summary">
+    <h3 style="margin-top:0">Executive summary</h3>
+    <ul>
+      <li><b>PT Krakatau POSCO (PTKP)</b> is a joint venture between POSCO and Indonesia's Krakatau Steel (PTKS) — Indonesia's <b>first blast-furnace (BF) based integrated steel works</b>. In operation since December 2013, with <b>3.0 mtpy</b> of crude steel.</li>
+      <li>Current lines: <b>ironmaking (sinter · coke · BF #1)</b> → <b>steelmaking (BOF)</b> → <b>continuous casting</b> → <b>plate mill</b> and <b>hot rolling plant (HSM)</b>. Products are slab, plate, and hot-rolled coil (HRC).</li>
+      <li><b>Phase 2 expansion</b> momentum is building: the Indonesian President's visit to Korea (Mar 2026) and POSCO Holdings Chairman Chang's visit to Indonesia (May 2026) conveyed POSCO's requirements and built consensus to proceed.</li>
+      <li>Concept: <b>upstream largely the same spec as Phase 1</b> (cost reduction via value engineering and some Chinese-sourced equipment) + <b>HRM 1.5 → 3.0 mtpy uprate</b> + <b>one PLTCM (~1.4–1.8 mtpy)</b> + <b>one CGL/CVGL (0.55 mtpy)</b>.</li>
+      <li>Feasibility study (FS) <b>targeted for completion October 2026</b> (Indian/Chinese engineering firm or POSCO E&amp;C). <b>Completion target 2030 or earlier</b> — linkage with the Phase 1 BF relining (2030) is the key variable.</li>
+    </ul>
+  </div>
+
+  <!-- 1. Company overview -->
+  <h2><span class="n">1</span>Company overview</h2>
+  <div class="card">
+    <dl class="kv">
+      <dt>Company</dt><dd>PT Krakatau POSCO (PTKP / KP)</dd>
+      <dt>Ownership</dt><dd>POSCO + PT Krakatau Steel (PTKS) joint venture (established 2010)</dd>
+      <dt>Location</dt><dd>Cilegon, Banten Province, Indonesia</dd>
+      <dt>Construction / start-up</dt><dd>Ground-breaking 2011 (~36 months) → <b>start-up December 2013</b>, commercial production early 2014</dd>
+      <dt>Capacity</dt><dd>Crude steel <b>3.0 mtpy</b> — Indonesia's first BF-based integrated steel works</dd>
+      <dt>Products</dt><dd>Slab, plate, hot-rolled coil (HRC)</dd>
+      <dt>Vision</dt><dd>Build a Cilegon <b>"10-million-tonne steel cluster"</b> (integrated PTKP + PTKS)</dd>
+    </dl>
+  </div>
+
+  <!-- 2. Current installed equipment -->
+  <h2><span class="n">2</span>Current installed equipment (Phase 1)</h2>
+  <p class="note">Process flow: <code class="em">ironmaking</code> → <code class="em">steelmaking</code> → <code class="em">continuous casting</code> → <code class="em">rolling (plate / hot strip)</code>. Capacities and suppliers below are based on public sources; some figures are approximate (<span class="flag">≈</span>).</p>
+  <table>
+    <thead>
+      <tr><th style="width:18%">Process</th><th style="width:24%">Equipment</th><th style="width:20%">Capacity</th><th style="width:22%">Supplier</th><th style="width:16%">Status / start</th></tr>
+    </thead>
+    <tbody>
+      <tr class="grp"><td colspan="5">① Ironmaking</td></tr>
+      <tr><td>Coke</td><td>Coke oven plant</td><td>BF-linked</td><td>POSCO E&amp;C et al.</td><td><span class="tag t-op">Operating</span> 2013–</td></tr>
+      <tr><td>Sinter</td><td>Sinter plant</td><td>BF-linked</td><td>POSCO E&amp;C et al.</td><td><span class="tag t-op">Operating</span> 2013–</td></tr>
+      <tr><td>Blast furnace</td><td>Blast furnace #1</td><td><b>3,800 m³</b> / hot metal ≈3.0 mtpy</td><td>POSCO E&amp;C (POSCO Engineering)</td><td><span class="tag t-op">Operating</span> 2013–</td></tr>
+      <tr class="grp"><td colspan="5">② Steelmaking</td></tr>
+      <tr><td>Steelmaking</td><td>BOF converter (≈300 t class)</td><td>Crude steel <b>3.0 mtpy</b></td><td>POSCO E&amp;C</td><td><span class="tag t-op">Operating</span> 2013–</td></tr>
+      <tr class="grp"><td colspan="5">③ Continuous casting</td></tr>
+      <tr><td>Casting</td><td>Slab caster</td><td>Steelmaking-linked</td><td>—</td><td><span class="tag t-op">Operating</span> 2013–</td></tr>
+      <tr class="grp"><td colspan="5">④ Rolling</td></tr>
+      <tr><td>Plate</td><td>Plate mill + hot leveler<br>(Plate Mill)</td><td>≈1.5 mtpy <span class="flag">(approx.)</span></td><td>Mitsubishi-Hitachi Metals Machinery (MHMM)</td><td><span class="tag t-op">Operating</span> 2013/2014–</td></tr>
+      <tr><td>Hot strip (HRM)</td><td>Hot rolling plant / hot strip mill (HSM)<br>+ skin pass mill</td><td><b>1.5 mtpy</b> (designed for up to 4.0 mtpy)</td><td>SMS group (turnkey, PTKE involved)</td><td><span class="tag t-op">Operating</span> 2021.5–</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout blue">
+    <b>Note on the hot rolling plant (HRM)</b><br>
+    The "HRM (1.5 mtpy)" in question was originally the <b>second hot strip mill (HSM #2, started May 2021; max width 1,650 mm, min thickness 1.40 mm)</b> that SMS group supplied to PTKS. It was transferred into Krakatau POSCO via an <b>in-kind contribution agreement dated 28 November 2022</b>. The line is <b>designed to expand to 4.0 mtpy</b>, and it is precisely this facility that is the target of the Phase 2 "1.5 → 3.0 mtpy uprate".
+  </div>
+
+  <!-- 3. Phase 2 expansion plan -->
+  <h2><span class="n">3</span>Phase 2 expansion plan (per the email)</h2>
+
+  <div class="callout">
+    <b>Background</b> — Through the Indonesian President's visit to Korea (March 2026) and POSCO Holdings Chairman Chang's visit to Indonesia (May 2026), POSCO's requirements were sufficiently conveyed to the Indonesian side. As a result, <b>consensus is forming on the need to proceed with the Phase 2 expansion</b>.
+  </div>
+
+  <h3>3.1 Upstream</h3>
+  <div class="card">
+    <ul>
+      <li><b>Effectively the same spec as Phase 1</b> (replicating the integrated line, i.e. a second blast furnace).</li>
+      <li><b>Focus on cost reduction</b>: ① apply <b>value engineering</b>, ② <b>source some equipment from China</b>.</li>
+      <li>On completion, crude steel expands <b>3.0 → 6.0 mtpy</b> (toward a second blast furnace).</li>
+    </ul>
+  </div>
+
+  <h3>3.2 Downstream (HRM &amp; cold rolling / coating)</h3>
+  <table>
+    <thead>
+      <tr><th style="width:26%">Equipment</th><th style="width:24%">Capacity (concept)</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>HRM (hot strip) uprate</b> <span class="tag t-plan">expand</span></td>
+        <td>1.5 → <b>3.0 mtpy</b></td>
+        <td>Concept of doubling existing hot-strip capacity (the current 1.5 mtpy line is designed for up to 4.0 mtpy).</td>
+      </tr>
+      <tr>
+        <td><b>One PLTCM</b> <span class="tag t-new">new</span></td>
+        <td><b>≈1.4 – 1.8 mtpy</b></td>
+        <td>Pickling Line Tandem Cold Mill (combined pickling + cold rolling). The core line that rolls HRC into cold-rolled (CR) sheet.</td>
+      </tr>
+      <tr>
+        <td><b>One CVGL / CGL</b> <span class="tag t-new">new</span></td>
+        <td><b>0.55 mtpy</b></td>
+        <td>Continuous Galvanizing Line. Galvanizes cold-rolled sheet (GI/GA) to produce surface-treated steel for automotive, appliance and construction use.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">※ Adding a PLTCM and CGL signals PTKP's move from a slab / plate / hot-strip focus toward <b>cold rolling and coating (high-value flat products)</b>.</p>
+
+  <h3>3.3 Feasibility study (FS) &amp; executing parties</h3>
+  <div class="card">
+    <dl class="kv">
+      <dt>FS completion target</dt><dd><b>October 2026</b></dd>
+      <dt>Candidate executor</dt><dd>An Indian or Chinese engineering firm, or <b>POSCO E&amp;C</b></dd>
+    </dl>
+  </div>
+
+  <!-- 4. Timeline -->
+  <h2><span class="n">4</span>Key milestones / timeline</h2>
+  <div class="card">
+    <ul class="timeline">
+      <li><span class="yr">2026.03</span> — Indonesian President's visit to Korea (occasion to convey POSCO's requirements)</li>
+      <li><span class="yr">2026.05</span> — POSCO Holdings Chairman Chang visits Indonesia → consensus to pursue Phase 2</li>
+      <li><span class="yr">2026.10</span> — <b>FS completion target</b></li>
+      <li><span class="yr">2030</span> — <b>Phase 1 blast-furnace relining scheduled</b></li>
+      <li><span class="yr">2030 or earlier</span> — <b>Phase 2 completion target</b> (considering an earlier date to integrate smoothly with the Phase 1 relining)</li>
+    </ul>
+    <div class="callout" style="margin-top:6px">
+      <b>Key scheduling variable</b> — Because the Phase 1 blast furnace goes into relining in 2030, the intent is to align <b>Phase 2 completion to 2030 or earlier</b> to minimise the production gap and integrate smoothly with the relining schedule. In effect, <b>2030 may act as the de-facto deadline</b>.
+    </div>
+  </div>
+
+  <!-- 5. Primetals perspective -->
+  <h2><span class="n">5</span>Primetals perspective / implications</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Opportunity</h3>
+      <ul>
+        <li><b>New downstream lines (PLTCM · CGL)</b> are a Primetals strength — potential to win the cold-rolling / coating line package.</li>
+        <li>The <b>HRM 1.5 → 3.0 mtpy uprate</b> drives demand for rolling and auxiliary-equipment revamps / additions.</li>
+        <li>Upstream second-BF and steelmaking additions create demand for ancillary plant (gas cleaning, automation, environmental).</li>
+        <li>2030 deadline → <b>early engagement from the FS stage (~Oct 2026)</b> is advantageous for locking in specifications.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Cautions / risks</h3>
+      <ul>
+        <li>Upstream follows a <b>"same spec as Phase 1 + cost reduction"</b> stance → <b>some Chinese sourcing</b> is explicit. Expect intensified price competition.</li>
+        <li>FS execution by an <b>Indian/Chinese engineering firm or POSCO E&amp;C</b> → influences the contracting structure and specifications.</li>
+        <li>Existing hot strip is <b>SMS group</b> and plate is <b>MHMM</b> → consider interfaces with the legacy equipment.</li>
+        <li>Still at the <b>conceptual (study) stage</b> — capacity, configuration and schedule are all subject to change.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. Sources -->
+  <h2><span class="n">6</span>Sources</h2>
+  <div class="card src">
+    <ul>
+      <li>PTKR (Primetals Korea) internal email — BonKyoung Koo, June 2026 (Phase 2 update)</li>
+      <li><a href="https://www.gem.wiki/KS_Posco_Cilegon_steel_plant">Global Energy Monitor — KS Posco Cilegon steel plant</a> (BF / steelmaking capacity, dates)</li>
+      <li><a href="https://www.krakatauposco.co.id/about">Krakatau POSCO — About Us</a> (establishment, start-up, scale)</li>
+      <li><a href="https://www.krakatauposco.co.id/news/krakatau-posco-resmi-miliki-fasilitas-hot-rolling-plant?lang=id">Krakatau POSCO — hot rolling plant transfer (28 Nov 2022 in-kind contribution)</a></li>
+      <li><a href="https://www.sms-group.com/en-us/insights/all-insights/new-hot-strip-mill-for-ptks-in-operation">SMS group — New hot strip mill for PTKS (HSM #2, 1.5 mtpy, 2021.5)</a></li>
+      <li><a href="https://www.aist.org/krakatau-posco-begins-operation-of-plate-rolling-mill-in-indonesia">AIST — Krakatau Posco Plate Rolling Mill (MHMM)</a></li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    This document is a <b>first compilation</b> based on public information and a PTKR shared email; the Phase 2 content is at the conceptual (study) stage and is not a confirmed specification. Some capacities are shown as approximate (≈). · For Primetals Technologies internal reference.
+  </div>
+
+</div>
+</body>
+</html>

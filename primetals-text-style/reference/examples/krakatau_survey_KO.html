@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PT Krakatau POSCO 설비 현황 및 Phase 2 확장 조사</title>
+<style>
+  /* Primetals brand palette (theme "Primetals") — text color + font per primetals-text-style skill */
+  :root{
+    --navy:#0C2340;    /* Dark Blue (PT) — titles / headers / dark banner */
+    --orange:#E87722;  /* Orange (PT) — signature accent: badges, rules, emphasis */
+    --teal:#00587C;    /* Teal (PT) — links */
+    --steel:#425563;   /* Dark Blue Grey (PT) — sub-headers */
+    --ink:#000000;     /* Black — body default */
+    --mut:#97999B;     /* Dark Grey (PT) — secondary / muted */
+    --green:#7A9A01;   /* Green (PT) — positive */
+    --red:#CE0037;     /* Red (PT) — negative / warning */
+    --line:#D0D0CE;    /* Light Grey (PT) — borders */
+    --line2:#ECECEA;   /* faint inner border */
+    --bg:#F4F5F5; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,"Malgun Gothic",sans-serif;background:var(--bg);
+       color:var(--ink);line-height:1.65;font-size:15px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px 70px}
+  header.top{background:linear-gradient(135deg,#0C2340,#163a5c);color:#fff;
+       padding:34px 22px 28px;margin-bottom:26px;border-bottom:4px solid var(--orange)}
+  header.top .inner{max-width:980px;margin:0 auto}
+  header.top .kicker{font-size:12.5px;letter-spacing:1.5px;color:#E87722;text-transform:uppercase;margin-bottom:8px}
+  header.top h1{margin:0;font-size:25px;font-weight:700;letter-spacing:-.3px}
+  header.top .sub{margin-top:10px;font-size:13.5px;color:#C7CDD4}
+  header.top .meta{margin-top:14px;font-size:12.5px;color:#9AA6B2;display:flex;gap:18px;flex-wrap:wrap}
+  h2{font-size:19px;color:var(--navy);margin:34px 0 12px;padding-bottom:7px;
+     border-bottom:2px solid var(--line);display:flex;align-items:center;gap:9px}
+  h2 .n{background:var(--orange);color:#fff;font-size:13px;width:24px;height:24px;border-radius:6px;
+        display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+  h3{font-size:15.5px;color:var(--steel);margin:20px 0 8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+        padding:20px 22px;margin:14px 0;box-shadow:0 1px 2px rgba(12,35,64,.05)}
+  .summary{border-left:4px solid var(--orange)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;background:#fff;
+        border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  th{background:#F2F2F1;color:var(--navy);text-align:left;padding:10px 12px;font-weight:700;font-size:13px;border-bottom:1px solid var(--line)}
+  td{padding:10px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#FAFAF9}
+  .grp{background:#0C2340 !important;color:#fff}
+  .grp td{color:#fff;font-weight:700;font-size:13px;letter-spacing:.5px}
+  .tag{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .t-op{background:#EFF3DC;color:#5E7A00}
+  .t-plan{background:#FCEBDD;color:#C25E15}
+  .t-new{background:#E4F2F8;color:var(--teal)}
+  ul{margin:8px 0 8px 4px;padding-left:20px}
+  li{margin:5px 0}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:6px 16px;font-size:14px}
+  .kv dt{color:var(--mut);font-weight:600}
+  .kv dd{margin:0}
+  .note{font-size:12.5px;color:var(--mut)}
+  .flag{font-size:11.5px;color:var(--orange);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}.kv{grid-template-columns:1fr}}
+  .timeline{list-style:none;margin:10px 0;padding:0}
+  .timeline li{position:relative;padding:0 0 16px 26px;border-left:2px solid var(--line);margin-left:6px}
+  .timeline li::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;
+       border-radius:50%;background:var(--orange);border:2px solid #fff}
+  .timeline .yr{font-weight:700;color:var(--navy)}
+  .callout{background:#FCF4EC;border:1px solid #F2D9C0;border-left:4px solid var(--orange);
+           border-radius:10px;padding:14px 18px;margin:14px 0}
+  .callout.blue{background:#EAF3F7;border-color:#C5DEE8;border-left-color:var(--teal)}
+  .src{font-size:12.5px;color:var(--mut)}
+  .src a{color:var(--teal);text-decoration:none}
+  .src a:hover{text-decoration:underline}
+  .src li{margin:4px 0}
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+  code.em{background:#F0F1F1;border-radius:4px;padding:1px 6px;font-size:13px;color:var(--navy)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="kicker">Primetals Technologies · 시장/고객 설비 조사</div>
+    <h1>PT Krakatau POSCO 설비 현황 &amp; Phase 2 확장 계획</h1>
+    <div class="sub">인도네시아 칠레곤(Cilegon) 일관제철소 — 현재 보유 설비 정리 및 2단계 확장 동향</div>
+    <div class="meta">
+      <span>작성일 : 2026-06-09</span>
+      <span>근거 : PTKR(Primetals Korea) 메일 (BonKyoung Koo) + 공개자료</span>
+      <span>수신 : Markus / Tanaka-san</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 0. 핵심 요약 -->
+  <div class="card summary">
+    <h3 style="margin-top:0">핵심 요약</h3>
+    <ul>
+      <li><b>PT Krakatau POSCO(PTKP)</b> 는 POSCO와 인도네시아 Krakatau Steel(PTKS)의 합작사로, 인도네시아 <b>최초의 고로(BF) 기반 일관제철소</b>. 2013년 12월 가동, 조강 <b>연 300만 톤(3.0 mtpy)</b> 규모.</li>
+      <li>현재 보유 라인 : <b>제선(소결·코크스·고로 #1)</b> → <b>제강(BOF)</b> → <b>연주</b> → <b>후판(Plate Mill)</b> 및 <b>열연(Hot Rolling Plant / HSM)</b>. 제품은 슬래브·후판·열연코일(HRC).</li>
+      <li><b>Phase 2 확장</b> 추진 동력 강화 : 2026년 3월 인니 대통령 방한, 5월 POSCO홀딩스 장회장 인니 방문으로 POSCO 측 요구가 전달되어 추진 공감대 형성.</li>
+      <li>구상안 : <b>업스트림은 Phase 1과 거의 동일 사양</b>(VE·중국산 일부 기자재로 원가절감) + <b>HRM 1.5 → 3.0 mtpy 증강</b> + <b>PLTCM 1기(약 1.4~1.8 mtpy)</b> + <b>CGL(CVGL) 1기(0.55 mtpy)</b>.</li>
+      <li>타당성조사(FS) <b>2026년 10월 완료 목표</b> (인도/중국 엔지니어링사 또는 POSCO E&amp;C 수행). <b>준공 목표 2030년 또는 그 이전</b> — Phase 1 고로 개수(relining, 2030년)와의 연계가 핵심 변수.</li>
+    </ul>
+  </div>
+
+  <!-- 1. 회사 개요 -->
+  <h2><span class="n">1</span>회사 개요</h2>
+  <div class="card">
+    <dl class="kv">
+      <dt>회사</dt><dd>PT Krakatau POSCO (PTKP / KP)</dd>
+      <dt>지분구조</dt><dd>POSCO + PT Krakatau Steel(PTKS) 합작 (2010년 설립)</dd>
+      <dt>위치</dt><dd>인도네시아 반텐주 칠레곤(Cilegon)</dd>
+      <dt>건설/가동</dt><dd>2011년 착공(약 36개월) → <b>2013년 12월 가동</b>, 2014년 초 상업생산</dd>
+      <dt>규모</dt><dd>조강 <b>연 300만 톤(3.0 mtpy)</b> — 인도네시아 최초 고로 일관제철소</dd>
+      <dt>제품</dt><dd>슬래브(Slab), 후판(Plate), 열연코일(HRC)</dd>
+      <dt>비전</dt><dd>칠레곤 <b>"1,000만 톤 철강 클러스터"</b> 구축 (PTKP+PTKS 통합)</dd>
+    </dl>
+  </div>
+
+  <!-- 2. 현재 보유 설비 -->
+  <h2><span class="n">2</span>현재 보유 설비 (Phase 1)</h2>
+  <p class="note">공정 흐름 : <code class="em">제선</code> → <code class="em">제강</code> → <code class="em">연주</code> → <code class="em">압연(후판 / 열연)</code>. 아래 용량·공급사는 공개자료 기준이며 일부 수치는 근사치(<span class="flag">≈ 표기</span>)이다.</p>
+  <table>
+    <thead>
+      <tr><th style="width:18%">공정</th><th style="width:24%">설비</th><th style="width:20%">용량</th><th style="width:22%">공급사</th><th style="width:16%">상태/가동</th></tr>
+    </thead>
+    <tbody>
+      <tr class="grp"><td colspan="5">① 제선 (Iron Making)</td></tr>
+      <tr><td>코크스</td><td>코크스 오븐 플랜트</td><td>고로 연계</td><td>POSCO E&amp;C 외</td><td><span class="tag t-op">가동중</span> 2013~</td></tr>
+      <tr><td>소결</td><td>소결 플랜트(Sinter)</td><td>고로 연계</td><td>POSCO E&amp;C 외</td><td><span class="tag t-op">가동중</span> 2013~</td></tr>
+      <tr><td>고로</td><td>고로 #1 (Blast Furnace)</td><td><b>3,800 m³</b> / 용선 ≈3.0 mtpy</td><td>POSCO E&amp;C (POSCO 엔지니어링)</td><td><span class="tag t-op">가동중</span> 2013~</td></tr>
+      <tr class="grp"><td colspan="5">② 제강 (Steel Making)</td></tr>
+      <tr><td>제강</td><td>전로 BOF (전로 ≈300톤급)</td><td>조강 <b>3.0 mtpy</b></td><td>POSCO E&amp;C</td><td><span class="tag t-op">가동중</span> 2013~</td></tr>
+      <tr class="grp"><td colspan="5">③ 연주 (Continuous Casting)</td></tr>
+      <tr><td>연주</td><td>슬래브 연주기 (Slab Caster)</td><td>제강 연계</td><td>—</td><td><span class="tag t-op">가동중</span> 2013~</td></tr>
+      <tr class="grp"><td colspan="5">④ 압연 (Rolling)</td></tr>
+      <tr><td>후판</td><td>후판 압연기 + Hot Leveler<br>(Plate Mill)</td><td>≈1.5 mtpy <span class="flag">(근사)</span></td><td>Mitsubishi-Hitachi Metals Machinery (MHMM)</td><td><span class="tag t-op">가동중</span> 2013/2014~</td></tr>
+      <tr><td>열연 (HRM)</td><td>열연 플랜트 / 열간압연(HSM)<br>+ Skin Pass Mill</td><td><b>1.5 mtpy</b> (설계상 최대 4.0 mtpy 확장 가능)</td><td>SMS group (턴키, PTKE 참여)</td><td><span class="tag t-op">가동중</span> 2021.5~</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout blue">
+    <b>열연 플랜트(HRM)에 대한 참고</b><br>
+    문제의 "HRM(1.5 mtpy)"은 원래 SMS group이 PTKS에 공급한 <b>제2 열연(HSM #2, 2021년 5월 가동, 폭 최대 1,650 mm·최소 두께 1.40 mm)</b>으로, <b>2022년 11월 28일 현물출자 계약</b>을 통해 Krakatau POSCO로 편입되었다. 설계상 <b>4.0 mtpy까지 확장 가능</b>한 라인이며, Phase 2의 "1.5 → 3.0 mtpy 증강" 대상이 바로 이 설비다.
+  </div>
+
+  <!-- 3. Phase 2 확장 계획 -->
+  <h2><span class="n">3</span>Phase 2 확장 계획 (메일 기반)</h2>
+
+  <div class="callout">
+    <b>추진 배경</b> — 2026년 3월 인도네시아 대통령 방한, 2026년 5월 POSCO홀딩스 장회장(Mr. Chang)의 인도네시아 방문을 통해 POSCO 측 요구사항이 인니 측에 충분히 전달됨. 그 결과 <b>Phase 2 확장 추진 필요성에 대한 공감대가 형성</b>되고 있음.
+  </div>
+
+  <h3>3.1 상공정 (Upstream)</h3>
+  <div class="card">
+    <ul>
+      <li><b>Phase 1과 사실상 동일 사양</b>으로 추진 (2고로 등 일관 라인 복제 방향).</li>
+      <li><b>원가절감(Cost Reduction)에 집중</b> : ① <b>가치공학(Value Engineering)</b> 적용, ② <b>일부 기자재의 중국산 조달</b>.</li>
+      <li>완성 시 조강 <b>3.0 → 6.0 mtpy</b> 규모로 확대(2고로 증설 방향).</li>
+    </ul>
+  </div>
+
+  <h3>3.2 하공정 (HRM &amp; 냉연·도금)</h3>
+  <table>
+    <thead>
+      <tr><th style="width:26%">설비</th><th style="width:24%">용량(구상)</th><th>내용</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>HRM (열연) 증강</b> <span class="tag t-plan">확장</span></td>
+        <td>1.5 → <b>3.0 mtpy</b></td>
+        <td>기존 열연 능력을 2배로 확대하는 개념(현 1.5 mtpy 라인은 설계상 4.0 mtpy까지 확장 가능).</td>
+      </tr>
+      <tr>
+        <td><b>PLTCM 1기</b> <span class="tag t-new">신설</span></td>
+        <td><b>≈1.4 ~ 1.8 mtpy</b></td>
+        <td>Pickling Line Tandem Cold Mill(산세-냉간압연 일체형). HRC를 냉연강판(CR)으로 압연하는 핵심 라인.</td>
+      </tr>
+      <tr>
+        <td><b>CVGL / CGL 1기</b> <span class="tag t-new">신설</span></td>
+        <td><b>0.55 mtpy</b></td>
+        <td>연속용융아연도금라인(Continuous Galvanizing Line). 냉연강판을 아연도금(GI/GA)하여 자동차·가전·건자재용 표면처리강판 생산.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">※ PLTCM·CGL 신설은 PTKP가 슬래브·후판·열연 중심에서 <b>냉연·도금(고부가 평판재)까지 확장</b>하려는 방향을 의미한다.</p>
+
+  <h3>3.3 타당성조사(FS) &amp; 추진주체</h3>
+  <div class="card">
+    <dl class="kv">
+      <dt>FS 완료 목표</dt><dd><b>2026년 10월</b></dd>
+      <dt>수행 후보</dt><dd>인도 또는 중국 엔지니어링사, 혹은 <b>POSCO E&amp;C</b></dd>
+    </dl>
+  </div>
+
+  <!-- 4. 일정 -->
+  <h2><span class="n">4</span>주요 일정 / 타임라인</h2>
+  <div class="card">
+    <ul class="timeline">
+      <li><span class="yr">2026.03</span> — 인도네시아 대통령 방한 (POSCO 요구 전달 계기)</li>
+      <li><span class="yr">2026.05</span> — POSCO홀딩스 장회장 인도네시아 방문 → Phase 2 추진 공감대 형성</li>
+      <li><span class="yr">2026.10</span> — <b>타당성조사(FS) 완료 목표</b></li>
+      <li><span class="yr">2030</span> — <b>Phase 1 고로 개수(BF Relining) 예정</b></li>
+      <li><span class="yr">2030 또는 이전</span> — <b>Phase 2 준공 목표</b> (Phase 1 개수 일정과 원활한 통합을 위해 앞당기는 방향 검토)</li>
+    </ul>
+    <div class="callout" style="margin-top:6px">
+      <b>일정상 핵심 변수</b> — Phase 1 고로가 2030년 개수에 들어가므로, <b>Phase 2 준공을 2030년 또는 그 이전</b>으로 맞춰 생산 공백을 최소화하고 개수 일정과 매끄럽게 통합하려는 의도. 즉 <b>2030년이 사실상의 데드라인</b>으로 작용할 가능성.
+    </div>
+  </div>
+
+  <!-- 5. Primetals 시각 -->
+  <h2><span class="n">5</span>Primetals 관점 / 시사점</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">기회 (Opportunity)</h3>
+      <ul>
+        <li><b>하공정 신설(PLTCM·CGL)</b> 은 Primetals 강점 영역 — 냉연·도금 라인 패키지 수주 가능성.</li>
+        <li><b>HRM 1.5→3.0 mtpy 증강</b> 시 압연/주변설비 개조·증설 수요.</li>
+        <li>상공정 2고로·제강 증설에 따른 부대설비(가스청정·자동화·환경) 기회.</li>
+        <li>2030 데드라인 → <b>FS 단계(~2026.10)부터 조기 관여</b>가 사양 선점에 유리.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">유의/리스크</h3>
+      <ul>
+        <li>상공정은 <b>"Phase 1 동일 사양 + 원가절감"</b> 기조 → <b>중국산 일부 조달</b> 명시. 가격 경쟁 심화.</li>
+        <li>FS 수행이 <b>인도/중국 엔지니어링사 또는 POSCO E&amp;C</b> → 발주 구도·사양 영향.</li>
+        <li>기존 열연은 <b>SMS group</b>, 후판은 <b>MHMM</b> 공급 → 기설비 연계·인터페이스 고려.</li>
+        <li>아직 <b>구상(검토) 단계</b> — 용량·구성·일정 모두 변동 가능.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. 출처 -->
+  <h2><span class="n">6</span>출처</h2>
+  <div class="card src">
+    <ul>
+      <li>PTKR(Primetals Korea) 내부 메일 — BonKyoung Koo, 2026년 6월 (Phase 2 동향 공유)</li>
+      <li><a href="https://www.gem.wiki/KS_Posco_Cilegon_steel_plant">Global Energy Monitor — KS Posco Cilegon steel plant</a> (고로/제강 용량·연도)</li>
+      <li><a href="https://www.krakatauposco.co.id/about">Krakatau POSCO — About Us</a> (설립·가동·규모)</li>
+      <li><a href="https://www.krakatauposco.co.id/news/krakatau-posco-resmi-miliki-fasilitas-hot-rolling-plant?lang=id">Krakatau POSCO — 열연 플랜트 편입 보도(2022.11.28 현물출자)</a></li>
+      <li><a href="https://www.sms-group.com/en-us/insights/all-insights/new-hot-strip-mill-for-ptks-in-operation">SMS group — New hot strip mill for PTKS (HSM #2, 1.5 mtpy, 2021.5)</a></li>
+      <li><a href="https://www.aist.org/krakatau-posco-begins-operation-of-plate-rolling-mill-in-indonesia">AIST — Krakatau Posco Plate Rolling Mill (MHMM)</a></li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    본 자료는 공개정보와 PTKR 공유 메일을 바탕으로 한 <b>1차 정리본</b>이며, Phase 2 내용은 현재 검토(구상) 단계로 확정 사양이 아님. 일부 용량은 근사치(≈)로 표기함. · Primetals Technologies 내부 참고용.
+  </div>
+
+</div>
+</body>
+</html>
