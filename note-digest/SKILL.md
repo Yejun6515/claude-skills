@@ -7,6 +7,10 @@ description: Read the source files behind an Obsidian note — Outlook emails (.
 
 노트 뒤에 있는 **소스 파일**(Outlook 메일 `.msg`, Word `.docx`, Excel `.xlsx`, PowerPoint `.pptx`, `.pdf`)을 읽어 **하나의 Obsidian 노트**로 정리한다. 메일뿐 아니라 노트에 **링크된 `U:\` 폴더의 첨부 문서**까지 처리한다. 결과 노트는 사용자의 **Event / 회의록 템플릿**을 그대로 따르고, **바로가기 링크를 보존**하며, 요약 + 출처 목록을 담아 검색·추적이 쉽다.
 
+**핵심 1 — 노트에서 폴더로 바로 가는 클릭형 링크 (반드시 넣는다).** 노트 맨 위(`# Yejun's memo` 아래)에 **소스 폴더 자체를 가리키는 바로가기**를 둔다: `[<폴더명>](<file:///U:\...폴더경로>)`. 옵시디언에서 이 링크를 클릭하면 **그 폴더가 탐색기로 바로 열려** 원본 메일·문서·도면을 즉시 확인할 수 있다. 포인트는 개별 파일이 아니라 **폴더**를 거는 것 — 소스가 여러 개여도 한 번에 닿는다. 경로에 공백·한글이 있어도 `<file:///...>`처럼 `<>`로 감싸면 동작한다. 기존 노트를 채우는 경우, 본문에 이미 있는 바로가기는 **그대로 둔다**.
+
+**핵심 2 — 폴더 안 소스는 교차로 읽어 하나의 사건으로 엮는다.** 메일이 "무슨 일"이면, 함께 든 ITB·계약서·사양서·도면·본문 스크린샷은 그 **근거·수치·물증**이다. 메일이 어떤 조항/사양/사진을 인용하면 **그 원문 서류를 직접 열어 확인**하고(예: ITB 4.1.2조 원문, 사양서의 효율 규정, 능효 라벨 사진), 노트에 "주장 ↔ 근거 서류"로 연결해 적는다. 소스를 따로따로 요약하지 말고 **시간순 흐름 + 쟁점별 근거**로 통합한다.
+
 ## 언제 사용하나
 - "이 메일/폴더 정리해줘", "노트로 정리", "이 노트에 링크된 폴더 정리", "digest", "메일 요약 md로", "organize these into a note"
 - 보통 업무 폴더의 `.msg` 묶음이거나, 볼트 노트가 가리키는 `U:\新_海外営業部\Kim Yejun\...` 폴더(메일 + 첨부 문서).
@@ -27,20 +31,22 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skillDir>\scripts\extract_
 - `.msg`→제목/발신/수신/CC/날짜/첨부/본문, `.docx`→본문+표, `.xlsx`→시트별 used range, `.pptx`→슬라이드 텍스트, `.pdf`→포인터(직접 **Read** 도구로 PDF를 읽는다).
 - 기본 출력 `<폴더>\_extracted_sources.txt` → **Read**로 읽는다. (`.msg`만 있으면 `extract_msg.ps1`도 가능.)
 - PDF는 덤프에 포인터만 남으므로, 중요 PDF는 **Read 도구로 직접** 읽는다.
+- **메일 본문에 박힌 스크린샷/사진(`image003.png` 등)은 텍스트 덤프에 안 나온다.** 본문이 "사양서에는 / 아래 사진처럼 / ITB에는" 하며 이미지를 가리키면, Outlook COM으로 첨부를 임시폴더에 `SaveAsFile` 한 뒤 **Read 도구로 그 이미지를 직접 본다**(효율 규정 표·능효 라벨 등급·현품 사진이 거기 들어 있는 경우가 많다). 작업 후 임시폴더는 지운다.
 
 ### 2. 내용 파악
 - **주체(회사/담당)**, **쟁점**, **책임소재**, **합의/미결**, **다음 액션**, 문서면 **핵심 수치·일정·조건**을 잡는다.
 - 답장 체인은 시간순으로 흐름을 푼다. 메일/문서에 **없는 사실은 지어내지 않는다**(불명확은 "미확인").
 
 ### 3. 노트 작성 — 사용자 템플릿 준수
-템플릿 원본(정본)은 볼트 `C:\Users\Z006K14G\Desktop\Yejun\50. Template\`:
-- **Event template.md** — 메일·이벤트·문서 정리의 기본. frontmatter `Date / Catetory / mentions / Google Drive / description / tags`, 본문 `## Event`.
+**노트 템플릿이 항상 우선이다.** 본문 구조는 내가 보기 좋다고 바꾸지 말고 **정본 템플릿을 그대로 따른다**(사용자가 모든 노트를 이 템플릿 형태로 통일해 나가는 중이므로, 기존 노트가 옛 구조라도 새로 쓸 땐 템플릿 구조를 쓴다). 정본은 볼트 `C:\Users\Z006K14G\Desktop\Yejun\50. Template\`:
+- **Event template.md** — 메일·이벤트·문서 정리의 기본. frontmatter `Date / Catetory / mentions / Google Drive / description / tags`, **본문 `# Yejun's memo` / `# Claude Code`** (※ 더 이상 `## Event` 단일 구조가 아님 — 작업 전에 템플릿 파일을 **Read해 현재 섹션을 확인**할 것).
 - **회의록_Template.md** — 실제 회의록일 때. frontmatter `Date / Catetory / Venue / mentions / Tiro Address / Tiro Edited / description / tags`, 본문 `# Yejun's memo` / `# Claude Code` / `# Tiro`.
 
-**회의록 작성 규칙 (중요):**
-- 내가(=Claude) 정리·요약한 내용은 **`# Claude Code` 섹션에만** 쓴다.
-- **소스 바로가기 링크(첨부 .msg/문서·Google Docs·관련 노트 위키링크)는 `# Yejun's memo` 아래**에 둔다. 즉 # Yejun's memo = 사용자 메모+소스 링크, # Claude Code = 내 분석 본문, # Tiro = 전사앱(불가침).
-- **`# Tiro`는 절대 건드리지 않는다** — 사용자가 쓰는 별도 전사(transcription) 요약 앱의 영역.
+**본문 섹션 규칙 (Event·회의록 공통, 중요):**
+- 내가(=Claude) 정리·요약·분석한 내용은 **`# Claude Code` 섹션에만** 쓴다(개요·등장 주체·쟁점·근거·다음 액션·출처 등 내 정리 전부 여기).
+- **소스 바로가기 링크(첨부 .msg/문서·Google Docs·관련 노트 위키링크)는 `# Yejun's memo` 아래**에 둔다. 즉 # Yejun's memo = 사용자 메모 + 소스 링크, # Claude Code = 내 분석 본문, # Tiro = 전사앱(불가침).
+- **`# Yejun's memo`의 기존 사용자 메모는 손대지 않는다** — 소스 링크만 그 아래에 추가/유지한다.
+- **`# Tiro`는 절대 건드리지 않는다**(회의록에만 존재) — 사용자가 쓰는 별도 전사(transcription) 요약 앱의 영역. ([[obsidian-meeting-note-sections]])
 
 기존 노트를 채우는 경우, **frontmatter를 표준 템플릿으로 정규화**하되:
 - `Date`·기존 `Catetory`·`Google Drive` 등 실값은 보존. 비표준 필드(`Participants`/`Status`/`Transcription Accuracy`/`Notebook LM` 등)는 정리하되 **데이터가 있는 필드(링크 등)는 삭제하지 말고 본문으로 살린다**.
@@ -49,33 +55,38 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skillDir>\scripts\extract_
 
 저장 위치는 **그 소스가 속한 폴더/노트 자리**. **Obsidian Vault로 옮기지 않는다**(사용자가 수동 이동).
 
-Event 본문 구조(상황에 맞게 가감):
+Event 본문 구조(템플릿 우선, 상황에 맞게 가감) — **소스 링크는 `# Yejun's memo`, 내 분석은 `# Claude Code`**:
 ```markdown
-## Event
-[<기존 바로가기 그대로>](<file:///U:\...>)
+# Yejun's memo
+[<폴더명>](<file:///U:\...소스 폴더 경로>)
+<기존 사용자 메모가 있으면 그대로 둔다>
 
-### 개요
+# Claude Code
+
+## 개요
 <2~4줄: 무슨 건이고 현재 상태>
 
-### 등장 주체 / 신청 내역 / 공정 구성 …
+## 등장 주체 / 신청 내역 / 공정 구성 …
 | ... | ... |
 
-### 쟁점·이슈 또는 핵심 내용
-- 내용 / 원인 / **책임소재** / 합의·미결 …
+## 쟁점·이슈 또는 핵심 내용
+- 내용 / 원인 / **책임소재** / 합의·미결 / **주장 ↔ 근거 서류** …
 
-### 다음 액션
+## 다음 액션
 - [ ] <할 일> — <담당> <기한>
 
-### 출처 (Sources)
+## 출처 (Sources)
 1. **<제목/문서명>** — <YYYY-MM-DD> · <발신→수신 또는 작성자> · 첨부: <…> · `<파일명>`
 ```
+※ `# Claude Code` 안에서는 소제목을 `##`/`###`로 둔다(`#`은 본문 최상위 섹션 전용).
 
 ### 4. 보고
 저장 경로 + 핵심 2~3줄 요약을 보고한다.
 
 ## 작성 규칙
 - **템플릿 frontmatter를 변형하지 않는다** — 필드명·순서·철자(`Catetory` 포함) 유지, 임의 필드 추가 금지.
-- **회의록은 `# Claude Code`에만 작성, `# Tiro`/`# Yejun's memo`는 손대지 않는다.**
+- **내 분석은 `# Claude Code`에만 작성(Event·회의록 공통), 소스 폴더 바로가기는 `# Yejun's memo`에. `# Tiro`(회의록 전용)·`# Yejun's memo`의 기존 사용자 메모는 손대지 않는다.**
+- **노트 템플릿이 우선** — 새로 쓰는 노트는 정본 템플릿 구조를 따른다(사용자가 전 노트를 이 형태로 통일 중). 옛 `## Event` 단일 구조로 쓰지 말 것. 작업 전 `50. Template\Event template.md`를 Read해 현재 섹션을 확인한다.
 - **`description:`은 영어로 ~2줄(약 2문장)** — progressive(미리보기)용. 고유명사(SEJAL, PTJ, K-104 등)·수치 유지. 콜론/특수문자 있으면 큰따옴표. ([[note-description]]와 동일 정책)
 - **`mentions:`는 비워둔다** — 사용자가 직접 입력. (채울 땐 YAML 리스트+큰따옴표 `- "[[이름]]"`; 인라인 `[[A]] [[B]]`는 `[`를 flow 시퀀스로 오인해 frontmatter 전체를 깨뜨린다.)
 - **`tags:`는 [[obsidian-tagging-convention]]을 따른다** — nested `entity/<거래처>`·`topic/<주제>`. 메일 다이제스트면 `email-digest` 타입 태그를 추가해도 됨.
