@@ -1,6 +1,6 @@
 ---
 name: wiki-ingest
-description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·기술개념을 추출해 90. Wiki의 원자 노트로 만들고, 중복정리·백링크하고 프로젝트 MOC 요약을 갱신한다. 트리거 - "위키에 정리해줘", "wiki-ingest", "이 프로젝트 위키화", "지식 추출해서 위키로".
+description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·기술개념을 추출해 90. Wiki의 원자 노트로 만들고, 중복정리·백링크하고 프로젝트 MOC 요약을 갱신한다. 위키 건강도 점검(lint)도 수행. 트리거 - "위키에 정리해줘", "wiki-ingest", "이 프로젝트 위키화", "지식 추출해서 위키로", "위키 lint", "위키 건강도 체크".
 ---
 
 # wiki-ingest
@@ -11,6 +11,7 @@ description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·
 위키 루트: `C:\Users\Z006K14G\Desktop\Yejun\90. Wiki`
 
 ## 절차
+0. **Core Context 먼저 읽기**: 위키 루트의 `Core Context.md`가 있으면 읽고, 거기 정의된 **재활용 축**(이 위키가 어디에 쓰일지: 제안 / 견적 / 기술자문 / 고객대응 / 교훈 등)과 원칙에 맞춰 "무엇을 추출할 가치가 있나"를 판단한다. 없으면 이 단계는 생략(처음 만들 땐 `references/Core Context.template.md`를 볼트 루트에 복사해 채우도록 안내).
 1. 프로젝트의 MOC(`0_*.md`)와 모든 이벤트 노트(`YYMMDD_*.md`)를 읽는다.
 2. 엔티티 후보(고객사·사람·설비/제품)와 개념 후보(기술 용어)를 추출한다.
 3. 노트를 만들기 전에 **추출 후보를 표로 사용자에게 먼저 보고하고 확인받는다**(생성 게이트).
@@ -20,11 +21,24 @@ description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·
    - 파일명: 개념명 그대로(예: `P-Mix.md`, `POSCO P2C.md`).
    - frontmatter `description:` 한 줄(note-description 컨벤션 따름).
    - 태그: 엔티티는 `entity/...`, 개념은 `topic/...`.
+   - frontmatter `confidence:` (`high`/`medium`/`low`) — 추출 근거의 신뢰도.
+   - frontmatter `explored: false` — LLM이 만든 직후 기본값. 사람이 확인했거나 별도 검증을 거치면 `true`로.
+   - frontmatter `reusableFor:` 한 줄(선택) — Core Context 재활용 축 중 어디에 쓰일지(예: `제안`, `견적`, `기술자문`).
+   - `confidence: high`로 둘 땐 본문에 `> [!note] Bias Check` 한 줄(반대해석 또는 데이터 공백) 추가.
    - 본문: 정의/요약 → `## 출처`(원본 이벤트 노트로 `[[백링크]]`) → `## 관련`(연관 노트 `[[링크]]`).
 6. 이벤트 노트 본문에 해당 원자 노트로 `[[wikilink]]`를 추가(원문·출처 링크는 보존).
 7. 프로젝트 MOC의 요약 섹션 갱신: `2.1 Sales Activity`(시간순 요약), `5. Learning from failure`(교훈), 관련 원자 노트 `[[링크]]`.
 8. `90. Wiki\0_Wiki MOC.md`의 Entities/Concepts 인덱스 갱신.
 9. **한 일 보고**: 생성/갱신한 원자 노트, 추가한 백링크, 갱신한 MOC 섹션을 목록으로.
+
+## Lint (건강도 체크 — 단독 호출 또는 ingest 후 마지막 단계)
+트리거: "위키 lint", "위키 건강도 체크", "위키 정리 점검". **검사만 하고 보고**(자동 수정 금지, 생성 게이트와 동일하게 사용자 확인 후 수정).
+- **Orphan**: `90. Wiki\Entities`·`Concepts`에서 아무 노트·MOC에도 링크 안 된 원자 노트.
+- **깨진 링크**: 본문 `[[wikilink]]` 중 실제 파일이 없는 것.
+- **모순**: 같은 엔티티/개념에 상충하는 서술 → 보고하고 해당 노트에 `> [!warning] Contradiction` 제안.
+- **MOC 동기화**: `0_Wiki MOC.md`의 Entities/Concepts 인덱스 ↔ 실제 노트 목록 불일치.
+- **품질 backlog**: `explored: false`로 오래 남은 노트, `confidence: high`인데 Bias Check 없는 노트, `description` 누락.
+- 결과는 표로 보고 → 사용자가 고를 항목만 수정.
 
 ## 제약(안전장치)
 - 회의록의 `# Tiro`·`# Yejun's memo` 섹션은 **건드리지 않는다**. Claude 메모는 `# Claude Code` 섹션에만.
