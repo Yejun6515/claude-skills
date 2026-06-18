@@ -29,6 +29,14 @@ warnings.filterwarnings('ignore')
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE = os.path.join(SKILL_DIR, 'assets', 'nemae_template.xlsx')
 EXT = re.compile(r'\[\d+\]')
+TPL_SHEET = '見積纏め'              # 템플릿 워크북 내 원본 시트명
+NEW_SHEET = '見積纏め_Sales added'  # 산출본에 추가되는 시트명 (맨 왼쪽 배치)
+
+# Windows 콘솔(cp932 등)에서 한글/일본어 print 시 UnicodeEncodeError 방지
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
 
 
 def copy_sheet(src_ws, tgt_wb, title):
@@ -174,16 +182,12 @@ def cmd_build(a):
     from openpyxl.comments import Comment
     wb = openpyxl.load_workbook(a.quotation)
     wbv = openpyxl.load_workbook(a.quotation, data_only=True)
-    if '見積纏め' in wb.sheetnames:
-        del wb['見積纏め']
-    src = openpyxl.load_workbook(TEMPLATE)['見積纏め']
-    ws = copy_sheet(src, wb, '見積纏め')
-    # 위치: 見積計算書（まとめ） 다음
-    try:
-        anchor = wb.sheetnames.index('見積計算書（まとめ）')
-        wb.move_sheet('見積纏め', anchor + 1 - (len(wb.sheetnames) - 1))
-    except ValueError:
-        wb.move_sheet('見積纏め', -(len(wb.sheetnames) - 1))
+    if NEW_SHEET in wb.sheetnames:
+        del wb[NEW_SHEET]
+    src = openpyxl.load_workbook(TEMPLATE)[TPL_SHEET]
+    ws = copy_sheet(src, wb, NEW_SHEET)
+    # 위치: 제일 왼쪽(맨 앞)으로 이동 (새 시트는 생성 시 맨 끝에 붙으므로 -(끝 index)만큼 이동)
+    wb.move_sheet(NEW_SHEET, -(len(wb.sheetnames) - 1))
 
     # 헤더
     ws['P1'] = a.date or datetime.date.today().strftime('%Y%m%d')
@@ -206,13 +210,27 @@ def cmd_build(a):
     ws['K26'] = a.ebit                            # EBIT 입력 셀; L26='=J26/(1-K26)' 수식이 참조
 
     if a.start == 'manf':
-        # 製造原価 start: H=製造原価 입력 → FC 자동 → J=Total cost(=총원가)
-        clear(23, 'CDEFG'); clear(24, 'CDEFG')
-        ws['H23'] = a.main; ws['I23'] = '=H23*$J$14'; ws['J23'] = '=H23+I23'
-        ws['H24'] = a.sv;   ws['I24'] = '=H24*$J$14'; ws['J24'] = '=H24+I24'
-        ws['H23'].comment = Comment('見積計算書（まとめ） 製造原価 (機械분)', 'PTJ-skill')
-        ws['H24'].comment = Comment('見積計算書（まとめ） 製造原価 (SV분)', 'PTJ-skill')
-        total_cost = (a.main + a.sv) * (1 + fc)
+        # 製造原価 start: 기준원가는 Pure Manf.Cost(C)에, 견적부서가 누락한 추가비용은
+        # 브릿지(D=indv.Tax·E=CIT·F=others·G=RC)에 두고 → H(Manf.Cost)=SUM(C:G) 수식 →
+        # FC 자동(I=H×J14) → J=Total cost(=총원가).
+        # ⚠️ H에 직접 값을 넣고 H=H+others 식으로 합치면 자기참조(순환참조)가 되어 루프가 난다.
+        #    그래서 베이스는 C에 두고 H는 항상 앞칸들의 합(SUM)으로 둔다.
+        def manf_row(r, base, tax, cit, others, rc, who):
+            clear(r, 'DEFG')                      # 추가분 없으면 비움
+            ws['C%d' % r] = base
+            if tax:    ws['D%d' % r] = tax
+            if cit:    ws['E%d' % r] = cit
+            if others: ws['F%d' % r] = others
+            if rc:     ws['G%d' % r] = rc
+            ws['H%d' % r] = '=SUM(C%d:G%d)' % (r, r)
+            ws['I%d' % r] = '=H%d*$J$14' % r
+            ws['J%d' % r] = '=H%d+I%d' % (r, r)
+            ws['C%d' % r].comment = Comment(
+                '見積計算書（まとめ） 製造原価 (%s분) ＋영업추가비용(D~G) → H=SUM(C:G)' % who, 'PTJ-skill')
+            return base + tax + cit + others + rc
+        main_total = manf_row(23, a.main, a.main_tax, a.main_cit, a.main_others, a.main_rc, '機械')
+        sv_total   = manf_row(24, a.sv,   a.sv_tax,   a.sv_cit,   a.sv_others,   a.sv_rc,   'SV')
+        total_cost = (main_total + sv_total) * (1 + fc)
     else:
         # 総原価 start: J=Total cost(=총원가) 직접, 총원가 앞단(C~I) 전부 비움(사용자 룰)
         clear(23, 'CDEFGHI'); clear(24, 'CDEFGHI'); clear(25, 'CDEFGHI')
@@ -262,17 +280,17 @@ def cmd_verify(a):
         if 'worksheets/sheet' in n and n.endswith('.xml'):
             ref_total += z.read(n).decode('utf-8', 'ignore').count('#REF!')
     wb = openpyxl.load_workbook(a.file)
-    ws = wb['見積纏め'] if '見積纏め' in wb.sheetnames else None
-    # 우리가 제어하는 見積纏め 시트의 #REF!만 FAIL 대상
+    ws = wb[NEW_SHEET] if NEW_SHEET in wb.sheetnames else None
+    # 우리가 제어하는 見積纏め_Sales added 시트의 #REF!만 FAIL 대상
     ref_nemae = 0
     if ws:
         ref_nemae = sum(1 for row in ws.iter_rows() for c in row
                         if isinstance(c.value, str) and '#REF!' in c.value)
     print('=== verify:', a.file, '===')
     print(' [%s] externalLink 파트: %d' % ('OK' if not ext else 'FAIL', len(ext)))
-    print(' [%s] 見積纏め 시트 #REF!: %d' % ('OK' if ref_nemae == 0 else 'FAIL', ref_nemae))
+    print(' [%s] %s 시트 #REF!: %d' % ('OK' if ref_nemae == 0 else 'FAIL', NEW_SHEET, ref_nemae))
     print(' [info] 견적시트 #REF! 합계: %d (견적부서 수식 자체 오류, 본 스킬과 무관)' % ref_total)
-    print(' [%s] 見積纏め 시트 존재' % ('OK' if ws else 'FAIL'))
+    print(' [%s] %s 시트 존재' % ('OK' if ws else 'FAIL', NEW_SHEET))
     if ws:
         for a_, lbl in [('B22', '案件명'), ('J23', '機械총원가'), ('J24', 'SV총원가'),
                         ('K26', 'EBIT'), ('N26', 'Offer price')]:
@@ -282,9 +300,11 @@ def cmd_verify(a):
         # 시작점 감지: J列(Total cost)이 숫자면 total, 아니면(H列 입력) manf
         start = 'total' if isinstance(ws['J23'].value, (int, float)) else 'manf'
         mc = num(ws, 'J23'); sc = num(ws, 'J24'); spare = num(ws, 'J25')
-        if start == 'manf':                        # J=H×(1+FC) 환산
+        if start == 'manf':                        # H=SUM(C:G) 수식 → C~G 합으로 환산, J=H×(1+FC)
             J14 = num(ws, 'J14')
-            mc = num(ws, 'H23') * (1 + J14); sc = num(ws, 'H24') * (1 + J14)
+            def rowsum(r):                         # Pure Manf.Cost(C)+브릿지(D~G)
+                return sum(num(ws, '%s%d' % (c, r)) for c in 'CDEFG')
+            mc = rowsum(23) * (1 + J14); sc = rowsum(24) * (1 + J14)
         total_cost = mc + sc + spare
         # SV-MD (rows 31-36): 実働(D)+休日(E)+移動(F)=計
         md = [(ws['B%d' % r].value, num(ws, 'D%d' % r), num(ws, 'E%d' % r), num(ws, 'F%d' % r))
@@ -313,6 +333,15 @@ def main():
                    help='시작점: total=総原価(J) / manf=製造原価(H)+FC자동→J')
     b.add_argument('--main', type=float, required=True)
     b.add_argument('--sv', type=float, required=True)
+    # manf start 전용: 견적부서 누락분을 브릿지(D~G)에 가산 → H=SUM(C:G). 기본 0.
+    b.add_argument('--main-tax', type=float, default=0.0, dest='main_tax')
+    b.add_argument('--main-cit', type=float, default=0.0, dest='main_cit')
+    b.add_argument('--main-others', type=float, default=0.0, dest='main_others')
+    b.add_argument('--main-rc', type=float, default=0.0, dest='main_rc')
+    b.add_argument('--sv-tax', type=float, default=0.0, dest='sv_tax')
+    b.add_argument('--sv-cit', type=float, default=0.0, dest='sv_cit')
+    b.add_argument('--sv-others', type=float, default=0.0, dest='sv_others')
+    b.add_argument('--sv-rc', type=float, default=0.0, dest='sv_rc')
     b.add_argument('--svdays', type=int, default=None,
                    help='SV C-MD 수동 override. 기본은 現地SV費에서 자동(D7=G37)')
     b.add_argument('--offer', type=float, default=None,
