@@ -1,11 +1,13 @@
 ---
 name: primetals-text-style
-description: Applies Primetals' official text colors and fonts to ANY deliverable — Word, Excel, PowerPoint, HTML, email, Markdown, anything with text. Use when producing or styling a Primetals-branded document, when the user asks for Primetals/프리메탈스 brand color or font, corporate styling, brand-compliant text, or whenever writing company-facing content that must match the corporate identity. Not limited to PPT.
+description: Applies Primetals' official text colors and fonts to ANY deliverable — Word, Excel, PowerPoint, HTML, email, Markdown, anything with text. ALWAYS auto-activate whenever the user asks to produce an HTML file/page/report ("html로 만들어줘", "make/build an HTML", "HTML로 정리", HTML briefing/summary) — HTML output is a hard trigger for this skill, no Primetals/brand keyword required. Also use when producing or styling a Primetals-branded document, when the user asks for Primetals/프리메탈스 brand color or font, corporate styling, brand-compliant text, or whenever writing company-facing content that must match the corporate identity. Not limited to PPT.
 ---
 
 # Primetals Text Style
 
 Brand standard for **text color and font** in any Primetals deliverable (Word, Excel, PPT, HTML, email, Markdown, etc.). This is the authoritative reference — values are extracted from the official `Primetals full POWERPOINT templates.pptx` theme (theme name "Primetals"). Scope is **text only**: color + font. It does not govern layout, images, shapes, or headline wording.
+
+> **HTML is a hard trigger.** Any request to produce HTML (`html로 만들어줘`, "make an HTML report/page/briefing", "HTML로 정리") auto-activates this skill — apply the brand palette + per-language font stack and mirror the example template at `reference/examples/krakatau_survey_*.html` (dark-blue header banner with orange bottom rule, orange section-number badges, black body, teal links, named status-tag colors). No explicit "Primetals/brand" keyword is needed.
 
 ## ALWAYS ASK LANGUAGE FIRST
 
