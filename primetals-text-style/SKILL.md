@@ -9,13 +9,20 @@ Brand standard for **text color and font** in any Primetals deliverable (Word, E
 
 > **HTML is a hard trigger.** Any request to produce HTML (`html로 만들어줘`, "make an HTML report/page/briefing", "HTML로 정리") auto-activates this skill — apply the brand palette + per-language font stack and mirror the example template at `reference/examples/krakatau_survey_*.html` (dark-blue header banner with orange bottom rule, orange section-number badges, black body, teal links, named status-tag colors). No explicit "Primetals/brand" keyword is needed.
 
-## ALWAYS ASK LANGUAGE FIRST
+> **When organizing an email (`.msg`/`.eml`) into HTML, ALWAYS include the email's photos.** Extract the inline images from the message and embed them in the HTML next to the matching passage (with a short caption) — do not produce a text-only digest. (User directive: 메일 정리 시 메일 안의 사진도 추가해서 html에 정리.) Notes:
+> - Outlook COM `Attachment.SaveAsFile` often hangs on a security dialog in non-interactive shells. Prefer the Python `extract_msg` library (`pip install extract_msg`) to pull `m.attachments[i].data` directly. Run the script from a **clean working dir** (not `%TEMP%`) so a stray `inspect.py`/`zipfile.py` can't shadow the stdlib.
+> - Recover the in-body order of images from `htmlBody` (`src="cid:..."`) and place each photo where its `cid` appears in the text. **Drop tiny decorative images** (spacers/bullets, typ. <~5 KB) and de-duplicate photos that repeat inside a quoted/forwarded original.
+> - Save photos to an `img/` subfolder beside the HTML and reference them with relative paths.
 
-**Before producing any styled content, ask the working language.** The brand defines the Latin font (Arial) but leaves the East-Asian font unset, so the font cannot be chosen until the language is known.
+## LANGUAGE — DEFAULT 한국어 FOR HTML, DON'T ASK
+
+**For HTML 정리/reports, default to 한국어 — do NOT ask the language.** Just produce the deliverable in Korean using the 한국어 font row below. (User directive: HTML 정리는 기본 한국어, 질문 금지.)
+
+For **non-HTML** deliverables (Word/PPT/Excel/email) where the language is genuinely ambiguous, you may still ask:
 
 > "작성 언어가 무엇인가요? **English / 한국어 / 日本語**"
 
-Do not assume — even if the request is written in Korean, the deliverable may be English. Ask, then apply the matching font row below. (If the user already stated the language in this turn, skip the question.)
+If the user explicitly states a different language in the request, follow that instead. Then apply the matching font row below.
 
 ## Font rules
 
