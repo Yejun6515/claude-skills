@@ -65,6 +65,16 @@ Rules:
 - If nothing genuinely applies, leave `tags:` empty rather than inventing.
 - The controlled vocabulary is **shared vault-wide** — reuse exact spellings so tags actually link notes together.
 
+## Job 2c — mentions (people ↔ Contacts: propose → confirm → apply)
+
+Connect the **people** named in a note to their contact notes under `20. Contacts`, recorded in `mentions:`. **Apply only after the user confirms — never auto-fill.**
+
+1. **Extract names** — for 회의록, from `# Tiro` transcript / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
+2. **Match against Contacts** — match each name to a contact **filename** under `C:\Users\Z006K14G\Desktop\Yejun\20. Contacts\**`, tolerant of name-order / spacing / comma / romanization·Korean·Kanji variants (e.g. "Yang yohan"=양요한, "Doho, Haruka"=道法 春香). Use the **exact contact filename** so the wikilink resolves.
+3. **Split the proposal** — (a) **has a contact** → `- "[[filename]]"` candidates; (b) **no contact (new person)** → report separately; don't silently add — ask whether to create a contact stub or skip.
+4. **Confirm (required)** — show the proposed list and write **only the approved names**. Even an obvious match is not written without confirmation.
+5. **Preserve & merge** — keep existing `mentions:` entries, dedupe. Format is a YAML list with double quotes `- "[[Name]]"` (inline `[[A]] [[B]]` breaks the frontmatter).
+
 ## Two note templates — Event vs 회의록 (meeting)
 
 There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# Claude Code` and never touches `# Yejun's memo` (or 회의록 notes' `# Tiro`).
@@ -79,7 +89,7 @@ There are **two** templates. Pick by note type. **Both now carry body sections**
   Catetory:
     - customer meeting        # or: Online meeting (online이면 추가)
   Venue:                      # online / 장소 (모르면 비움)
-  mentions:                   # 참석자 [[wikilink]] — 사용자가 채움, 비워둠
+  mentions:                   # 참석자 [[wikilink]] — Contacts 대조해 제안, 확인 후 반영 (Job 2c)
   Tiro Address:               # Tiro 전사 URL (있으면)
   Tiro Edited:                # raw 등
   description:
@@ -98,7 +108,7 @@ Standard field order: `Date / Catetory / mentions / Google Drive / description /
 
 - Keep `Catetory` as-is including the original misspelling **`Catetory`** (template original; it's the note-type classifier, role-separate from tags).
 - **`Catetory: submission`** when the note records a deliverable/document **submitted to the customer** (견적서·자료·제안 등 고객사 제출물). Otherwise keep the note's existing classifier (e.g. `information`, `meeting`). Internal-only correspondence/discussion is **not** a submission → leave as `information`.
-- Leave `mentions:` empty (user fills it manually).
+- **`mentions:` — propose from Contacts, apply only after confirmation (see Job 2c).** Never auto-fill; never overwrite existing entries (merge/dedupe).
 - Non-standard fields (Participants/Status/Transcription Accuracy, etc.): remove — **but if a removed field holds real data** (e.g. a Notebook LM link), move that data into the body, don't delete it.
 - Match each note's existing indentation/quoting style; only touch frontmatter.
 
