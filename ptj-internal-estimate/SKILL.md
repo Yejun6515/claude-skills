@@ -1,101 +1,68 @@
 ---
 name: ptj-internal-estimate
-description: "PTJ 내부견적서(見積纏め) 작성 — '내부 견적서 준비'·'내부 견적서'는 이 스킬을 뜻함. 견적부서 見積計算書（まとめ）의 製造原価/総原価를 받아 새 見積纏め_Sales added 시트를 맨 왼쪽에 추가(기존 시트는 절대 수정 금지). §3는 수식(K26=EBIT 입력·L26=총원가/(1-EBIT)·N26=Offer price 녹색 입력), 총원가 start면 앞단(C~I) 비움. §4 SV-MD는 같은 워크북 現地SV費를 자동 참조(実働=契約MD·移動=見積MD−契約MD, SV A,B,C…)해 計→SV일수→L24=220×日 반영. SV는 220k×일수 고정·機械가 차액 흡수. 산출본은 원본명+'_Sales added'. 사용자가 PTJ 내부 견적, 내부 견적서 준비, 영업가산, 見積纏め, 製造原価/総原価 기준 견적 등을 요청할 때 사용."
+description: "PTJ 내부견적서(見積纏め) 작성 — '내부 견적서 준비'·'내부 견적서'는 이 스킬. 견적부서 見積計算書（まとめ）의 製造原価를 받아 새 '見積纏め_Sales added' 시트를 맨 왼쪽에 추가(기존 시트 절대 수정 금지)하고 영업 가산(COMM·insurance·bond·CIT·Local Tax Agent·EBIT)을 채운다. §3는 overlay 행분해(機械=COMM/insurance/bond, SV=COMM/CIT/Local Tax Agent, 모두 受注価×%)이고 H31은 비순환 닫힌형이라 Excel 반복계산 불필요. SV 売値=D16(단가)×MD 고정, §5 残業·SV売値는 D16에 자동연동. 사용자가 PTJ 내부 견적, 내부 견적서 준비, 영업가산, 見積纏め, 商社口銭/COMM, 製造原価 기준 견적 등을 요청할 때 사용. (고객제출 견적서는 별개 스킬 견적서-작성)"
 ---
 
-# PTJ 내부견적서 (見積纏め)
+# PTJ 내부견적서 (見積纏め) — v2
 
-견적부서가 `見積計算書（まとめ）`까지 낸 견적파일에 **새 `見積纏め_Sales added` 시트만 맨 왼쪽(맨 앞)에 추가**하고, 입력값으로부터 자동으로 `총원가 → 受注価格`을 산출한다. 빈 템플릿은 `assets/nemae_template.xlsx`.
+견적부서가 `見積計算書（まとめ）`까지 낸 견적파일에 **새 `見積纏め_Sales added` 시트만 맨 왼쪽에 추가**하고, 영업 가산치를 입력하면 시트 수식이 受注価格·Offer를 산출한다. 빈 템플릿 `assets/nemae_template.xlsx`, 생성기 `scripts/build_template_v2.py`. **설계 전체는 `REDESIGN_SPEC.md` 참조.**
 
-> - **"내부 견적서 준비"·"내부 견적서"는 이 PTJ 내부견적서를 뜻한다.**
-> - ⚠️ **기존 시트(見積計算書（まとめ） 등)는 절대 수정 금지.** 오직 `見積纏め_Sales added` 시트 추가/편집만. 새 시트는 워크북 **맨 왼쪽**에 배치된다.
+> - **"내부 견적서 준비"·"내부 견적서" = 이 스킬.**
+> - ⚠️ **기존 시트 절대 수정 금지.** 오직 `見積纏め_Sales added` 새 시트만(맨 왼쪽).
 
-## 見積計算書（まとめ） ↔ 見積纏め(§3) 사다리 매핑 (확정)
-
-| §3 (Cost calculation 本体) 컬럼 | = 見積計算書（まとめ） 항목 | 비고 |
+## まとめ ↔ 見積纏め 매핑 (행·열 고정 금지 — 항목명/내용으로 찾기)
+| まとめ 항목 | 見積纏め | 규칙 |
 |---|---|---|
-| **Pure Manf. Cost (C)** | **MAIN ITEM 製造計** | 거의 안 씀 |
-| indv.Tax·CIT·others·RC (C→H 브릿지) | 営業経費·工事費·SV·CONTI·その他 등 | |
-| **Manf. Cost (H)** | **製造原価** | ← 製造原価 start |
-| **FC (I, 보통 12%)** | **販管費 = 試験研究費(R&D)+販売間接費(M&S)+一般管理費(G&A)** | H→J 브릿지 |
-| **Total cost (J)** | **総原価** | ← 総原価 start (대부분) |
-| +EBIT(`K26`,입력) → L/N | **受注価格→Offer** | |
-
-- 전체 흐름: `MAIN ITEM 製造計 → (+営業経費 등) → 製造原価 → (+FC 12%=販管費) → 総原価 → (+EBIT) → 受注価格 → Offer(N26 입력)`.
-- ⚠️ **행·열 번호를 고정하지 말 것.** 案件마다 행(製造原価/総原価의 위치)과 열(E/H/M…)이 바뀐다. **항목명(製造原価·総原価·販管費 등)을 전체 문맥에서 찾아** 값을 확인하고, 색·범위별로 영업이 직접 입력한다.
+| 製造原価 (機械/SV분) | §3 **Pure Manf. Cost** D22/D26 | `その他` 비면 여기가 시작점 |
+| `その他` | §3 indv.Tax/CIT/others | 차있으면 이미 포함(입력X), 비면 영업 입력 |
+| `CONTI (WA)+(EX)+(PS)` | **RC = Risk Conti** | 차있으면 이미 원가포함 → §3에 안 더함 |
+| `試験研究費(R&D)+販売間接費(M&S)+一般管理費(G&A)` | **FC = Function Cost** | 차있으면 이미 **総原価** → FC 안 더함 |
 
 ## 핵심 모델 (확정)
-
-### 시작점 — 대부분 둘 중 하나 (입력하면 자동으로 総原価가 됨)
-- **総原価 start (가장 흔함)**: `J(Total cost) = 総原価`를 직접 입력. 앞단(C~I) 비움.
-- **製造原価 start**: 기준 製造原価를 **`Pure Manf.Cost(C)`** 에 넣고 → **FC 12% 자동** → `J(Total cost) = H×(1+FC) ≈ 総原価`. `H(Manf.Cost) = SUM(C:G)` 수식.
-  - ⚠️ **H에 값을 직접 넣지 않는다.** H에 값을 두고 `H=H+others`로 추가비용을 합치면 **자기참조(순환참조) 루프**가 난다. 그래서 베이스는 C, H는 항상 앞칸들의 합(`=SUM(C:G)`).
-  - **견적부서 누락 추가비용**(예: indv.Tax·CIT·others·RC)은 브릿지 칸 D~G에 넣으면 `H=SUM(C:G)`로 자동 합산되어 새 製造原価가 되고, FC(12%)·Total cost가 재계산된다. EBIT는 그대로.
-    옵션: `--main-tax/-cit/-others/-rc`, `--sv-tax/-cit/-others/-rc` (기본 0).
-- 입력값(C~G 또는 J)을 넣으면 시트 구조가 자동으로 Total cost·EBIT·受注価格을 만든다. **이 입력은 새 시트에만**.
-
-### SV 처리 — 두 경우
-- **SV 합산형** (원가가 SV 포함 단일 총액): **機械 = 총액 − SV(据付・試運転S/V費 항목)** 로 빼서 분리. (製造原価 start에서 주로 이렇게)
-- **SV 별도형** (色別 등 SV가 별도 열): 機械·SV 값을 **그대로** 사용.
-- 공통: **SV 売値 = 220k×SV일수 고정** (`L24=220×日数`, `N24=L24`), **機械 = 受注価格 − SV** (`L23=L26−L24`).
-  → SV 개별 마진은 꼬여도(원가>고정가면 음수) 차액은 機械가 흡수.
-- ⚠️ **受注価格/Offer부터는 시작 불가** — SV 고정가로 역산이 꼬임. 항상 製造原価 또는 総原価부터.
-
-### §4 SV-MD 카운트 — `現地SV費` 자동 참조
-- 같은 워크북의 **`現地SV費`** 시트를 읽어 §4 표(`SV A,B,C…` 익명, rows 31–36)를 자동으로 채운다.
-- 인원별: **実働=契約MD(실労働日)**, **移動=見積MD−契約MD**, **休日=0**, **計=実働+休日+移動=見積MD**.
-  → 見積MD/契約MD 컬럼은 헤더(`見積`+`MD` / `契約`+`MD`)로, 인원행은 항목명으로 **문맥에서** 찾는다(행·열 고정 안 함).
-- §4 計 합계(`G37`) → **`D7='=G37'`** → `D11` → **`L24=220×日数`** 로 SV 일수가 자동 반영(수동 `--svdays`로 override 가능).
-
-### 가격/마진 — Offer price 입력식 (§3 수식 모델)
-- **§3는 수식**으로 들어간다(정적 숫자 ✕): `K26=EBIT`(입력) · `L26='=J26/(1-K26)'`(受注価格) · `N26=Offer price`(녹색 **입력**).
-- **受注価格 = Total cost ÷ (1−EBIT)**, 機械/SV/nego 분배는 전부 시트 수식(`L23='=L26-L24-L25'`, `N23='=N26-N24-N25'`, `K%·M%`).
-- 영업은 **최종 Offer price(N26)를 직접 입력**(보통 라운드 숫자) → 機械 nego%는 결과로 산출됨. `--offer` 미지정시 `--nego`로 폴백 산출.
-- **총원가 start면 §3의 총원가 앞단(C~I) 전부 비움**(Pure Manf.~FC).
+- **§3 = 열 레이아웃**(원래 양식): `Pure Manf.Cost(C) | indv.Tax(D) | CIT(E) | Local Tax Agent(F) | others(G) | RC(H) | Manf.Cost(I)=SUM(C:H) | FC(J) | Total cost(K)=I+J | EBIT(L) | TotalCost+EBIT(M) | nego(N) | Offer(O) | Remarks(P)`. 행: 22機械·23SV·24予備品·25Total.
+  - `PTKorea COMM`(J5): **機械+SV**. `insurance`(J6)·`bond`(J7): **機械만**(機械 others=`(J5+J6+J7)×M`). `CIT`(J12)·`Local Tax Agent`(J13): **SV만**(×M23). SV others=`J5×M23`(COMM만).
+  - **SV indivisual Tax**(§3 D23): SV만, **절대금액** = §1 `C16`(kJPY/MM) × Man-Months `C11`. §2-1 `J11='=C16'`. (L×% 아님)
+  - FC(J)=`FC%×M`. Manf.Cost(I)=SUM(C:H). Total cost(K)=Manf.Cost+FC.
+- **입력셀만 녹색(C6EFCE)**, 나머지 테두리만: §2-1 율·§1 C16/D16·§3 C22/C23/C24(base)·L25(EBIT)·O25(Offer)·§4 MD·FX·案件名.
+- §4는 MD 표만(`MAIN ITEM/Proportion/Submit/price/ea` 우측표 **삭제**).
+- **SV 売値 H26 = D16(c-md 단가)×D11(SV計MD) 고정** → SV overlay·원가 고정. **機械이 차액 흡수**.
+- **비순환 닫힌형** (Excel 반복계산 OFF): `M25(총受注価) = (C22 + K23 + K24 − r機械×(M23+M24)) / (1 − EBIT − r機械)`, r機械=COMM+insurance+bond+FC.
+  - M25가 자기참조 안 함 → 라이브 수식인데 순환 없음. `M22(機械受注価)=M25−M23−M24`(잔차), `M23(SV)=D16×D11` 고정.
+- **§1 D16(SV단가) 입력 → §5 残業(`C45=D16*1000`…) 과 SV売値(H26) 자동연동.**
+- **시작점**: `その他` 비면 製造原価를 Pure Manf Cost(D22/D26)에. (`その他`/`CONTI`/`R&D…` 채워졌으면 각각 이미 포함 → 안 더함.)
+- §3 **Remarks 자동입력 없음**(영업이 직접 작성). §2-1에 total(others) 없음(적용범위 달라 무의미).
 
 ## 파일명 규칙
-- 영업이 추가 가산(Nego 등)을 넣어 새로 만든 산출본은 **원본 견적계산서명 + `_Sales added`**.
-  예: `0425S189見積計算書まとめRev1.xlsx` → `0425S189見積計算書まとめRev1_Sales added.xlsx`.
+- 산출본 = 원본 견적계산서명 + `_Sales added`. 예: `0925S170 見積計算書 Rev.2.xlsx` → `…_Sales added.xlsx`.
 
 ## 워크플로
-
-### 1. 입력 수집 (사용자에게 확인)
-- 견적파일 경로 (`見積計算書（まとめ）` + `現地SV費` 포함). **기존 시트 수정 금지.**
-- **시작점**: 製造原価(H) / 総原価(J) 중 무엇인지.
-- **機械 원가**·**SV 원가** (시작점 레벨에서; SV 합산형이면 機械=총액−SV, 별도형이면 그대로).
-- **EBIT**(기본 3%, 案件별 다름 예 8%) · **Offer price(N26)** 또는 nego · **案件명**. (선택) 추천예비품 원가.
-- SV 일수는 **`現地SV費`에서 자동**(수동 지정시만 `--svdays`).
-> 색깔(青/赤 등) 2건 이상이면 건별로 시트(또는 파일)를 따로 빌드.
+### 1. 입력 수집
+- 견적파일 경로(`見積計算書（まとめ）` + `現地ＳＶ費`). **기존 시트 수정 금지.**
+- 機械/SV **製造原価**(まとめ에서 항목명으로), EBIT(기본 3%, 案件별), COMM(商社口銭) 율, SV CIT·Local Tax Agent 율, 案件명, 최종 Offer(미지정시 受注価 라운드업).
+- SV 단가(기본 220 kJPY/c-md), SV計MD(`現地ＳＶ費` 자동참조; 실패시 `--svdays`).
 
 ### 2. 빌드
 ```
-# 総原価 start (기본) — Offer price 입력식
+# §3 base는 まとめ 셀 링크 권장(--main-cell/--sv-cell): 값 하드코딩 X, まとめ 바뀌면 자동연동(내부참조).
 python <skill>/scripts/nemae.py build "<견적.xlsx>" "<원본명>_Sales added.xlsx" \
-  --start total --main <機械 総原価> --sv <SV 総原価> --ebit 0.08 --offer <최종 Offer price> \
-  --name "<案件명>" --date YYYYMMDD
-
-# 製造原価 start (베이스→C, FC 12% 자동 → Total cost)
-python <skill>/scripts/nemae.py build ... --start manf --main <機械 製造原価> --sv <SV 製造原価> --fc 0.12 ...
-
-# 製造原価 start + 견적부서 누락 추가비용을 브릿지(D~G)에 가산 (H=SUM(C:G))
-python <skill>/scripts/nemae.py build ... --start manf --main 22800 --sv 12416 \
-  --main-others 1224 --sv-tax 2208 --sv-cit 552 --sv-others 920 --fc 0.12 --ebit 0.08 ...
+  --main-cell <機械製造原価셀 예F36> --sv-cell <SV製造原価셀 예G36> \
+  --comm 0.05 --insurance 0.005 --bond 0.005 --sv-indiv-tax 120 --cit 0.10 --lta 0.02 \
+  --ebit 0.08 --offer <최종Offer> --name "<案件명>" [--svdays <MD>] [--unit-price 220]
 ```
-기본 `--ebit 0.03`. `--offer` 없으면 `--nego`로 폴백. SV 일수 수동은 `--svdays`. 예비품 `--spare-cost`.
-manf 추가비용: `--main-tax/-cit/-others/-rc`, `--sv-tax/-cit/-others/-rc` (기본 0, D~G에 들어가 H=SUM으로 합산).
-자동 처리: **새 `見積纏め_Sales added` 시트를 맨 왼쪽에 추가**(기존 시트 불변) → 요율 0(manf는 FC만 유지) → 시작점 입력(total=J / manf=C에 베이스·H=SUM(C:G)) → **§3 수식**(K26=EBIT·L26=`J26/(1-K26)`·N26=Offer) → **§4 `現地SV費` 자동 채움**(SV A–F, 計→D7→L24) → 외부링크 제거 + 깨진 정의된이름 삭제.
+기본값: **FC 12%** · insurance 0.5% · bond 0.5% · SV indiv Tax 120k/MM · Local Tax Agent 2% · CIT 10% · COMM 5% · EBIT 3% · 단가 220. (건별 override) `--offer` 미지정시 受注価 라운드업. (まとめ에 R&D+M&S+G&A가 차 있으면 이미 総原価 → `--fc 0`)
+자동: 새 시트 맨 왼쪽 추가 → 입력 채움 → `現地ＳＶ費` 자동참조(전각ＳＶ·'移動日含み/実労働日' 헤더 인식) → 외부링크/깨진 정의이름 정리. **반복계산 OFF**(비순환).
 
 ### 3. 검증
 ```
 python <skill>/scripts/nemae.py verify "<out.xlsx>"
 ```
-`[OK] externalLink 0` · `見積纏め #REF! 0` · 입력셀(J23/J24/K26/N26) 채움 · **SV-MD 計C-MD**(実働+移動) 확인. L26·機械/SV 분배는 **시트 수식** → Excel `Enable Editing` 후 재계산.
+`externalLink 0` · 새시트 `#REF! 0` · 입력셀(C2/D22/D26/G31/J31/D16) 채움 · **H31 비자기참조(iterate off)** · D7=§4計·H26=단가×MD·C45=§5연동 링크 확인.
 
 ### 4. 완료 보고
-out 경로 + 機械/SV/Total cost + **EBIT·Offer price(N26)·機械Offer(N23)·SV 計C-MD** 요약. Excel `Enable Editing` 안내, `_Sales added`로 진행.
+out 경로 + 機械/SV cost·受注価 + Total cost + EBIT·Offer 요약. Excel `Enable Editing`만 하면 값 표시(반복계산 불필요).
 
 ## 주의
-- ⚠️ **기존 시트는 절대 수정 금지** — 오직 `見積纏め_Sales added` 새 시트만(맨 왼쪽). (빌드 시 외부링크·깨진 정의된이름 정리는 **셀 데이터/구조를 바꾸지 않는다**: 깨진 `[n]` 외부참조만 캐시값으로 치환하고 워크북 레벨의 깨진 이름만 삭제 — Excel "복구" 경고 방지용. 이 파일은 외부참조 치환 0.)
-- §3 입력셀은 값+출처주석. 시작점 앞단 컬럼은 비운다. `L24=220×일수`·`N24=L24`는 건드리지 않는다.
-- 색별 2건 이상은 시트/파일 분리. 한 시트에 두 건이면 §3 블록을 복제(병합·테두리 복사).
-- 기밀자료 — 외부 공유 시 실데이터 주의(원가·마진·고객명).
+- ⚠️ 기존 시트 절대 수정 금지. **빌드는 ZIP 주입 방식**(`inject_sheet`): 원본 xlsx ZIP은 그대로 두고 새 시트 part 1개만 끼워넣음(styles는 offset-append, 문자열 inline화, calcChain만 제거→Excel 재생성). → openpyxl 통째 재저장이 도형/이미지/컨트롤을 떨궈 "복구" 경고를 내던 문제 해결, **원본 시트의 drawing·media·customXml 100% 보존.**
+- 템플릿 구조 변경은 `scripts/build_template_v2.py` 수정 후 재생성(이후 nemae.py의 셀맵 `C{}` 동기화).
+- 기밀자료 — 외부 공유 시 실데이터(원가·마진·고객명) 주의.
+</content>
