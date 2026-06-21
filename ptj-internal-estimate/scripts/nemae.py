@@ -347,6 +347,7 @@ def cmd_build(a):
     ws[C['COMM']] = a.comm; ws[C['INS']] = a.insurance; ws[C['BOND']] = a.bond
     ws[C['CIT']] = a.cit; ws[C['LTA']] = a.lta; ws[C['FC']] = a.fc; ws[C['RC']] = a.rc
     ws[C['EBIT']] = a.ebit
+    # (K15 RC remark은 스킬이 자동입력하지 않음 — 사용자가 수동 기입. 템플릿 라벨은 '='로 시작 안 함.)
 
     persons = read_sv_persons(a.quotation)
     svmd = fill_sv_md(ws, persons, a.svdays)

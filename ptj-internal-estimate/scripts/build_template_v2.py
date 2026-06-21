@@ -70,7 +70,7 @@ S('I11', 'SV indivisual Tax'); S('J11', '=C16', fmt=NUM); S('K11', 'SV  kJPY/MM 
 S('I12', 'TAX(CIT)'); S('J12', 0.10, inp=True, fmt=PCT); S('K12', 'SV only')
 S('I13', 'Local Tax Agent Fee'); S('J13', 0.02, inp=True, fmt=PCT); S('K13', 'SV only')
 S('I14', 'FC (Function cost)'); S('J14', 0.12, inp=True, fmt=PCT); S('K14', '기본 12% (= まとめ R&D+M&S+G&A 있으면 0)')
-S('I15', 'RC (Risk Conti)'); S('J15', 0.0, inp=True, fmt=PCT); S('K15', '= まとめ CONTI(WA/EX/PS)')
+S('I15', 'RC (Risk Conti)'); S('J15', 0.0, inp=True, fmt=PCT); S('K15', 'まとめ CONTI(WA/EX/PS) 합')
 S('I16', 'EBIT'); S('J16', 'see §3')
 
 # ── §2-2. Exchange Rate (cols M-O) ──────────────────────────────────────────
