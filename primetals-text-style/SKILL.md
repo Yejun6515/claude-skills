@@ -9,10 +9,14 @@ Brand standard for **text color and font** in any Primetals deliverable (Word, E
 
 > **HTML is a hard trigger.** Any request to produce HTML (`html로 만들어줘`, "make an HTML report/page/briefing", "HTML로 정리") auto-activates this skill — apply the brand palette + per-language font stack and mirror the example template at `reference/examples/krakatau_survey_*.html` (dark-blue header banner with orange bottom rule, orange section-number badges, black body, teal links, named status-tag colors). No explicit "Primetals/brand" keyword is needed.
 
+> **ALWAYS produce a self-contained single-file HTML — embed every image inline.** Never reference images by relative path or an `img/` subfolder; the `.html` must be one portable file that displays correctly when moved, copied, or pasted into an email with no sidecar files. Embed each image as a base64 `data:` URI directly in the `<img src>` (e.g. `<img src="data:image/png;base64,iVBORw0KG...">`). (User directive: 앞으로 HTML은 전부 이미지 내장 단일파일.)
+> - In PowerShell, generate the data URI with: `$b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($path)); "data:image/png;base64,$b64"`. In Python: `import base64; "data:image/png;base64,"+base64.b64encode(open(path,'rb').read()).decode()`.
+> - This applies to **all** HTML output (reports, briefings, email digests) — not just email-derived ones.
+
 > **When organizing an email (`.msg`/`.eml`) into HTML, ALWAYS include the email's photos.** Extract the inline images from the message and embed them in the HTML next to the matching passage (with a short caption) — do not produce a text-only digest. (User directive: 메일 정리 시 메일 안의 사진도 추가해서 html에 정리.) Notes:
 > - Outlook COM `Attachment.SaveAsFile` often hangs on a security dialog in non-interactive shells. Prefer the Python `extract_msg` library (`pip install extract_msg`) to pull `m.attachments[i].data` directly. Run the script from a **clean working dir** (not `%TEMP%`) so a stray `inspect.py`/`zipfile.py` can't shadow the stdlib.
 > - Recover the in-body order of images from `htmlBody` (`src="cid:..."`) and place each photo where its `cid` appears in the text. **Drop tiny decorative images** (spacers/bullets, typ. <~5 KB) and de-duplicate photos that repeat inside a quoted/forwarded original.
-> - Save photos to an `img/` subfolder beside the HTML and reference them with relative paths.
+> - Embed each kept photo inline as a base64 `data:` URI (per the self-contained rule above) — do **not** write photos to an `img/` subfolder.
 
 ## LANGUAGE — DEFAULT 한국어 FOR HTML, DON'T ASK
 
@@ -65,6 +69,7 @@ If the user explicitly states a different language in the request, follow that i
 - Making body text Dark Blue (headers are Dark Blue; **body is Black**).
 - Inventing a hex (e.g. a "nicer" orange) instead of using `E87722` / the named palette.
 - Treating this as PPT-only — it applies to every text deliverable.
+- Referencing images by relative path / `img/` folder instead of embedding them as base64 → broken images when the HTML is moved or emailed. Always emit a self-contained single file.
 
 ## Worked examples
 
