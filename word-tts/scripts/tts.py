@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 word-tts - 단어/용어 설명 대본을 ElevenLabs로 MP3 변환 (Windows)
 
@@ -6,13 +7,21 @@ Claude가 작성한 설명 대본(한국어 해설 + 일본어/영어 단어 혼
 multilingual 음성으로 읽어주는 가벼운 TTS 스크립트.
 
 요약/문서추출 없음. 입력 = 이미 완성된 내레이션 대본.
+
+[구현 메모] ElevenLabs Python SDK는 Windows 경로 길이 제한(MAX_PATH, 260자)에
+걸려 설치가 깨지는 사례가 있어(`No module named 'elevenlabs.raw_base_client'`),
+SDK 의존성을 제거하고 표준 라이브러리(urllib)로 REST API를 직접 호출한다.
+추가 패키지 설치 불필요.
 """
 
 import os
 import sys
 import re
+import json
 import argparse
 import time
+import urllib.request
+import urllib.error
 from pathlib import Path
 
 # Windows 콘솔에서 한글/일본어 출력 시 인코딩 에러 방지
@@ -33,6 +42,7 @@ DEFAULT_VOICE_ID = "m3gJBS8OofDJfycyA2Ip"      # Taehyung - 한국어 남성 (IT
 DEFAULT_MODEL_ID = "eleven_multilingual_v2"     # 한+일+영 혼합 읽기
 DEFAULT_OUTPUT_FORMAT = "mp3_44100_128"  # 무료 플랜 호환 (192는 Creator 등급부터)
 MAX_RETRIES = 3
+API_BASE = "https://api.elevenlabs.io/v1/text-to-speech"
 
 
 def light_clean(text: str) -> str:
@@ -77,28 +87,55 @@ def generate_audio(text, voice_id, model_id, output_path, fmt):
               file=sys.stderr)
         return False
 
-    from elevenlabs.client import ElevenLabs
-    client = ElevenLabs(api_key=api_key)
+    url = f"{API_BASE}/{voice_id}?output_format={fmt}"
+    body = json.dumps({"text": text, "model_id": model_id}).encode("utf-8")
 
     delay = 2
     for attempt in range(MAX_RETRIES):
         try:
-            response = client.text_to_speech.convert(
-                voice_id=voice_id,
-                text=text,
-                model_id=model_id,
-                output_format=fmt,
-            )
+            req = urllib.request.Request(url, data=body, method="POST")
+            req.add_header("xi-api-key", api_key)
+            req.add_header("Content-Type", "application/json")
+            req.add_header("Accept", "audio/mpeg")
+
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                data = resp.read()
+
+            if not data:
+                raise ValueError("생성된 오디오가 비어있습니다")
+
             Path(output_path).parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, "wb") as f:
-                for chunk in response:
-                    f.write(chunk)
+                f.write(data)
 
             size = Path(output_path).stat().st_size
-            if size == 0:
-                raise ValueError("생성된 오디오가 비어있습니다")
             print(f"OK: {output_path} ({size/1024:.1f} KB)", file=sys.stderr)
             return True
+        except urllib.error.HTTPError as e:
+            # API 에러 본문을 그대로 노출 (크레딧 소진/권한 등 진단에 중요)
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8", "ignore")[:400]
+            except Exception:
+                pass
+            msg = f"HTTP {e.code} {e.reason}: {detail}"
+            # 크레딧/쿼터 소진은 재시도해도 소용없으므로 즉시 중단
+            quota_hit = (e.code in (401, 402) or
+                         "quota" in detail.lower() or
+                         "credit" in detail.lower())
+            if quota_hit:
+                print(f"실패(재시도 안 함): {msg}", file=sys.stderr)
+                if e.code in (401, 402) or "quota" in detail.lower():
+                    print("  → ElevenLabs 크레딧/쿼터 또는 인증 문제로 보입니다. "
+                          "잔여 크레딧·API 키를 확인하세요.", file=sys.stderr)
+                return False
+            if attempt < MAX_RETRIES - 1:
+                print(f"재시도 {attempt+1}/{MAX_RETRIES}: {msg}", file=sys.stderr)
+                time.sleep(delay)
+                delay *= 2
+            else:
+                print(f"실패 ({MAX_RETRIES}회): {msg}", file=sys.stderr)
+                return False
         except Exception as e:
             if attempt < MAX_RETRIES - 1:
                 print(f"재시도 {attempt+1}/{MAX_RETRIES}: {e}", file=sys.stderr)
