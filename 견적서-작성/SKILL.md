@@ -37,6 +37,7 @@ python <skill>/scripts/quote.py new <machine|spare> "견적서/<폴더>/YYYYMMDD
   - **A**: (1) 50% (man-day 50% 리포트 시) + (2) 나머지 50% (전체 man-day 리포트 시) ← 기본
   - **B**: (1) 100% (time sheet 서명 후 1개월 내 일괄)
 - **SV 단가 220,000/MD 확인**: 표준 일비. MD수(L34)는 내부견적 `見積纏め` §4 計 C-MD와 일치해야. verify가 SV 알라밍으로 표면화.
+- **SV dispatch 조건(표준)**: MD는 **CMD(calendar man-days)** — 표 라벨 `CMDs`. 근무 **주6일(월~토)·8h(08:00–17:00, 점심1h)**, **이동일 MD 산입(일본 왕복=편도당 1일)**, Overtime 요율 + 통역 고객부담. 상세·요율표·요일그룹핑(6일제 월~토/일·휴일) → `assets/machine_fields.md` B-2.
 
 ### 4. 채우기
 모은 값을 `values.json`으로 만들어 적용. `tokens`(마커치환, 반복 항목 자동) + `cells`(숫자/날짜 직접):
