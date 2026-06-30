@@ -65,6 +65,9 @@ python <skill>/scripts/quote.py verify "<draft.xlsx>" <machine|spare>
 ### 6. 완료 보고
 draft 경로 + 검증 결과 + 사용자에게 확인받은 [확인] 항목을 요약.
 
+## 見積計算書(詳細) 읽기 (breakdown용)
+고객 제출 breakdown(예: K3CX_ME)을 만들 때 각 라인의 Eng(설계비)·Manu(제작비)는 `見積計算書(詳細)`에서 추출한다: **Eng=設計費(社内)+設計費(社外), Manu=原価計−Eng**, 품목코드(A열)로 group. 컬럼 위치는 견적서마다 다르니 **헤더 텍스트로 찾을 것**. 스코프 한정·날짜자동변환·분할코드 등 상세 절차 → **`assets/meisai_breakdown_read.md`**. (Rev 비교/블록추가는 `breakdown-rev-compare` 스킬)
+
 ## 참고
 - **Primetals 로고**는 헤더(좌상단)에 자동 삽입된다. 원본은 `scripts/logo_primetals.jpeg`.
   openpyxl이 저장 때 이미지를 떨어뜨리므로 `new`/`fill` 끝에 `ensure_logo`로 다시 넣는다(멱등). 수동 복구는 `python quote.py logo <draft.xlsx>`.
