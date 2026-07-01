@@ -127,6 +127,7 @@ prs.save(out_path)
 
 ### Cover photo, special layouts & closing (verified recipes)
 
+- **Default cover author / presenter** — put the presenter name in the cover's **bottom-left presenter placeholder** (the `BODY` placeholder, prompt "Name of first presenter, Job title"), NOT the subtitle. Default lines: `KIM YEJUN, No.2 Business Development` then `Primetals Japan`. The **subtitle** (upper) carries only `Prepared for <customer>  |  <date>`. (User default; ask only if a different presenter/org is implied.)
 - **Cover with a photo** — use the `Cover with image` layout and drop the picture into its **PICTURE placeholder** (idx 14); it auto-clips to the diagonal. A ready brand cover photo is bundled: `assets/Primetals_cover_people.jpg` (official Primetals team shot).
   ```python
   from pptx.enum.shapes import PP_PLACEHOLDER as PH
