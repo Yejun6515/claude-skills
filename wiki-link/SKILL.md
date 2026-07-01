@@ -5,7 +5,7 @@ description: 작성된 노트를 업무 위키(90. Wiki)에 연결한다. `0_Wik
 
 # wiki-link
 
-작성된(수동·AI 작성 무관) **대상 노트 하나**를 업무 위키에 연결한다. 위키 루트: `C:\Users\Z006K14G\Desktop\Yejun\90. Wiki`.
+작성된(수동·AI 작성 무관) **대상 노트 하나**를 업무 위키에 연결한다. 위키 루트: `{vault}\90. Wiki` — `{vault}`는 `%USERPROFILE%\.claude\skills\_config\local-paths.md`의 `vault_root:` 값(PC마다 다름; 없으면 사용자에게 물어 저장).
 
 > **왜 가능한가**: `90. Wiki\0_Wiki MOC.md` 한 파일에 위키 전체 노트(엔티티·개념)의 제목+한줄설명이 들어 있다. 이 한 파일이 곧 **링크 사전**이라, 새 노트를 위키 어휘에 맞춰 연결하는 비용이 작다.
 

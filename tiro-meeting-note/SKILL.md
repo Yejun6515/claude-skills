@@ -32,7 +32,7 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 **(b) 붙여넣은 요약본 — 폴백.** MCP 미연결이거나 사용자가 Tiro 화면에서 복사해 직접 줄 때. 받은 요약 텍스트를 그대로 사용한다(재요약·보정 없음).
 
 ### 2. 노트 조립 — 회의록_Template
-작업 전 정본 템플릿 `C:\Users\Z006K14G\Desktop\Yejun\50. Template\회의록_Template.md`를 **Read**해 현재 필드·섹션을 확인한다(임의 변형 금지). 매핑:
+작업 전 정본 템플릿 `{vault}\50. Template\회의록_Template.md`를 **Read**해 현재 필드·섹션을 확인한다(임의 변형 금지). `{vault}` = `%USERPROFILE%\.claude\skills\_config\local-paths.md`의 `vault_root:` 값(PC마다 다름; 없으면 사용자에게 물어 저장). 매핑:
 
 | 위치 | 채우는 값 |
 |---|---|
@@ -56,7 +56,7 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 ### 3. 볼트 프로젝트 폴더 찾기 → 확인 → 저장
 **`note-digest` §4 정책을 그대로 따른다.** 확인 전에는 절대 쓰지 않는다.
 1. 요약 내용에서 프로젝트·고객명 추론(POSCO·FCT·Zhengrui·SEJAL 등).
-2. `C:\Users\Z006K14G\Desktop\Yejun\01. Projects\<카테고리>\<프로젝트>` 스캔 → 후보 1~3개.
+2. `{vault}\01. Projects\<카테고리>\<프로젝트>` 스캔 → 후보 1~3개.
 3. **AskUserQuestion**으로 대상 폴더 확인. 못 찾으면 경로 직접 받기 / 새 폴더 생성 여부 질문.
 4. 승인된 폴더에만 생성. 파일명 `YYMMDD_<주제>.md`. 같은 폴더 기존 노트 컨벤션을 맞춤.
 5. MOC(`0_<프로젝트>.md`) 자동 링크는 보류.
@@ -64,7 +64,7 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 ### 4. mentions 연결 — 사람 ↔ Contacts (제안 → 확인 → 반영)
 **`note-digest` §3.5를 그대로 따른다.** 자동 기입 절대 금지.
 - 이름 추출 — `get_note` 참석자 + 요약 본문 + `# Yejun's memo`(본인 Kim Yejun 포함).
-- `C:\Users\Z006K14G\Desktop\Yejun\20. Contacts\**` 파일명과 매칭(표기 변형에 관대).
+- `{vault}\20. Contacts\**` 파일명과 매칭(표기 변형에 관대).
 - 사용자 확인 후 승인된 사람만 기입. 형식 `- "[[이름]]"`(YAML 리스트+큰따옴표; 인라인 `[[A]] [[B]]`는 frontmatter를 깨뜨림).
 - 미확인·신규 인물은 따로 보고.
 
@@ -81,7 +81,7 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 - **템플릿 frontmatter 불변** — 필드명·순서·철자(`Catetory`) 유지, 임의 필드 추가 금지. 작업 전 템플릿 Read.
 - **Tiro 요약은 `# Tiro`에 원문 그대로.** 재요약·보정 금지. `# Yejun's memo`의 기존 사용자 메모는 손대지 않음. 위키 링크는 `# Claude Code`의 `## 관련 위키`에만.
 - **mentions는 확인 후에만(§4).** 미확인·신규 인물은 따로 보고.
-- `tags`는 `entity/<거래처>`·`topic/<주제>` nested.
+- `tags`는 `entity/<거래처>`·`topic/<주제>` nested (어휘 마스터: `note-description` 스킬 SKILL.md — 새 태그는 거기에 추가).
 - 날짜 `YYYY-MM-DD`. 한국어 보고는 개조식(~함/~임).
 - 파일은 **BOM 없는 UTF-8**, 1행 `---`.
 - **추측 금지** — Tiro 요약에 있는 내용만. 불명확은 "미확인".

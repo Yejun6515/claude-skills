@@ -17,7 +17,7 @@ When pointed at a folder, process **every in-scope note** in it (and nested subf
 
 ## Vault location
 
-The user's Obsidian vault is rooted at `C:\Users\Z006K14G\Desktop\Yejun`. Note projects live under `01. Projects` (e.g. `01.01 HSC\HSC_DJ _CM_PGL MP Scale`). Work **one project folder at a time**.
+The vault root **differs per PC** — read the `vault_root:` value from `%USERPROFILE%\.claude\skills\_config\local-paths.md` (if the file/key is missing, ask the user and save it there; see `_config\README.md`). `{vault}` below means that value. Note projects live under `{vault}\01. Projects` (e.g. `01.01 HSC\HSC_DJ _CM_PGL MP Scale`). Work **one project folder at a time**.
 
 ## Scope — which notes get processed
 
@@ -64,13 +64,14 @@ Rules:
 - Derive `entity/` tags from the **body** (subcontractors/makers/affiliates named there), not just the description.
 - If nothing genuinely applies, leave `tags:` empty rather than inventing.
 - The controlled vocabulary is **shared vault-wide** — reuse exact spellings so tags actually link notes together.
+- **This list is the single master vocabulary for the whole vault.** Every skill that tags notes (note-digest, tiro-meeting-note, wiki-ingest, meeting-folder-brief…) follows it; when a genuinely new `entity/` or `topic/` tag is introduced anywhere, add it **here (this SKILL.md)** so the vocabulary cannot drift.
 
 ## Job 2c — mentions (people ↔ Contacts: propose → confirm → apply)
 
 Connect the **people** named in a note to their contact notes under `20. Contacts`, recorded in `mentions:`. **Apply only after the user confirms — never auto-fill.**
 
 1. **Extract names** — for 회의록, from `# Tiro` transcript / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
-2. **Match against Contacts** — match each name to a contact **filename** under `C:\Users\Z006K14G\Desktop\Yejun\20. Contacts\**`, tolerant of name-order / spacing / comma / romanization·Korean·Kanji variants (e.g. "Yang yohan"=양요한, "Doho, Haruka"=道法 春香). Use the **exact contact filename** so the wikilink resolves.
+2. **Match against Contacts** — match each name to a contact **filename** under `{vault}\20. Contacts\**`, tolerant of name-order / spacing / comma / romanization·Korean·Kanji variants (e.g. "Yang yohan"=양요한, "Doho, Haruka"=道法 春香). Use the **exact contact filename** so the wikilink resolves.
 3. **Split the proposal** — (a) **has a contact** → `- "[[filename]]"` candidates; (b) **no contact (new person)** → report separately; don't silently add — ask whether to create a contact stub or skip.
 4. **Confirm (required)** — show the proposed list and write **only the approved names**. Even an obvious match is not written without confirmation.
 5. **Preserve & merge** — keep existing `mentions:` entries, dedupe. Format is a YAML list with double quotes `- "[[Name]]"` (inline `[[A]] [[B]]` breaks the frontmatter).
@@ -79,7 +80,7 @@ Connect the **people** named in a note to their contact notes under `20. Contact
 
 There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# Claude Code` and never touches `# Yejun's memo` (or 회의록 notes' `# Tiro`).
 
-- **Event template** (default, non-meeting log notes). Reference: `C:\Users\Z006K14G\Desktop\Yejun\50. Template\Event template.md`.
+- **Event template** (default, non-meeting log notes). Reference: `{vault}\50. Template\Event template.md`.
   - Frontmatter: `Date / Catetory / mentions / Google Drive / description / tags`.
   - Body sections (standard order): **`# Yejun's memo`** → **`# Claude Code`**. The user's own content (the source `file:///` link, free notes) lives under `# Yejun's memo`; Claude's `## 핵심요약`/organized summary goes under `# Claude Code`.
   - **Migrating legacy notes**: older Event notes have a `## Event` heading holding the source link. When processing one, **rename `## Event` → `# Yejun's memo`** (keep its link/content untouched), add a `# Claude Code` section below it, and write the summary there. Never leave the summary under the old `## Event`.

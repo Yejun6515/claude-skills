@@ -72,8 +72,8 @@ Blank-master copy + fill (formatting preserved 100%):
 - `scripts/generate_schedule.py` — copies the master and fills the `Schedule`
   sheet from the JSON, applying fonts, merges, and the horizontal grid.
 
-Needs Python with `openpyxl` (system Python has it:
-`C:\Users\Z006K14G\AppData\Local\Programs\Python\Python312`).
+Needs Python 3 with `openpyxl` — run with plain `python`; if the module is
+missing on this PC: `python -m pip install openpyxl`.
 
 ## Reference
 

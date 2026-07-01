@@ -7,7 +7,7 @@ description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·
 
 지정된 **소스 폴더 하나**(프로젝트 회의록 폴더 또는 `15. Training\15.02. Technical` 기술 학습자료 폴더)를 입력으로 받아 아래 파이프라인을 실행한다. 한 번에 폴더 하나만. 수동 호출 전용.
 
-위키 루트: `C:\Users\Z006K14G\Desktop\Yejun\90. Wiki`
+위키 루트: `{vault}\90. Wiki` — `{vault}`는 `%USERPROFILE%\.claude\skills\_config\local-paths.md`의 `vault_root:` 값(PC마다 다름; 없으면 사용자에게 물어 저장 — `_config\README.md`).
 
 > **위키의 목적 = 학습/연결성** (Core Context §2-0). 이 위키는 단순 색인이 아니라 **공부용 백과사전**이다. 각 노트는 (1) **원본을 안 열어도 이해되는 자기완결 본문**, (2) 인접 개념으로 항해 가능한 **풍부한 `## 관련` 연결**을 갖춰야 한다. 한 줄 정의 stub은 목적 미달 — 소스의 깊은 내용을 본문으로 종합하라.
 
@@ -22,7 +22,7 @@ description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·
 5. 원자 노트 작성 규칙(한 노트 = 한 개념, **백과사전형**):
    - 파일명: 개념명 그대로(예: `P-Mix.md`, `POSCO P2C.md`).
    - frontmatter `description:` 한 줄(note-description 컨벤션 따름).
-   - 태그: 엔티티는 `entity/...`, 개념은 `topic/...`.
+   - 태그: 엔티티는 `entity/...`, 개념은 `topic/...` (어휘 마스터: `note-description` 스킬 SKILL.md의 controlled vocabulary — 새 태그는 거기에 추가).
    - frontmatter `confidence:` (`high`/`medium`/`low`) — 추출 근거의 신뢰도.
    - frontmatter `explored: false` — LLM이 만든 직후 기본값. 사람이 확인했거나 별도 검증을 거치면 `true`로.
    - frontmatter `created:` — 노트를 처음 만든 날짜(`currentDate`, YYYY-MM-DD). **새로 만들 때만 기록하고, 기존 노트 갱신 시에는 절대 덮어쓰지 않는다**(없으면 그때 한 번 채워도 됨).

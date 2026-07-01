@@ -7,7 +7,7 @@ description: 철강 고객사·프로젝트가 대화에 등장하면 — 사용
 
 철강 업계 안건(고객사·라인·설비 프로젝트)이 대화에 등장하면, **답하거나 작업을 시작하기 전에 먼저 옵시디언 업무 위키에서 그 안건의 현재 상황을 확인**한다. 사용자가 "위키 봐"라고 말하지 않아도, 철강 안건이 화제가 된 것 자체가 트리거다.
 
-- 볼트 루트: `C:\Users\Z006K14G\Desktop\Yejun`
+- 볼트 루트: **PC마다 다름** — `%USERPROFILE%\.claude\skills\_config\local-paths.md`의 `vault_root:` 값(없으면 사용자에게 물어 저장 — `_config\README.md`)
 - 위키 루트: `90. Wiki` · 링크 사전(인덱스): `90. Wiki\0_Wiki MOC.md`
 - 프로젝트 폴더: `01. Projects\` (예: `01.02 POSCO\POSCO_K3C_Revamp\`)
 

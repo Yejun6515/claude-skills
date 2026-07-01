@@ -6,6 +6,9 @@ __pycache__/
 values.json
 *.tmp
 
+# per-PC local paths — create on each machine, see _config/README.md
+_config/local-paths.md
+
 # agentmemory plugin skills — installed via plugin, not synced here
 commit-context/
 commit-history/

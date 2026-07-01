@@ -14,10 +14,11 @@ description: PTJ 영업 메일 브릿지 — 한국/중국/대만 고객 ↔ 일
 - 없는 사실은 지어내지 않는다. 불명확은 "미확인"으로 표시하고 surface한다(판단은 예준님).
 
 ## 지식 소스 (매번 실행 시 읽는다)
-규칙과 사전은 스킬에 하드코딩하지 않는다. 아래 파일을 **읽어서** 최신 규칙으로 동작한다 (예준님이 계속 업데이트함):
-- `C:\Users\Z006K14G\Desktop\Workplace\메일 자동화\00_가이드\패턴.md` — 라우팅·작문 규칙, 출력 형식, 사용자 선호
-- `C:\Users\Z006K14G\Desktop\Workplace\메일 자동화\02_매핑\연락처-매핑.md` — 고객/엔지니어 이메일, To/CC 기본 규칙, 용어 매핑
-- 옵시디언 볼트: `C:\Users\Z006K14G\Desktop\Yejun` (프로젝트 MOC·Event 노트·`90. Wiki`·`20. Contacts`)
+규칙과 사전은 스킬에 하드코딩하지 않는다. 아래 파일을 **읽어서** 최신 규칙으로 동작한다 (예준님이 계속 업데이트함).
+경로는 PC마다 다르다 — `%USERPROFILE%\.claude\skills\_config\local-paths.md`에서 `{vault}`=`vault_root:`, `{mail}`=`mail_automation_root:` 값을 읽는다(없으면 사용자에게 물어 저장 — `_config\README.md`):
+- `{mail}\00_가이드\패턴.md` — 라우팅·작문 규칙, 출력 형식, 사용자 선호
+- `{mail}\02_매핑\연락처-매핑.md` — 고객/엔지니어 이메일, To/CC 기본 규칙, 용어 매핑
+- 옵시디언 볼트: `{vault}` (프로젝트 MOC·Event 노트·`90. Wiki`·`20. Contacts`)
 
 ## 모드 A — 전달 초안 만들기 (주 용도)
 
@@ -59,7 +60,7 @@ description: PTJ 영업 메일 브릿지 — 한국/중국/대만 고객 ↔ 일
 5. 배운 것을 `00_가이드\패턴.md`(규칙·케이스 로그)와 `02_매핑\연락처-매핑.md`(연락처·CC·용어)에 반영, 볼트 연락처도 자동 채움.
 
 ## 볼트 작업 시 주의
-- 볼트 노트 수정 규칙은 `C:\Users\Z006K14G\Desktop\Yejun\CLAUDE.md`를 따른다(`# Yejun's memo`·`# Tiro` 불가침, 위키 노트는 읽기만, 인물 원자노트 금지). 단 `20. Contacts` 연락처 노트의 이메일/전화 채우기는 허용.
+- 볼트 노트 수정 규칙은 `{vault}\CLAUDE.md`를 따른다(`# Yejun's memo`·`# Tiro` 불가침, 위키 노트는 읽기만, 인물 원자노트 금지). 단 `20. Contacts` 연락처 노트의 이메일/전화 채우기는 허용.
 - `.msg`는 Outlook COM으로 읽음(이 PC 사용 가능).
 
 ## 관련
