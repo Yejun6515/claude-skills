@@ -65,4 +65,3 @@ out 경로 + 機械/SV cost·受注価 + Total cost + EBIT·Offer 요약. Excel 
 - ⚠️ 기존 시트 절대 수정 금지. **빌드는 ZIP 주입 방식**(`inject_sheet`): 원본 xlsx ZIP은 그대로 두고 새 시트 part 1개만 끼워넣음(styles는 offset-append, 문자열 inline화, calcChain만 제거→Excel 재생성). → openpyxl 통째 재저장이 도형/이미지/컨트롤을 떨궈 "복구" 경고를 내던 문제 해결, **원본 시트의 drawing·media·customXml 100% 보존.**
 - 템플릿 구조 변경은 `scripts/build_template_v2.py` 수정 후 재생성(이후 nemae.py의 셀맵 `C{}` 동기화).
 - 기밀자료 — 외부 공유 시 실데이터(원가·마진·고객명) 주의.
-</content>
