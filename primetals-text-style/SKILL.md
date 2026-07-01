@@ -56,11 +56,99 @@ If the user explicitly states a different language in the request, follow that i
 - Dark Blue `0C2340` is the brand's primary dark; use it for titles/headers. Body text is Black `000000`.
 - Need a color not listed (chart series, table banding, a second accent)? Pull only from the named brand palette in `reference/palette.md` — never invent an off-brand hex.
 
+> **This table is the generic role mapping — it applies to HTML / Word / Excel / email.** Native PowerPoint is different: the official `.pptx` master hard-codes its own placeholder colors (**slide title = Orange `E87722`, body = Dark Blue `0C2340`**), so for PPT you do **not** hand-apply these roles — you inherit them from the template. See the **PowerPoint** section below. The two are different house styles per medium; both are brand-valid — do not cross them.
+
 ## Applying per format
 
-- **Word / PPT / Excel** (via OOXML or generator libs): set the run/cell font and the font color hex per the tables above.
+- **Word / Excel** (via OOXML or generator libs): set the run/cell font and the font color hex per the tables above.
+- **PowerPoint (native `.pptx`)**: do **not** paint colors by hand — start from the bundled brand template and let its master/layouts style everything. See the dedicated **PowerPoint** section below.
 - **HTML / CSS**: per-language font stack — EN `font-family: Arial, sans-serif;` · KO `font-family: Arial, "Malgun Gothic", sans-serif;` · JP `font-family: Arial, "Meiryo UI", "Meiryo", sans-serif;` (Arial first so Latin/numbers stay Arial, CJK falls through). Colors: `color:#0C2340` / `#000000` / `#E87722` etc.
 - **Markdown / plain text**: structure only (no color/font control) — keep the role mapping in mind for any place that does render (e.g. an HTML export).
+
+## PowerPoint (native `.pptx`) — template-first
+
+**When the deliverable is a PowerPoint, never build slides from a blank deck and hand-color them.** Start from the bundled brand template so the corporate master (logo, orange rule, footer, copyright) and the real placeholder styles are inherited automatically. This is how a genuine Primetals deck is authored.
+
+**Bundled template:** `assets/Primetals_template_blank.pptx` — the official `POWERPOINT templates.pptx` with all 49 sample slides stripped, keeping **1 master + 36 layouts + Primetals theme + the top-right Primetals logo** (vector EMF). 16:9, `12192000 × 6858000` EMU (13.33″ × 7.5″). ~350 KB.
+
+**What the master paints on every slide automatically** (don't recreate these by hand):
+- **Primetals logo**, top-right (vector EMF).
+- **Orange full-width bottom rule** (`E87722`, ~0.075″ tall).
+- **Copyright**, bottom-left: `Restricted © Primetals Technologies 2021-2026. All rights reserved.` (grey `63666A`, 10 pt).
+- **Footer** `YeJun Kim / SM JP INT`, page number, date — grey `63666A`, 10 pt.
+- (A Concast India co-brand logo is embedded but hidden — off by default.)
+
+**Real placeholder text styles baked into the master** (inherited — do not override unless asked):
+
+| Placeholder | Color | Size | Notes |
+|---|---|---|---|
+| **Slide title** | **Orange `E87722`** | 24 pt | Arial, left-aligned |
+| Body level 1 | Dark Blue `0C2340` | 18 pt | orange `•` bullet |
+| Body level 2 | Dark Blue `0C2340` | 18 pt | `–` dash bullet |
+| Body level 3 | Dark Blue `0C2340` | 12 pt | `–` dash bullet |
+| Body level 4 | Grey `63666A` | 12 pt | |
+| Body level 5 | Grey `97999B` | 12 pt | |
+
+> Note the medium difference: in native PPT the **title is Orange and body is Dark Blue** (theme `accent1` / `tx1`). This is deliberately different from the HTML/Word role table (title Dark Blue, body Black). Follow whichever medium you're producing.
+
+**Layout catalog** (select by `layout.name` — indices can shift if the template is edited):
+- Covers: `Cover with image`, `Cover without image`
+- Chapter dividers: `Chapter title with image`, `Chapter title without image`
+- Content: `Content - blank`, `Content - one element`, `Content - two elements`, `Content - three elements`, `Content - one image`, `Content - element and image #1…#3`, `Content - element and two images #1…#2`, `Content - two images and two elements`
+- Special: `Challenge - Solution - Features - Benefits`, `Highlighted statement #1…#3`, `Highlighted content #1…#2`, `Circular images - one…six items`, `References - one…six projects`, `Image full`
+- Closing: `Contact`, `Contact_PTCN`, `Contact_Concast`
+
+**python-pptx pattern** — open the template, pick a layout by name, fill placeholders:
+
+```python
+from pptx import Presentation
+prs = Presentation(r"<skill>/assets/Primetals_template_blank.pptx")
+
+def layout(name):
+    return next(l for l in prs.slide_layouts if l.name == name)
+
+# Cover
+s = prs.slides.add_slide(layout("Cover without image"))
+s.shapes.title.text = "K3CX Cold Mill Capacity Increase"
+
+# Content — title + bullets (colors/bullets come from the master; don't set them)
+s = prs.slides.add_slide(layout("Content - one element"))
+s.shapes.title.text = "Scope of Supply"
+body = s.placeholders[<idx>].text_frame        # inspect .placeholder_format.idx to find the body
+body.text = "Mechanical equipment"
+p = body.add_paragraph(); p.text = "Electrical & automation"; p.level = 1
+
+prs.save(out_path)
+```
+
+- **Let the master do the styling.** Only set a run color/font explicitly when the user asks for a deliberate accent (e.g. a key figure in Orange) — then pull the hex from the palette.
+- **Fonts** still follow the language rows above (EN Arial / KO 맑은 고딕 / JP Meiryo UI) for any run where you set the font at all.
+- Images aren't required (user directive: 로고만 있으면 됨, 그림 불필요) — the logo already ships in the master, so a text-only deck is fully brand-compliant.
+
+### Cover photo, special layouts & closing (verified recipes)
+
+- **Cover with a photo** — use the `Cover with image` layout and drop the picture into its **PICTURE placeholder** (idx 14); it auto-clips to the diagonal. A ready brand cover photo is bundled: `assets/Primetals_cover_people.jpg` (official Primetals team shot).
+  ```python
+  from pptx.enum.shapes import PP_PLACEHOLDER as PH
+  s = prs.slides.add_slide(layout("Cover with image"))
+  s.shapes.title.text = "…"
+  pic = next(p for p in s.placeholders if p.placeholder_format.type == PH.PICTURE)
+  pic.insert_picture(r"<skill>/assets/Primetals_cover_people.jpg")
+  ```
+- **Special "statement" layouts** (`Highlighted statement …`, `Chapter title …`) — the headline/statement goes in the **TITLE** (it fills the orange circle / chapter band), **not** the body. The body placeholder on these is a small caption.
+- **Closing "THANK YOU"** — the brand's closing is `Content - blank` + a plain textbox with **60 pt Orange `E87722`, all-caps "THANK YOU"** (logo + orange rule come from the master):
+  ```python
+  from pptx.util import Emu, Pt
+  from pptx.dml.color import RGBColor
+  from pptx.oxml.ns import qn
+  s = prs.slides.add_slide(layout("Content - blank"))
+  tb = s.shapes.add_textbox(Emu(360359), Emu(1798638), Emu(5588000), Emu(1800000))
+  p = tb.text_frame.paragraphs[0]
+  p._p.get_or_add_pPr().append(p._p.get_or_add_pPr().makeelement(qn('a:buNone'), {}))  # kill inherited bullet
+  r = p.add_run(); r.text = "THANK YOU"
+  r.font.size = Pt(60); r.font.name = "Arial"; r.font.color.rgb = RGBColor(0xE8,0x77,0x22)
+  ```
+- **Gotcha:** a plain `add_textbox` paragraph inherits the theme's default bullet (`•`). Add `<a:buNone/>` to the paragraph's `pPr` (as above) or a stray dot appears.
 
 ## Common mistakes
 
@@ -69,6 +157,8 @@ If the user explicitly states a different language in the request, follow that i
 - Making body text Dark Blue (headers are Dark Blue; **body is Black**).
 - Inventing a hex (e.g. a "nicer" orange) instead of using `E87722` / the named palette.
 - Treating this as PPT-only — it applies to every text deliverable.
+- Building a PPT from a blank deck and hand-coloring it → off-brand (no logo, wrong title/body colors). Start from `assets/Primetals_template_blank.pptx` and inherit the master styles.
+- Applying the HTML role colors to native PPT placeholders (title Dark Blue / body Black) → wrong: PPT master is **title Orange / body Dark Blue**.
 - Referencing images by relative path / `img/` folder instead of embedding them as base64 → broken images when the HTML is moved or emailed. Always emit a self-contained single file.
 
 ## Worked examples
