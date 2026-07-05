@@ -1,4 +1,4 @@
-# update-index.ps1
+﻿# update-index.ps1
 # Regenerates the AUTO block of the skills/memory index note in the Obsidian
 # vault ("07. Claude Skills" folder) from the live SKILL.md descriptions and MEMORY.md.
 # Portable: vault root comes from _config\local-paths.md (per-PC, gitignored);
