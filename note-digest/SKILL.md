@@ -48,9 +48,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skillDir>\scripts\extract_
 
 **본문 섹션 규칙 (Event·회의록 공통, 중요):**
 - 내가(=Claude) 정리·요약·분석한 내용은 **`# Claude Code` 섹션에만** 쓴다(개요·등장 주체·쟁점·근거·다음 액션·출처 등 내 정리 전부 여기).
-- **소스 바로가기 링크(첨부 .msg/문서·Google Docs·관련 노트 위키링크)는 `# Yejun's memo` 아래**에 둔다. 즉 # Yejun's memo = 사용자 메모 + 소스 링크, # Claude Code = 내 분석 본문, # Tiro = 전사앱(불가침).
+- **소스 바로가기 링크(첨부 .msg/문서·Google Docs·관련 노트 위키링크)는 `# Yejun's memo` 아래**에 둔다. 즉 # Yejun's memo = 사용자 메모 + 소스 링크, # Claude Code = 내 분석 본문, # Tiro = 전사앱 영역.
 - **`# Yejun's memo`의 기존 사용자 메모는 손대지 않는다** — 소스 링크만 그 아래에 추가/유지한다.
-- **`# Tiro`는 절대 건드리지 않는다**(회의록에만 존재) — 사용자가 쓰는 별도 전사(transcription) 요약 앱의 영역. ([[obsidian-meeting-note-sections]])
+- **`# Tiro`에 분석·링크·재요약을 넣지 않는다**(회의록에만 존재) — 사용자가 쓰는 별도 전사(transcription) 요약 앱의 영역. 단 **소스로 확정된 고유명사 오인식 치환은 허용**(2026-07-06 방식 B — `tiro-meeting-note`·`meeting-folder-brief`의 용어 치환 규칙, 치환 시 `Tiro Edited: corrected` + # Claude Code 보정표). ([[obsidian-meeting-note-sections]])
 
 기존 노트를 채우는 경우, **frontmatter를 표준 템플릿으로 정규화**하되:
 - `Date`·기존 `Catetory`·`Google Drive` 등 실값은 보존. 비표준 필드(`Participants`/`Status`/`Transcription Accuracy`/`Notebook LM` 등)는 정리하되 **데이터가 있는 필드(링크 등)는 삭제하지 말고 본문으로 살린다**.

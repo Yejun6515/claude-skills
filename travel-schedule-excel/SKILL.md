@@ -102,6 +102,8 @@ Write an English **business-trip approval e-mail** to
 Learned from real examples in `reference/mail_example_1..4.txt` (examples 3 & 4
 are transcriptions of screenshots the user sent). Fixed skeleton:
 
+    Subject: <subject line>
+
     <Salutation>,
 
     I am writing to seek approval for a business trip to <destinations>, departing <Mon/DD>, covering the following activities:
@@ -116,6 +118,11 @@ are transcriptions of screenshots the user sent). Fixed skeleton:
     Yejun Kim
 
 Rules:
+- **Subject** — a `Subject:` line as the very first line of the .txt. Format:
+  `Business Trip Approval Request – <destinations>, <Mon/DD>–<Mon/DD>` using the
+  first and last day (e.g. `Business Trip Approval Request – Korea and China,
+  Mar/9–Mar/19`). Single-day trips use just the one date. Keep it concise and in
+  English; keep whatever subject the user explicitly gives.
 - **Salutation** = the approver. Recent approvers: `Kazuyuki`, `Kurata`. Default
   `Dear Kazuyuki,`; keep whatever name the user gives.
 - **destinations** — country/city list, e.g. `Japan (Tokyo)`, `Taiwan and Korea`,
