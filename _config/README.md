@@ -11,6 +11,7 @@ SKILL.md 본문은 모든 PC에서 동일하게 유지하고, **PC마다 다른 
 vault_root: C:\Users\<사용자>\Desktop\Yejun
 tts_output_root: C:\Users\<사용자>\Desktop\TTS
 mail_automation_root: C:\Users\<사용자>\Desktop\Workplace\메일 자동화
+business_trip_output_root: U:\新_海外営業部\Kim Yejun\99_Business trip
 ```
 
 | 키 | 무엇 | 쓰는 스킬 |
@@ -18,6 +19,7 @@ mail_automation_root: C:\Users\<사용자>\Desktop\Workplace\메일 자동화
 | `vault_root` | Obsidian 볼트 루트 | note-digest · note-description · wiki-ingest · wiki-link · steel-project-wiki-context · tiro-meeting-note · mail-bridge · meeting-folder-brief · youtube-obsidian |
 | `tts_output_root` | word-tts MP3 출력 루트 | word-tts |
 | `mail_automation_root` | 메일 자동화 작업 폴더 (업무 PC에만 있음) | mail-bridge |
+| `business_trip_output_root` | 출장 일정 Excel 출력 루트 | travel-schedule-excel |
 
 ## 규칙
 

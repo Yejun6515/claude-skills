@@ -1,0 +1,27 @@
+# Screenshot example (Taiwan and Korea, Apr) — bulleted + embedded schedule table.
+# Note: this trip's table had an extra "Customer" column.
+
+Kazuyuki,
+
+I am writing to seek approval for a business trip to Taiwan and Korea, departing Apr/15 covering the following activities:
+
+Main Projects:
+
+•    First copper technologies New RM (with PTJ Kamoshita) – Sales information gathering (Andritz's visit to first copper on 4/15 and PTJ will listen to Andritz info on Apr/16) and Technical meeting before submitting budgetary offer by E/June/2026
+•    POSCO P2H FS Site visit (with PTJ 4~5 engineers)
+
+Schedule (Date | Time | Agenda | Customer | Venue | Notes):
+Apr/15(Wed) AM/PM : Move to Taiwan | Taiwan/Kaohsiung
+Apr/16(Thu) AM : Sales/Technical meeting | First copper | Taiwan/Kaohsiung
+            PM : Site visit | First copper | Taiwan/Kaohsiung | Dinner with First copper
+Apr/17(Fri) AM : Sales/Technical meeting | First copper | Taiwan/Kaohsiung
+            PM : Move back to Japan | Japan
+Apr/21(Tue) AM/PM : Move to Korea-Pohang | Korea/Pohang
+Apr/22(Wed) AM : Site visit | POSCO | Korea/Pohang
+            PM : Site visit | POSCO | Korea/Pohang | Dinner with Investment team
+Apr/23(Thur) AM/PM : Technical meeting | POSCO | Korea/Pohang
+Apr/24(Fri) AM : Move back to Japan
+            PM : PTJ office - Meeting with SEJAL
+
+Best regards,
+Yejun Kim

@@ -1,0 +1,27 @@
+# Screenshot example (Korea and China, March) — bulleted + embedded schedule table.
+# Salutation here was "Kurata". Table columns: Date | Time | Agenda | Venue | Notes.
+
+(Kurata)
+
+I am writing to seek approval for a business trip to Korea and China, departing March 9, covering the following activities:
+
+Main Projects:
+
+•    POSCO P2H online meeting at POSCO's facility
+•    Poogsang F12 post-FAC meeting (work handover from Kobayashi)
+•    Nanshang/Zhengrui follow-up (work handover from Kobayashi)
+•    HZ automatic roll changing car site visit alongside PTJ
+
+Schedule (Date | Time | Agenda | Venue | Notes):
+Mar/9(Mon)  AM : Move to Korea | Pohang
+            PM : P2H Online Meeting – Revamp concept sharing & Q&A | Pohang
+Mar/10(Tue) AM : Move to Ulsan (Poongsan) | Ulsan | Dinner with Poongsan
+            PM : Meeting with PSC | Ulsan
+Mar/11(Wed) AM/PM : Move to China (with Kobayashi san) | China
+Mar/12(Thu) AM/PM : Nanshan Aluminium | China | Dinner?
+Mar/13(Fri) AM/PM : ZR – Customer Visit | China | Dinner?
+Mar/14(Sat) AM/PM : Flight to Seoul | Seoul
+Mar/16(Mon) AM/PM : PTKR – Pre-Project Meeting | Seoul
+Mar/17(Tue) AM/PM : Move to POSCO (Meet PTJ Yasunari san and 3ppl) at Busan airport | Gwangyang
+Mar/18(Wed) AM/PM : POSCO Automatic Roll Changing Car – Meeting | Gwangyang | Dinner with POSCO
+Mar/19(Thu) AM/PM : Return to Japan
