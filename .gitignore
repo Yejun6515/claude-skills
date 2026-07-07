@@ -9,6 +9,9 @@ values.json
 # per-PC local paths — create on each machine, see _config/README.md
 _config/local-paths.md
 
+# API keys — keep local, never push (recreate on each machine)
+restaurant-reserve/config.json
+
 # agentmemory plugin skills — installed via plugin, not synced here
 commit-context/
 commit-history/
