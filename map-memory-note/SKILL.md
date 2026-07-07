@@ -42,13 +42,19 @@ curl -sIL -o /dev/null -w '%{url_effective}' '<링크>'
 **Country/City**: 리다이렉트 URL·주소에서 판단 (Hiroshima → Japan/Hiroshima, 부산 → Korea/Busan). 불명확하면 좌표 범위로 추정.
 
 ### 3. 동행자 → Contacts 매칭
-`20. Contacts`에서 이름 검색 (한글 호칭 ↔ 영문 파일명 매핑 주의):
-```bash
-find "…\20. Contacts" -iname '*<이름후보>*'
-```
-- 예: 미즈키 → `Nishisako Mizuki.md` → `"[[Nishisako Mizuki]]"`
+연락처 파일명은 영문(로마자), 슬랙 입력은 한글이 보통이다. 매칭 순서:
+1. **한글 이름 본문 Grep (1순위 — 가장 확실):** 연락처 노트 본문에 한글 이름이 적혀 있는 경우가 많다.
+   ```bash
+   grep -rli '<한글이름>' "…\20. Contacts"
+   ```
+   예: 경호 → `Friends\Woo Kyungho.md`, 용준 → `Friends\Heo Yongjun.md`
+2. **로마자 변형 파일명 검색 (보조):** 한글 이름을 로마자 후보 여러 개로 바꿔 시도 (경호 → Kyungho/Kyeongho/Gyeongho, 용준 → Yongjun/Yongjoon/Yongjune).
+   ```bash
+   find "…\20. Contacts" -iname '*<로마자후보>*'
+   ```
 - 알려진 매핑: 미즈키=Nishisako Mizuki, 엄마=Mom
-- 파일명을 못 찾으면: Contacts 안을 Grep으로 한 번 더 (본문에 한글명 있을 수 있음) → 그래도 없으면 **위키링크 없이 이름 텍스트만** 넣고, 응답에 "Contacts에 없어 텍스트로 넣음"이라 보고
+- **복수 후보(동명이인) 처리:** 개인 외출(술·밥·여행)이면 `Friends\` 폴더를 우선하고, 업무 폴더(HSC/POSCO/Primetals…) 후보는 문맥이 업무일 때만. 어느 쪽이든 응답에 "용준 → [[Heo Yongjun]] (Friends) — 혹시 Choi Yongjoon(HSC)이면 알려주세요" 식으로 선택 근거와 대안을 명시.
+- 끝내 못 찾으면 **위키링크 없이 이름 텍스트만** 넣고, 응답에 "Contacts에 없어 텍스트로 넣음"이라 보고
 
 ### 4. Tiro 녹음 매칭 (있으면)
 Tiro MCP(`mcp__tiro__list_notes`)로 해당 날짜(KST 0시~24시 → UTC로 변환: 전날 15:00Z ~ 당일 15:00Z) 노트를 조회.
