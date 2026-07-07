@@ -53,7 +53,9 @@ find "…\20. Contacts" -iname '*<이름후보>*'
 ### 4. Tiro 녹음 매칭 (있으면)
 Tiro MCP(`mcp__tiro__list_notes`)로 해당 날짜(KST 0시~24시 → UTC로 변환: 전날 15:00Z ~ 당일 15:00Z) 노트를 조회.
 - 외출과 관련돼 보이는 녹음(제목·시간대로 판단)을 고르고, `mcp__tiro__get_note`(include: summary)로 **Tiro 요약본**을 가져온다
-- frontmatter에 `Tiro: <webUrl>` 키를 추가하고, 본문 맨 아래 `## Tiro` 섹션에 요약본을 그대로 넣는다 (재요약 금지 — Tiro가 정리한 것을 옮기기만. 요약 안의 `##` 헤더는 `###`로 한 단계 내려 노트 구조에 맞춘다)
+- frontmatter에 `Tiro: <webUrl>` 키를 추가하고, 본문 맨 아래 `## Tiro` 섹션에 요약을 **"옵시디언 회의록" 양식으로 정리해** 넣는다 (`tiro-meeting-note` 스킬 §1.5의 양식 스펙과 동일 — 원문 프로즈 통째 붙여넣기 금지):
+  - `### 1. Background`(목적·참석·장소) → `### 2. Meeting Minutes`(합의 사항 / 기술 이슈 ⚠️ / Q&A) → `### 3. Follow ups`(할 일)
+  - 개인 외출이므로 필요 없는 섹션은 삭제, Follow ups는 PTJ/협력사 구분 없이 그냥 "할 일"로. 한글 개조식(~함), 이모지 ✅🟡🔴⚠️⭕, 추측 금지
 - 여러 개면 관련 있어 보이는 것 하나만 (frontmatter Tiro 키는 1개). 애매하면 제일 그럴듯한 것을 넣고 나머지는 응답에 보고
 - **Tiro MCP 도구가 없거나 인증 만료면 조용히 생략**하고 응답에 "Tiro 생략(연결 안 됨)"만 한 줄 — 노트 생성을 실패시키지 않는다
 
@@ -86,7 +88,7 @@ Location: <위도>,<경도>
 
 ## Tiro
 
-<Tiro 요약본 그대로 (## → ### 강등). 매칭된 녹음 없으면 이 섹션 생략>
+<Tiro 요약을 "옵시디언 회의록" 양식으로 정리 (### 1. Background / ### 2. Meeting Minutes / ### 3. Follow ups — 필요한 섹션만). 매칭된 녹음 없으면 이 섹션 생략>
 ```
 - **UTF-8 BOM 없음**, 날짜 `YYYY-MM-DD` (볼트 규칙)
 - `Location`은 반드시 `위도,경도` 한 줄 문자열 (map-view-plugin이 읽는 키)
