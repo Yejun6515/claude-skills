@@ -1,0 +1,21 @@
+{
+  "_comment": "Maps raw business-card 회사 (company) strings to a canonical vault Company value + target subfolder under '20. Contacts'. Keys are matched case-insensitively after trimming and collapsing whitespace. Add new entries here as new companies appear. 'aliases' are alternate raw spellings that map to the same canonical entry.",
+  "companies": [
+    { "company": "POSCO",     "folder": "POSCO",     "aliases": ["포스코", "POSCO", "POSCO Gwangyang Works", "POSCO Gwangyang Works.", "POSCO Pohang Works", "포스코 광양제철소", "포스코 포항제철소"] },
+    { "company": "HSC",       "folder": "HSC",       "aliases": ["현대제철", "Hyundai Steel", "HSC"] },
+    { "company": "Primetals", "folder": "Primetals", "aliases": ["PRIMETALS", "Primetals", "Primetals Technologies", "Primetals Technologies Korea Ltd.", "Primetals Technologies Korea", "Primetals Technologies China Ltd.", "Primetals Technologies China", "Primetals Technologies Japan Ltd.", "Primetals Technologies Japan", "PTJ", "PTK"] },
+    { "company": "MHI",       "folder": "MHI",       "aliases": ["MHI", "Mitsubishi Heavy Industries", "三菱重工"] },
+    { "company": "Sendzimir", "folder": "Sendzimir", "aliases": ["SENDZIMIR JAPAN, LTD.", "SENDZIMIR JAPAN", "Sendzimir Japan", "Sendzimir"] },
+    { "company": "Moog",      "folder": "Moog",      "aliases": ["MOOG JAPAN LTD.", "MOOG JAPAN", "Moog Japan", "Moog"] },
+    { "company": "FCT",       "folder": "FCT",       "aliases": ["FIRST COPPER TECHNOLOGY CO., LTD.", "FIRST COPPER TECHNOLOGY CO.,LTD.", "First Copper Technology", "FCT"] },
+    { "company": "TEX",       "folder": "TEX",       "aliases": ["テックス･テクノロジー株式会社", "テックス・テクノロジー株式会社", "Tex Technology Inc.", "Tex Technology", "TEX", "TEXTECH"] },
+    { "company": "Sojitz",    "folder": "Sojitz",    "aliases": ["Sojitz Machinery Corporation", "Sojitz Machinery", "Sojitz"] },
+    { "company": "Hua Eng",   "folder": "Hua Eng",   "aliases": ["HUA ENG WIRE & CABLE CO., LTD.", "Hua Eng Wire & Cable", "Hua Eng"] },
+    { "company": "Poongsan",  "folder": "Poongsan",  "aliases": ["풍산", "Poongsan"] },
+    { "company": "Korea ITS", "folder": "Korea ITS", "aliases": ["한국아이티에스", "Korea ITS", "한국ITS"] },
+    { "company": "Verox",     "folder": "Verox",     "aliases": ["베록스", "Verox", "KPC", "KPC Corp"] },
+    { "company": "JGS Lab",   "folder": "JGS Lab",   "aliases": ["JGS LAB CO., LTD.", "JGS Lab"] }
+  ],
+  "_personal_note": "Cards with no work company (wedding, hotel, medical, personal) go to the 'Others' folder. If the 회사 string is empty or matches an entry in 'personal_to_others', route to Others.",
+  "personal_to_others": ["W", "オリオン･ラドセーフメディカル株式会社", "オリオン・ラドセーフメディカル株式会社"]
+}
