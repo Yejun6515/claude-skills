@@ -124,7 +124,7 @@ Event 본문 구조(템플릿 우선, 상황에 맞게 가감) — **소스 링�
 - **노트 템플릿이 우선** — 새로 쓰는 노트는 정본 템플릿 구조를 따른다(사용자가 전 노트를 이 형태로 통일 중). 옛 `## Event` 단일 구조로 쓰지 말 것. 작업 전 `50. Template\Event template.md`를 Read해 현재 섹션을 확인한다.
 - **`description:`은 영어로 ~2줄(약 2문장)** — progressive(미리보기)용. 고유명사(SEJAL, PTJ, K-104 등)·수치 유지. 콜론/특수문자 있으면 큰따옴표. ([[note-description]]와 동일 정책)
 - **`mentions:`는 Contacts와 대조해 제안하되 사용자 확인 후에만 반영한다(§3.5)** — 자동 기입 금지. 미확인·신규 인물은 넣지 말고 따로 보고. 형식은 YAML 리스트+큰따옴표 `- "[[이름]]"`(인라인 `[[A]] [[B]]`는 `[`를 flow 시퀀스로 오인해 frontmatter 전체를 깨뜨린다).
-- **`tags:`는 [[obsidian-tagging-convention]]을 따른다** — nested `entity/<거래처>`·`topic/<주제>`. **어휘 마스터는 `note-description` 스킬 SKILL.md의 controlled vocabulary** — 새 entity/topic 태그를 만들면 거기에 추가한다. 메일 다이제스트면 `email-digest` 타입 태그를 추가해도 됨.
+- **`tags:`는 [[obsidian-tagging-convention]]을 따른다** — nested `entity/<거래처>`·`topic/<주제>`. **어휘 마스터는 `note-description` 스킬 SKILL.md의 controlled vocabulary** — 새 entity/topic 태그를 만들면 거기에 추가한다. 메일 다이제스트면 `email-digest` 타입 태그를 추가해도 됨. **태그에 공백 금지** — 복수 단어는 하이픈(`entity/First-Copper` O / `entity/First Copper` X, Obsidian 무효 태그).
 - **출처는 빠짐없이** — 모든 소스 파일을 한 줄씩(제목/문서명·날짜·발신→수신·첨부·파일명).
 - 날짜는 `YYYY-MM-DD`로 통일(상대 날짜 금지). 파일명은 날짜 prefix(`260610_<주제>.md`).
 - 한국어 정리는 [[korean-mom-gaejosik-style]](개조식 ~함 종결) 권장.

@@ -59,6 +59,7 @@ tags:
 `topic/quotation` `topic/logistics` `topic/site-visit` `topic/spare-parts` `topic/installation` `topic/equipment-spec` `topic/tech-spec` `topic/layout` `topic/packing` `topic/rust` `topic/unpacking-inspection` `topic/claim` `topic/expense` `topic/company-info` `topic/customs` `topic/contract` `topic/bond` `topic/payment` `topic/insurance` `topic/training` `topic/drawing` `topic/negotiation` `topic/meeting` `topic/PO` `topic/internal-process` `topic/tax` `topic/welding` `topic/loa`(LoA/TLoA 승인 절차)
 
 Rules:
+- **No spaces inside a tag** — Obsidian treats a tag containing a space as invalid (red strikethrough in Properties). Multi-word names are hyphenated: `entity/First-Copper` `entity/Jiangsu-Fullways` `entity/KG-Steel` (O) / `entity/First Copper` (X). Applies to every tag any skill writes (2026-07-08, vault-wide sweep done).
 - The **customer is the folder** (e.g. HSC/Hyundai Steel) and **PTJ is the user's own company** → never tag these as `entity/`.
 - `customer/` and `equip/` axes are **out of scope** (folder already encodes customer & project).
 - Derive `entity/` tags from the **body** (subcontractors/makers/affiliates named there), not just the description.

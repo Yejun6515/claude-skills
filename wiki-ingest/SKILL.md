@@ -22,7 +22,7 @@ description: 지정한 프로젝트 폴더의 이벤트 노트에서 엔티티·
 5. 원자 노트 작성 규칙(한 노트 = 한 개념, **백과사전형**):
    - 파일명: 개념명 그대로(예: `P-Mix.md`, `POSCO P2C.md`).
    - frontmatter `description:` 한 줄(note-description 컨벤션 따름).
-   - 태그: 엔티티는 `entity/...`, 개념은 `topic/...` (어휘 마스터: `note-description` 스킬 SKILL.md의 controlled vocabulary — 새 태그는 거기에 추가).
+   - 태그: 엔티티는 `entity/...`, 개념은 `topic/...` (어휘 마스터: `note-description` 스킬 SKILL.md의 controlled vocabulary — 새 태그는 거기에 추가). **태그에 공백 금지** — 복수 단어는 하이픈(`entity/Dongkuk-CM` O / `entity/Dongkuk CM` X).
    - frontmatter `confidence:` (`high`/`medium`/`low`) — 추출 근거의 신뢰도.
    - frontmatter `explored: false` — LLM이 만든 직후 기본값. 사람이 확인했거나 별도 검증을 거치면 `true`로.
    - frontmatter `created:` — 노트를 처음 만든 날짜(`currentDate`, YYYY-MM-DD). **새로 만들 때만 기록하고, 기존 노트 갱신 시에는 절대 덮어쓰지 않는다**(없으면 그때 한 번 채워도 됨).
