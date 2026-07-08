@@ -77,7 +77,7 @@ description: PTJ 영업 메일 브릿지 — 한국/중국/대만 고객 ↔ 일
 
 ## 볼트 작업 시 주의
 - 볼트 노트 수정 규칙은 `{vault}\CLAUDE.md`를 따른다(`# Yejun's memo` 불가침·`# Tiro`는 확정 오인식 치환만, 위키 노트는 읽기만, 인물 원자노트 금지). 단 `20. Contacts` 연락처 노트의 이메일/전화 채우기는 허용.
-- `.msg`는 Outlook COM으로 읽음(이 PC 사용 가능).
+- `.msg` 본문 대량 추출은 **python `scripts\extract_msg_by_id.py`가 기본**(`pip install extract-msg`, 이 PC 설치됨) — `_headers.txt` 인덱스에서 id 지정 추출. ⚠️ Outlook COM(`extract_msg_by_id.ps1`)은 일부 메일(S/MIME 서명 등)에서 **무한 행** 걸림 — 쓰려면 반드시 백그라운드 태스크로 돌리고, 행 걸린 프로세스를 죽일 땐 자기 세션 트리가 아닌지 CommandLine 확인(2026-07-09 터미널 사망 사고). 헤더 인덱스 생성은 `extract_msg_headers.ps1`(COM), 단건 폴더 덤프는 `extract_msg.ps1`.
 
 ## 관련
 - 프로젝트 배경·재개점: 메모리 `mail-automation-project`, `Workplace\메일 자동화\00_가이드\기획.md`
