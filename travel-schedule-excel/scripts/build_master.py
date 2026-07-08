@@ -27,9 +27,7 @@ for col, label in zip("BCDEF", ["Date", "Time", "Agenda", "Venue", "Notes"]):
     c.font = HEAD_FONT
     c.alignment = A_C
     c.border = Border(top=medium, bottom=medium)
-# keep the companion sheets present (left blank, like the original template)
-wb.create_sheet("Hotel")
-wb.create_sheet("Visitors")
+# Schedule sheet only — Hotel/Visitors sheets are intentionally omitted.
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 wb.save(OUT)

@@ -223,7 +223,8 @@ Pre-Project for the mail.
 Blank-master copy + fill (formatting preserved 100%):
 
 - `_templates/business_trip_master.xlsx` — header + styles only (regenerate with
-  `scripts/build_master.py`). Keeps empty `Hotel` / `Visitors` sheets too.
+  `scripts/build_master.py`). Only the `Schedule` sheet — no `Hotel` / `Visitors`
+  sheets.
 - `scripts/generate_schedule.py` — copies the master and fills the `Schedule`
   sheet from the JSON, applying fonts, merges, and the horizontal grid.
 
