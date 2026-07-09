@@ -13,7 +13,7 @@ You organize Obsidian note frontmatter so notes are identifiable in AI search an
 
 When pointed at a folder, process **every in-scope note** in it (and nested subfolders).
 
-**Default: edit frontmatter only.** Two body exceptions: (a) when following linked source materials, add a brief `## 핵심요약` summary under the note's `# Claude Code` section (see "Following linked source materials"); (b) if normalization would drop a non-standard field that holds real data, move it into the body rather than deleting it (see Normalization). In all cases Claude writes **only inside `# Claude Code`** and never touches `# Yejun's memo` (or 회의록 notes' `# Tiro`).
+**Default: edit frontmatter only.** Two body exceptions: (a) when following linked source materials, add a brief `## 핵심요약` summary under the note's `# 클대리 정리` section (see "Following linked source materials"); (b) if normalization would drop a non-standard field that holds real data, move it into the body rather than deleting it (see Normalization). In all cases Claude writes **only inside `# 클대리 정리`** and never touches `# Yejun's memo` (or 회의록 notes' `# 티대리 정리`).
 
 ## Vault location
 
@@ -71,7 +71,7 @@ Rules:
 
 Connect the **people** named in a note to their contact notes under `20. Contacts`, recorded in `mentions:`. **Apply only after the user confirms — never auto-fill.**
 
-1. **Extract names** — for 회의록, from `# Tiro` transcript / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
+1. **Extract names** — for 회의록, from `# 티대리 정리` transcript / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
 2. **Match against Contacts** — match each name to a contact **filename** under `{vault}\20. Contacts\**`, tolerant of name-order / spacing / comma / romanization·Korean·Kanji variants (e.g. "Yang yohan"=양요한, "Doho, Haruka"=道法 春香). Use the **exact contact filename** so the wikilink resolves.
 3. **Split the proposal** — (a) **has a contact** → `- "[[filename]]"` candidates; (b) **no contact (new person)** → report separately; don't silently add — ask whether to create a contact stub or skip.
 4. **Confirm (required)** — show the proposed list and write **only the approved names**. Even an obvious match is not written without confirmation.
@@ -79,12 +79,12 @@ Connect the **people** named in a note to their contact notes under `20. Contact
 
 ## Two note templates — Event vs 회의록 (meeting)
 
-There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# Claude Code` and never touches `# Yejun's memo` (or 회의록 notes' `# Tiro`).
+There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# 클대리 정리` and never touches `# Yejun's memo` (or 회의록 notes' `# 티대리 정리`).
 
 - **Event template** (default, non-meeting log notes). Reference: `{vault}\50. Template\Event template.md`.
   - Frontmatter: `Date / Catetory / mentions / Google Drive / description / tags`.
-  - Body sections (standard order): **`# Yejun's memo`** → **`# Claude Code`**. The user's own content (the source `file:///` link, free notes) lives under `# Yejun's memo`; Claude's `## 핵심요약`/organized summary goes under `# Claude Code`.
-  - **Migrating legacy notes**: older Event notes have a `## Event` heading holding the source link. When processing one, **rename `## Event` → `# Yejun's memo`** (keep its link/content untouched), add a `# Claude Code` section below it, and write the summary there. Never leave the summary under the old `## Event`.
+  - Body sections (standard order): **`# Yejun's memo`** → **`# 클대리 정리`**. The user's own content (the source `file:///` link, free notes) lives under `# Yejun's memo`; Claude's `## 핵심요약`/organized summary goes under `# 클대리 정리`.
+  - **Migrating legacy notes**: older Event notes have a `## Event` heading holding the source link. When processing one, **rename `## Event` → `# Yejun's memo`** (keep its link/content untouched), add a `# 클대리 정리` section below it, and write the summary there. Never leave the summary under the old `## Event`.
 - **회의록 / meeting template** — use this whenever the note records a **meeting (미팅/회의)** (filename or content says 미팅·meeting·회의, or it's minutes of a customer/internal call). Do **not** force these onto the Event template. Fields:
   ```
   Date:
@@ -97,8 +97,8 @@ There are **two** templates. Pick by note type. **Both now carry body sections**
   description:
   tags:
   ```
-  Body sections (standard order): **`# Yejun's memo`** → **`# Claude Code`** → **`# Tiro`**. Claude's organized summary/안건 정리는 **`# Claude Code`에만** 작성하고 `# Yejun's memo`·`# Tiro`는 손대지 않음(비어 있으면 빈 헤더만 유지). Tiro 전사 본문은 `# Tiro` 아래에 들어감.
-  - Meetings often cover **multiple 안건(cases)** — number them and organize each one's 관련메일·배경·진척·결론 separately under `# Claude Code`. Write `description`/`tags` **last**, after all 안건 are organized.
+  Body sections (standard order): **`# Yejun's memo`** → **`# 클대리 정리`** → **`# 티대리 정리`**. Claude's organized summary/안건 정리는 **`# 클대리 정리`에만** 작성하고 `# Yejun's memo`·`# 티대리 정리`는 손대지 않음(비어 있으면 빈 헤더만 유지). Tiro 전사 본문은 `# 티대리 정리` 아래에 들어감.
+  - Meetings often cover **multiple 안건(cases)** — number them and organize each one's 관련메일·배경·진척·결론 separately under `# 클대리 정리`. Write `description`/`tags` **last**, after all 안건 are organized.
 
 ## Job 3b — Title (filename) when missing
 
@@ -127,7 +127,7 @@ Notes often link out to the real source files on the network drive, e.g. `[Absoc
   $msg.Close(1)
   ```
 - **Don't exhaust tokens on complex/large files.** If a workbook is big or has many sheets, **skim for a rough summary, don't extract everything**: list sheet names, read only the header rows + a capped sample (e.g. first ~30–50 rows of the key sheet, ≤15 cols), and stop once you grasp the gist. A rough, correct summary beats a complete dump. If a dump is unavoidably large, save it to a temp file and read just the head.
-- Pull the **distinctive facts** (totals, price/cost figures, scenarios, key spec/qty changes, delivery terms) into the description, **and also add a concise `## 핵심요약` block under the note's `# Claude Code` section** summarizing the linked sources. Bullets in Korean `~함/~임` style, matching the vault's existing 핵심요약 sections. Skip row-by-row detail. **Always write inside `# Claude Code` only** — for legacy notes, first migrate `## Event` → `# Yejun's memo` and add `# Claude Code` (see "Two note templates"). Never touch `# Yejun's memo` / `# Tiro` content.
+- Pull the **distinctive facts** (totals, price/cost figures, scenarios, key spec/qty changes, delivery terms) into the description, **and also add a concise `## 핵심요약` block under the note's `# 클대리 정리` section** summarizing the linked sources. Bullets in Korean `~함/~임` style, matching the vault's existing 핵심요약 sections. Skip row-by-row detail. **Always write inside `# 클대리 정리` only** — for legacy notes, first migrate `## Event` → `# Yejun's memo` and add `# 클대리 정리` (see "Two note templates"). Never touch `# Yejun's memo` / `# 티대리 정리` content.
 - If a linked source is unreachable (drive not mounted), note that and describe from the note text alone.
 
 ## Folder handling
@@ -138,4 +138,4 @@ When the target is a folder, enumerate it (including nested subfolders) and proc
 
 - When processing multiple notes, **briefly list each note with the tags (and any new/updated description) you wrote** so the user can review.
 - Note any skipped notes (`0_` indexes, stubs) and any **new `entity/` tags** you introduced so the vocabulary stays consistent.
-- Both templates use body section headers (`# Yejun's memo` / `# Claude Code`, plus `# Tiro` for 회의록). Claude writes the `## 핵심요약`/summary **only under `# Claude Code`** and leaves `# Yejun's memo` / `# Tiro` content untouched.
+- Both templates use body section headers (`# Yejun's memo` / `# 클대리 정리`, plus `# 티대리 정리` for 회의록). Claude writes the `## 핵심요약`/summary **only under `# 클대리 정리`** and leaves `# Yejun's memo` / `# 티대리 정리` content untouched.
