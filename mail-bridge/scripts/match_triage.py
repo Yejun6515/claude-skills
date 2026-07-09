@@ -1,38 +1,51 @@
 # -*- coding: utf-8 -*-
 """Match sent mails to received mails by normalized subject and build triage lists.
 
-Reads a _headers.txt produced by extract_msg_headers.py/.ps1 where ids under
-'받은 메일\\' are received and '보낸 메일\\' are sent. Writes:
+Reads one or MORE _headers.txt files produced by extract_msg_headers.py/.ps1 where
+ids under '받은 메일\\' are received and '보낸 메일\\' are sent. With multiple files
+(semicolon-separated), matching runs across ALL of them — so a reply sent in May
+matches a mail received in April. Ids are then prefixed with the batch label
+(parent folder name), e.g. S#2605:123.
+
+Writes to --outdir:
   _match_report.txt — per sent mail: To/CC + matched received (id, date, FROM)
   _triage.txt       — MATCHED SENT (one line each) / UNMATCHED SENT / RECEIVED WITHOUT REPLY
 
-Usage: python match_triage.py --headers "<_headers.txt>" --outdir "<folder>"
+Usage:
+  python match_triage.py --headers "<_headers.txt>" --outdir "<folder>"
+  python match_triage.py --headers "<h1.txt>;<h2.txt>;<h3.txt>" --outdir "<folder>"   (cross-batch)
 """
-import argparse, re
+import argparse, os, re
 from collections import defaultdict
 
 p = argparse.ArgumentParser()
-p.add_argument('--headers', required=True)
+p.add_argument('--headers', required=True, help='one _headers.txt, or several separated by ";" for cross-batch matching')
 p.add_argument('--outdir', required=True)
 a = p.parse_args()
 
-mails = {}  # id -> dict
-cur = None
-with open(a.headers, encoding='utf-8') as f:
-    for ln in f:
-        m = re.match(r'^#(\d+) \| (.+)$', ln.rstrip('\n'))
-        if m:
-            cur = {'id': int(m.group(1)), 'path': m.group(2), 'subj': '', 'from': '', 'to': '', 'cc': '', 'sent': '', 'failed': False}
-            mails[cur['id']] = cur
-            continue
-        if cur is None: continue
-        s = ln.rstrip('\n')
-        if s.startswith('  SUBJ: '): cur['subj'] = s[8:]
-        elif s.startswith('  FROM: '): cur['from'] = s[8:]
-        elif s.startswith('  TO: '): cur['to'] = s[6:]
-        elif s.startswith('  CC: '): cur['cc'] = s[6:]
-        elif s.startswith('  SENT: '): cur['sent'] = s[8:]
-        elif s.startswith('  !! FAILED'): cur['failed'] = True
+hfiles = [h.strip() for h in a.headers.split(';') if h.strip()]
+multi = len(hfiles) > 1
+
+mails = {}  # id(str) -> dict
+for hf in hfiles:
+    label = os.path.basename(os.path.dirname(os.path.abspath(hf)))
+    cur = None
+    with open(hf, encoding='utf-8') as f:
+        for ln in f:
+            m = re.match(r'^#(\d+) \| (.+)$', ln.rstrip('\n'))
+            if m:
+                mid = f"{label}:{m.group(1)}" if multi else m.group(1)
+                cur = {'id': mid, 'path': m.group(2), 'subj': '', 'from': '', 'to': '', 'cc': '', 'sent': '', 'failed': False}
+                mails[mid] = cur
+                continue
+            if cur is None: continue
+            s = ln.rstrip('\n')
+            if s.startswith('  SUBJ: '): cur['subj'] = s[8:]
+            elif s.startswith('  FROM: '): cur['from'] = s[8:]
+            elif s.startswith('  TO: '): cur['to'] = s[6:]
+            elif s.startswith('  CC: '): cur['cc'] = s[6:]
+            elif s.startswith('  SENT: '): cur['sent'] = s[8:]
+            elif s.startswith('  !! FAILED'): cur['failed'] = True
 
 def norm(subj):
     s = subj or ''
