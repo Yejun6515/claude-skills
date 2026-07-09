@@ -89,7 +89,7 @@ Tiro 템플릿 "옵시디언 회의록"(templateId 7213)과 동일 구조. 양�
 | 위치 | 채우는 값 |
 |---|---|
 | frontmatter `Date` | 회의 일자 `YYYY-MM-DD` |
-| `Catetory` | 프로젝트 카테고리 (철자 `Catetory` 유지 — Bases 인덱싱 키) |
+| `Category` | 일의 종류 (`meeting`·`submission`·`inquiry` 등 기존 어휘에서 선택 — 고객사명 아님) |
 | `Venue` | 온라인/오프라인·장소(요약에 있으면) |
 | `mentions` | 참석자 ↔ Contacts (§4, **확인 후에만**) |
 | `Tiro Address` | Tiro 노트 **webUrl** |
@@ -132,7 +132,7 @@ Tiro 템플릿 "옵시디언 회의록"(templateId 7213)과 동일 구조. 양�
 
 ## 작성 규칙
 - **볼트 저장 전 폴더는 반드시 사용자 확인(§3).** 확신해도 확인 없이 쓰지 않음.
-- **템플릿 frontmatter 불변** — 필드명·순서·철자(`Catetory`) 유지, 임의 필드 추가 금지. 작업 전 템플릿 Read.
+- **템플릿 frontmatter 불변** — 필드명·순서 유지, 임의 필드 추가 금지. 작업 전 템플릿 Read(정본이 정답 — 과거 오타 `Catetory`는 볼트 전체 교정 완료, 현재는 `Category`).
 - **Tiro 요약은 `# Tiro`에.** 재요약·문장 변경 금지, 확정 고유명사 치환만 허용(§2 용어 치환 규칙, `Tiro Edited`로 표시). `# Yejun's memo`의 기존 사용자 메모는 손대지 않음. 위키 링크는 `# Claude Code`의 `## 관련 위키`에만.
 - **mentions는 확인 후에만(§4).** 미확인·신규 인물은 따로 보고.
 - `tags`는 `entity/<거래처>`·`topic/<주제>` nested (어휘 마스터: `note-description` 스킬 SKILL.md — 새 태그는 거기에 추가).
