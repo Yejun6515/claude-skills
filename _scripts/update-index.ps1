@@ -50,6 +50,15 @@ function Clean([string]$s, [int]$max = 240) {
   return $s
 }
 
+# --- Korean description overrides (for skills whose SKILL.md description is English) ---
+# _scripts\desc-ko.json: { "skill-name": "한글 설명", ... } — index note shows Korean only.
+$ko = @{}
+$koFile = Join-Path $skillsDir '_scripts\desc-ko.json'
+if (Test-Path $koFile) {
+  $koJson = Get-Content -LiteralPath $koFile -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($p in $koJson.PSObject.Properties) { $ko[$p.Name] = [string]$p.Value }
+}
+
 # --- Skills ---
 $skills = @()
 foreach ($d in Get-ChildItem -LiteralPath $skillsDir -Directory | Sort-Object Name) {
@@ -59,6 +68,8 @@ foreach ($d in Get-ChildItem -LiteralPath $skillsDir -Directory | Sort-Object Na
   $name = Get-Scalar $fm 'name'
   if ([string]::IsNullOrWhiteSpace($name)) { $name = $d.Name }
   $desc = Get-Scalar $fm 'description'
+  if ($ko.ContainsKey($name)) { $desc = $ko[$name] }
+  elseif ($ko.ContainsKey($d.Name)) { $desc = $ko[$d.Name] }
   $skills += [pscustomobject]@{ Name = $name; Desc = (Clean $desc) }
 }
 
@@ -75,7 +86,7 @@ $date = Get-Date -Format 'yyyy-MM-dd'
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("**갱신: $date · 스킬 $($skills.Count) · 메모리 $($memLines.Count)**")
 [void]$sb.AppendLine("")
-[void]$sb.AppendLine("### 스킬 ($($skills.Count)) — SKILL.md description")
+[void]$sb.AppendLine("### 스킬 ($($skills.Count)) — SKILL.md description (영문 스킬은 ``desc-ko.json`` 한글 설명으로 대체)")
 [void]$sb.AppendLine("| 스킬 | 설명 |")
 [void]$sb.AppendLine("|---|---|")
 foreach ($s in $skills) { [void]$sb.AppendLine("| ``$($s.Name)`` | $($s.Desc) |") }
