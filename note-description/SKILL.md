@@ -53,7 +53,7 @@ tags:
 ```
 
 **`entity/<외부 주체>`** — external parties that cut across projects (customers' contractors, manufacturers, affiliates, competitors, consultants, insurers). Established vocabulary (extend when a genuinely new party appears, matching existing casing):
-`entity/SEJAL` `entity/TEXTECH` `entity/Uenotex` `entity/PTCN` `entity/PTDE` `entity/PTKR` `entity/Andritz`(competitor) `entity/Danieli`(Danieli-Fröhling — 압연기 competitor) `entity/Kato`(consultant) `entity/Ikuta`(生田産機) `entity/Moog` `entity/Hitachi` `entity/EMG` `entity/Nireco` `entity/NSD`(Absocoder maker) `entity/JMC`(trade insurance) `entity/DHTG`(China equipment maker) `entity/WNC`(우노상사/Woono Corp — POSCO 거래 trading agent) `entity/Zhengrui`(正瑞 — TEX 납품 동박압연 고객) `entity/Hengtong`(亨通 — 중국 케이블·동박 메이커) `entity/ShanxiChangda`(山西长达精密金属 — 동박 신규 고객) `entity/OBOT`(奥博特 — 중국 압연기 메이커) `entity/TMEIC`(東芝三菱電機産業システム — POSCO servo-valve 시스템 메인 컨트랙터) `entity/DMS`(auto roll-changing robot competitor — POSCO K2ZRM 납입 실적) `entity/MHI`(三菱重工 — push plate·판금 제작 파트너) `entity/KYOWA`(共和電業 — Pressure Cell/load-cell maker) `entity/Nucor`(US steelmaker — HSC Pair Cross reference-visit plant, Decatur) `entity/Ternium`(중남미 철강사 — POSCO 멕시코 전기강판 JV 상대)
+`entity/SEJAL` `entity/TEXTECH` `entity/Uenotex` `entity/PTCN` `entity/PTDE` `entity/PTKR` `entity/Andritz`(competitor) `entity/Danieli`(Danieli-Fröhling — 압연기 competitor) `entity/Kato`(consultant) `entity/Ikuta`(生田産機) `entity/Moog` `entity/Hitachi` `entity/EMG` `entity/Nireco` `entity/NSD`(Absocoder maker) `entity/JMC`(trade insurance) `entity/DHTG`(China equipment maker) `entity/WNC`(우노상사/Woono Corp — POSCO 거래 trading agent) `entity/Zhengrui`(正瑞 — TEX 납품 동박압연 고객) `entity/Hengtong`(亨通 — 중국 케이블·동박 메이커) `entity/ShanxiChangda`(山西长达精密金属 — 동박 신규 고객) `entity/OBOT`(奥博特 — 중국 압연기 메이커) `entity/TMEIC`(東芝三菱電機産業システム — POSCO servo-valve 시스템 메인 컨트랙터) `entity/DMS`(auto roll-changing robot competitor — POSCO K2ZRM 납입 실적) `entity/MHI`(三菱重工 — push plate·판금 제작 파트너) `entity/KYOWA`(共和電業 — Pressure Cell/load-cell maker) `entity/Nucor`(US steelmaker — HSC Pair Cross reference-visit plant, Decatur) `entity/Ternium`(중남미 철강사 — POSCO 멕시코 전기강판 JV 상대) `entity/KOTEK`(용운중공업 — POSCO 전로 Tilting Drive 국내 제작사) `entity/WEG`(WEG Motors/WEG Korea — 모터 제작사) `entity/KJ-Plantec`(KJ플랜텍 — POSCO 제강 Mold Frame 제작사) `entity/USS`(U.S. Steel — Mon Valley HSM 최종 고객) `entity/IHI`(후판 에처·박형 유압 AGC 실적 메이커) `entity/ABB`(Stressometer 형상롤·IE4 모터 공급사) `entity/SMS`(SMS group — 풀라인 경쟁사)
 
 **`topic/<주제·업무>`** — work theme:
 `topic/quotation` `topic/logistics` `topic/site-visit` `topic/spare-parts` `topic/installation` `topic/equipment-spec` `topic/tech-spec` `topic/layout` `topic/packing` `topic/rust` `topic/unpacking-inspection` `topic/claim` `topic/expense` `topic/company-info` `topic/customs` `topic/contract` `topic/bond` `topic/payment` `topic/insurance` `topic/training` `topic/drawing` `topic/negotiation` `topic/meeting` `topic/PO` `topic/internal-process` `topic/tax` `topic/welding` `topic/loa`(LoA/TLoA 승인 절차)
@@ -82,13 +82,13 @@ Connect the **people** named in a note to their contact notes under `20. Contact
 There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# 클대리 정리` and never touches `# Yejun's memo` (or 회의록 notes' `# 티대리 정리`).
 
 - **Event template** (default, non-meeting log notes). Reference: `{vault}\50. Template\Event template.md`.
-  - Frontmatter: `Date / Catetory / mentions / Google Drive / description / tags`.
+  - Frontmatter: `Date / Category / mentions / Google Drive / description / tags`.
   - Body sections (standard order): **`# Yejun's memo`** → **`# 클대리 정리`**. The user's own content (the source `file:///` link, free notes) lives under `# Yejun's memo`; Claude's `## 핵심요약`/organized summary goes under `# 클대리 정리`.
   - **Migrating legacy notes**: older Event notes have a `## Event` heading holding the source link. When processing one, **rename `## Event` → `# Yejun's memo`** (keep its link/content untouched), add a `# 클대리 정리` section below it, and write the summary there. Never leave the summary under the old `## Event`.
 - **회의록 / meeting template** — use this whenever the note records a **meeting (미팅/회의)** (filename or content says 미팅·meeting·회의, or it's minutes of a customer/internal call). Do **not** force these onto the Event template. Fields:
   ```
   Date:
-  Catetory:
+  Category:
     - customer meeting        # or: Online meeting (online이면 추가)
   Venue:                      # online / 장소 (모르면 비움)
   mentions:                   # 참석자 [[wikilink]] — Contacts 대조해 제안, 확인 후 반영 (Job 2c)
@@ -106,10 +106,10 @@ If a note's **filename has no descriptive title** — just a bare date like `260
 
 ## Job 3 — Frontmatter normalization (standard Event template)
 
-Standard field order: `Date / Catetory / mentions / Google Drive / description / tags`.
+Standard field order: `Date / Category / mentions / Google Drive / description / tags`.
 
-- Keep `Catetory` as-is including the original misspelling **`Catetory`** (template original; it's the note-type classifier, role-separate from tags).
-- **`Catetory: submission`** when the note records a deliverable/document **submitted to the customer** (견적서·자료·제안 등 고객사 제출물). Otherwise keep the note's existing classifier (e.g. `information`, `meeting`). Internal-only correspondence/discussion is **not** a submission → leave as `information`.
+- The classifier key is **`Category`** (correct spelling). The legacy misspelling `Catetory` was corrected vault-wide (2026-07-10 final sweep; CLAUDE.md is authoritative) — if you encounter a straggler `Catetory:`, rename the key to `Category:` keeping its value.
+- **`Category: submission`** when the note records a deliverable/document **submitted to the customer** (견적서·자료·제안 등 고객사 제출물). Otherwise keep the note's existing classifier (e.g. `information`, `meeting`). Internal-only correspondence/discussion is **not** a submission → leave as `information`.
 - **`mentions:` — propose from Contacts, apply only after confirmation (see Job 2c).** Never auto-fill; never overwrite existing entries (merge/dedupe).
 - Non-standard fields (Participants/Status/Transcription Accuracy, etc.): remove — **but if a removed field holds real data** (e.g. a Notebook LM link), move that data into the body, don't delete it.
 - Match each note's existing indentation/quoting style; only touch frontmatter.
