@@ -100,7 +100,7 @@ def eagle_call(endpoint, payload=None, method=None):
     return body.get("data")
 
 
-def ensure_eagle_running(wait_sec=300):
+def ensure_eagle_running(wait_sec=720):  # 콜드스타트 시 라이브러리 로드(G:\ 스트리밍)가 ~10분 걸릴 수 있음
     """Eagle API가 응답할 때까지 대기. 프로세스 없으면 실행."""
     import subprocess
 
