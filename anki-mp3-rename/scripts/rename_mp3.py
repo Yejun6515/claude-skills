@@ -23,7 +23,8 @@ def sanitize(text: str) -> str:
 def main(project_dir: str, csv_path: str) -> None:
     sound_pattern = re.compile(r'\[sound:(\d+\.mp3)\]')
     cloze_pattern = re.compile(r'\{\{c1::(.*?)::', re.DOTALL)
-    ja_pattern = re.compile(r'dc-(?:lang-ja )?dc-orig">([^<]+)</span>')
+    # 따옴표가 CSV 이스케이프로 겹쳐진 경우("")도 매칭
+    ja_pattern = re.compile(r'dc-(?:lang-ja )?dc-orig"+>([^<]+)</span>')
 
     mp3_mapping: dict[str, str] = {}
 
