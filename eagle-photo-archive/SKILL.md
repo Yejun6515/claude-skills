@@ -15,8 +15,8 @@ description: 슬랙(#작업)으로 보낸 사진을 Eagle 라이브러리(Map me
 
 | 항목 | 값 |
 |---|---|
-| Eagle 라이브러리 | `G:\다른 컴퓨터\노트북\Google Drive desktop\Eagle\Inspiration.library` |
-| OAuth (client_secret/token.pickle) | 같은 Eagle 폴더의 `eagle to obsidian manual\` — **레포에 복사 금지** |
+| Eagle 라이브러리 | `C:\Eagle\Inspiration.library` (2026-07-12 로컬 이사 — Drive 데스크톱이 백업) |
+| OAuth (client_secret/token.pickle) | `C:\Eagle\eagle to obsidian manual\` — **레포에 복사 금지** |
 | 맵 노트 | `C:\Users\Kim Yejun\Desktop\Obsidian\Yejun\30. Map view\` (하위 폴더 포함) |
 | 상태 파일 | `...\Slack작업\_eagle_pending\<이벤트>.json` + `latest.json` |
 
@@ -32,7 +32,7 @@ description: 슬랙(#작업)으로 보낸 사진을 Eagle 라이브러리(Map me
    ```
    python "<이 스킬>/scripts/archive_photos.py" --event "260712_장소명" --note "노트파일명.md" 사진1 사진2 ...
    ```
-   - Eagle이 꺼져 있으면 스크립트가 자동 실행·대기함 (최대 12분 — 콜드스타트 시 라이브러리 로드가 ~10분 걸릴 수 있으니, 그 경우 사용자에게 "Eagle 기동 중이라 시간이 걸린다"고 먼저 응답해두면 좋다).
+   - Eagle이 꺼져 있으면 스크립트가 자동 실행·대기함 (로컬 라이브러리라 기동 ~30초 내).
    - Drive 업로드 폴링 기본 10분. `drive_upload_missing`이 비어 있지 않으면 그 번호는 아직 업로드 전 — 응답에 명시.
 5. **슬랙 응답**: `N장을 Eagle "<이벤트폴더>"에 저장했어요. 노트에 넣을 대표 사진 번호를 답해주세요 (보낸 순서대로 1~N, 예: 1, 4)`
 

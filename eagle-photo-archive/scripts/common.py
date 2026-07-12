@@ -13,8 +13,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 
 # ── 고정 경로 (미니PC 기준) ──────────────────────────────────────
-OAUTH_DIR = r"G:\다른 컴퓨터\노트북\Google Drive desktop\Eagle\eagle to obsidian manual"
-LIBRARY_DIR = r"G:\다른 컴퓨터\노트북\Google Drive desktop\Eagle\Inspiration.library"
+# 2026-07-12 라이브러리를 로컬 C:\Eagle로 이사 (Drive 데스크톱이 이 폴더를 클라우드 백업)
+OAUTH_DIR = r"C:\Eagle\eagle to obsidian manual"
+LIBRARY_DIR = r"C:\Eagle\Inspiration.library"
 VAULT_ROOT = r"C:\Users\Kim Yejun\Desktop\Obsidian\Yejun"
 MAP_VIEW_DIR = os.path.join(VAULT_ROOT, "30. Map view")
 STATE_DIR = r"C:\Users\Kim Yejun\Desktop\M-Workplace\Slack작업\_eagle_pending"
@@ -100,7 +101,7 @@ def eagle_call(endpoint, payload=None, method=None):
     return body.get("data")
 
 
-def ensure_eagle_running(wait_sec=720):  # 콜드스타트 시 라이브러리 로드(G:\ 스트리밍)가 ~10분 걸릴 수 있음
+def ensure_eagle_running(wait_sec=180):  # 로컬 라이브러리 기준 기동 ~30초, 여유 3분
     """Eagle API가 응답할 때까지 대기. 프로세스 없으면 실행."""
     import subprocess
 
