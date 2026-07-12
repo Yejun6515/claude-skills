@@ -11,16 +11,22 @@ description: "Primetals 업무 일본어 단어 배치 워크플로우 — 옵�
 ## 전제 (예준님의 습관 — 스킬은 여기서부터 시작)
 
 - 새 단어는 옵시디언 `C:\Users\yejun\Yejun\15. Training\15.10. 일본어\YYMMDD_Primetals.md`에
-  `|T|D|P|E|` 표(단어|뜻|읽기|예문)로 정리돼 있다.
-- mp3 저장소(로컬 마스터): `Desktop\Claude Code\일본어 공부\Primetals_Anki\mp3\` 아래
-  배치별 폴더(`YYMMDD_Primetals\`). 구글 드라이브 업로드는 선택(수동).
+  `|T|D|P|E|` 표(단어|뜻|읽기|예문)로 정리돼 있다. (볼트는 집·회사 클라우드 동기화)
+- **mp3 마스터 = 구글 드라이브 `12_TTS` 폴더** — 집 노트북에는 드라이브 데스크톱 앱이
+  마운트돼 있어 `G:\내 드라이브\12_TTS\YYMMDD_Primetals\`를 로컬처럼 직접 읽는다(검증 2026-07-12).
+  TTS를 어느 PC에서 만들든 이 폴더에 저장하면 업로드 단계 없이 자동 동기화.
+- **2-PC 분업 시나리오**: 회사 PC(Anki 없음)에서 노트 작성+TTS 생성(G: 저장) →
+  집 노트북에서 리빌드+Anki 임포트. 집에서 전부 해도 동일.
+- `Desktop\Claude Code\일본어 공부\Primetals_Anki\mp3\`는 2026-07-12 초기 구축 때의 로컬
+  사본(백업)이며 이후 마스터는 드라이브.
 
 ## 처리 순서 (★ TTS → txt → Anki. apkg가 mp3를 내장하므로 Anki가 마지막)
 
 ```
 1. 새 노트 파싱      : 최신 YYMMDD_Primetals.md의 단어 목록 추출
 2. TTS 생성          : 새 노트 단어만 word-tts 모드 A로 MP3 생성
-                       → mp3\YYMMDD_Primetals\単語(よみ).mp3 (기존 파일명 규칙 유지)
+                       → G:\내 드라이브\12_TTS\YYMMDD_Primetals\単語(よみ).mp3
+                       (드라이브 자동 동기화 — 별도 업로드 불필요. 글라스 txt·대본도 같은 폴더에)
                        ※ 배치 전 ElevenLabs 크레딧 확인, 단어당 약 500자
                        ※ 과거 배치의 무음 단어(예: 22개, 2026-07-12 결정)는 사용자가 요청할 때만 소급 생성
 3. 단어정리 txt      : word-tts 스킬 '스마트 글라스용 단어 정리 txt' 양식으로

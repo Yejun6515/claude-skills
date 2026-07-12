@@ -3,8 +3,9 @@ r"""Primetals 일본어 Anki 덱 전체 리빌드 (옵시디언 노트 + TTS mp3
 
 사용법: python build_apkg.py [노트폴더] [mp3루트] [출력apkg]
   기본값: 노트   = C:\Users\yejun\Yejun\15. Training\15.10. 일본어
-         mp3   = Desktop\Claude Code\일본어 공부\Primetals_Anki\mp3
+         mp3   = G:\내 드라이브\12_TTS  (구글 드라이브 데스크톱 마운트 — 직접 읽음)
          출력   = Desktop\Claude Code\일본어 공부\Primetals_Anki\01_Primetals일본어.apkg
+  ※ G: 마운트가 없는 PC에서는 mp3루트를 인자로 지정 (예: 로컬 복사본 폴더)
 
 - 노트 형식: |T|D|P|E| 표 (단어|뜻|읽기|예문), 파일명 YYMMDD_*.md
 - mp3 파일명: "単語(よみ).mp3" / "単語.mp3" / "N. 単語.mp3" (순번 접두 자동 제거)
@@ -20,8 +21,7 @@ import genanki
 
 NOTES_DIR = sys.argv[1] if len(sys.argv) > 1 else \
     r"C:\Users\yejun\Yejun\15. Training\15.10. 일본어"
-MP3ROOT = sys.argv[2] if len(sys.argv) > 2 else \
-    r"C:\Users\yejun\Desktop\Claude Code\일본어 공부\Primetals_Anki\mp3"
+MP3ROOT = sys.argv[2] if len(sys.argv) > 2 else r"G:\내 드라이브\12_TTS"
 OUT = sys.argv[3] if len(sys.argv) > 3 else \
     r"C:\Users\yejun\Desktop\Claude Code\일본어 공부\Primetals_Anki\01_Primetals일본어.apkg"
 
