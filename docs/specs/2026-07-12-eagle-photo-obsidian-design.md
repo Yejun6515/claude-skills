@@ -1,7 +1,7 @@
 # Eagle 사진 → Google Drive 링크 → Obsidian 노트 자동 연결 (설계, 브레인스토밍 중)
 
 날짜: 2026-07-12
-상태: **설계 확정 전 — 미니 PC에서 이어서 진행할 것** (아래 "남은 확인 사항" 참조)
+상태: **✅ 설계 확정·구현 완료 (2026-07-12 미니PC)** — 구현 내역은 [2026-07-12-eagle-photo-obsidian-plan.md](2026-07-12-eagle-photo-obsidian-plan.md), 실행 스킬은 `eagle-photo-archive`. 남은 것: 폰 슬랙 E2E 테스트.
 작성 경위: 노트북 PC의 Claude Code 세션에서 브레인스토밍한 내용을 미니 PC로 인계하기 위한 문서.
 
 ## 목표
