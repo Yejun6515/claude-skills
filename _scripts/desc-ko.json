@@ -4,6 +4,7 @@
   "commit-history": "에이전트 세션과 연결된 최근 git 커밋 목록 조회(브랜치·저장소 필터 가능). '에이전트 커밋 보여줘', '에이전트가 뭘 만들었지' 요청 시 사용.",
   "forget": "agentmemory에서 특정 관찰·세션을 삭제. '이거 잊어줘', '메모리 삭제', 프라이버시상 특정 데이터 제거 요청 시 사용.",
   "handoff": "현재 작업 폴더의 가장 최근 에이전트 세션을 이어받아 재개. '어디까지 했지', 'resume', 'handoff', '이어서 하자'거나 맥락 없이 새 세션을 시작할 때 사용.",
+  "loa-risk-matching": "LoA Risk Questionnaire 항목(Small 74/Standard 100)을 이번 계약 판정과 매칭한 리스크 매칭 시트 생성 — 구분(N/A/RC확정/판단 요/보류)·근거 조항·draft 충돌을 한 장으로. 해설 매뉴얼(영어 원문+한글 해석+의미·목적+RC 기준) 번들 포함, 재생성도 가능. 'LoA 매칭 시트', '리스크 매칭', 'LoA 해설 매뉴얼', consistency 검토 후 결과 패키징 요청 시 사용.",
   "note-description": "옵시디언 노트 frontmatter 정리 — description 작성/갱신, 빈 tags를 entity/·topic/ 통제어휘로 채우고 표준 Event 템플릿으로 정규화. 노트 안 file:/// 소스 링크(네트워크 드라이브 첨부·폴더)를 실제로 열어 읽고 description을 보강. 노트·프로젝트 폴더의 description/태그/frontmatter '정리' 요청 시 사용.",
   "note-digest": "옵시디언 노트 뒤의 소스 파일(.msg 메일, Word/Excel/PPT/PDF — 폴더에 흩어져 있든 노트가 링크한 U:\\ 폴더든)을 읽어 Event/회의록 템플릿 노트로 정리(frontmatter 정규화, 바로가기 링크 유지, 영어 description, entity/topic 태그). 완성 노트를 맞는 프로젝트 폴더에 파일링까지 — 대상 폴더는 항상 사용자 확인 후. 노트나 소스 폴더를 주며 정리/요약/digest를 요청할 때 사용.",
   "primetals-text-style": "모든 산출물(Word·Excel·PPT·HTML·메일·마크다운 등 텍스트 있는 전부)에 Primetals 공식 텍스트 색·폰트 적용. HTML 파일/페이지/리포트 생성 요청이면 브랜드 키워드 없어도 항상 자동 발동. Primetals 브랜드 문서, 회사 CI 준수 텍스트가 필요할 때 사용.",
