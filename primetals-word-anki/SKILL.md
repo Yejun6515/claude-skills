@@ -12,6 +12,8 @@ description: "Primetals 업무 일본어 단어 배치 워크플로우 — 옵�
 
 - 새 단어는 옵시디언 `C:\Users\yejun\Yejun\15. Training\15.10. 일본어\YYMMDD_Primetals.md`에
   `|T|D|P|E|` 표(단어|뜻|읽기|예문)로 정리돼 있다. (볼트는 집·회사 클라우드 동기화)
+  — 손으로 모은 노트 외에, **tiro-word-tts 스킬**(Tiro 회의 단어 피커)이 같은 형식으로
+  단어 노트를 만들기도 한다(그 경우 TTS·Drive 업로드까지 tiro-word-tts가 이미 완료).
 - **mp3 마스터 = 구글 드라이브 `12_TTS` 폴더** — 집 노트북에는 드라이브 데스크톱 앱이
   마운트돼 있어 `G:\내 드라이브\12_TTS\YYMMDD_Primetals\`를 로컬처럼 직접 읽는다(검증 2026-07-12).
   TTS를 어느 PC에서 만들든 이 폴더에 저장하면 업로드 단계 없이 자동 동기화.
@@ -27,6 +29,8 @@ description: "Primetals 업무 일본어 단어 배치 워크플로우 — 옵�
 2. TTS 생성          : 새 노트 단어만 word-tts 모드 A로 MP3 생성
                        → G:\내 드라이브\12_TTS\YYMMDD_Primetals\単語(よみ).mp3
                        (드라이브 자동 동기화 — 별도 업로드 불필요. 글라스 txt·대본도 같은 폴더에)
+                       ※ G: 마운트 없는 PC(회사): {tts_output_root}\12_TTS\YYMMDD_Primetals\에
+                         만들고 tiro-word-tts 스킬의 upload_drive.py(rclone)로 업로드
                        ※ 배치 전 ElevenLabs 크레딧 확인, 단어당 약 500자
                        ※ 과거 배치의 무음 단어(예: 22개, 2026-07-12 결정)는 사용자가 요청할 때만 소급 생성
 3. 단어정리 txt      : word-tts 스킬 '스마트 글라스용 단어 정리 txt' 양식으로
