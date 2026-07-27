@@ -3,7 +3,7 @@ r"""_tiro_words.json → Tiro 회의 단어 피커 HTML 생성.
 
 사용법: python build_picker.py <작업폴더> <제목>
   예:   python build_picker.py "U:\...\260723_Hengtong미팅" Hengtong0723
-- 입력: {작업폴더}\_tiro_words.json  [{"word","reading","meaning","count","line","line_ko"}]
+- 입력: {작업폴더}\_tiro_words.json  [{"word","reading","meaning","count","lines":[{"jp","ko"}]}]
 - 중복 사전: {vault}\15. Training\15.10. 일본어\*.md 의 |T|D|P|E| 표 단어
              (+ 같은 폴더 _tts단어장.csv 있으면 병합) — 기존 단어는 회색·선택불가
 - 출력: {작업폴더}\단어피커_{제목}.html
@@ -56,14 +56,14 @@ def row_html(it):
     reading = it.get("reading", "")
     meaning = it.get("meaning", "")
     count = it.get("count", 1)
-    line = it.get("line", "")
-    line_ko = it.get("line_ko", "")
+    lines = it.get("lines") or []
     done = word in done_words
     cls = "row done" if done else "row"
     rd = f'<span class="rd">({html.escape(reading)})</span>' if reading else ""
     badge = f'<span class="badge">×{count}</span>' if count > 1 else ""
     tag = '<span class="tag">TTS 있음</span>' if done else ""
-    tip = html.escape(f"{line} ({line_ko})" if line else "", quote=True)
+    tip = html.escape("\n".join(f"{ln.get('jp', '')} ({ln.get('ko', '')})"
+                                for ln in lines[:3]), quote=True)
     search = html.escape((word + reading + meaning).lower(), quote=True)
     return (
         f'<div class="{cls}" data-w="{html.escape(word, quote=True)}" data-s="{search}" title="{tip}">'
