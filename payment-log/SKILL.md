@@ -51,6 +51,8 @@ C:\Users\Z006K14G\tv\Scripts\python.exe scripts\pdf_to_png.py "<PO.pdf>" "<scrat
 
 ### 5. 산출물
 **(a) 입금 이벤트 노트** — 프로젝트 폴더에 `YYMMDD_<라인> 입금연락.md`
+
+> ⚠️ **먼저 중복을 확인한다.** 같은 입금 건의 노트가 이미 있을 수 있다(파일명이 `입금연락`이 아니라 `현대제철 AP 10%입금`처럼 다를 수 있으므로 **날짜·금액·請求書番号으로 확인**). 있으면 **새로 만들지 말고 기존 노트에 payment frontmatter(Amount/Currency/Invoice/WBS/PO/Payer)와 `Category: payment`를 보강**하고 `## 계약 대비`만 덧붙인다. 개요 §4.2에 이미 빌링 행이 있으면 그 행도 마일스톤 판정으로 갱신한다(행 신설 금지). — 2026-07-29 실제로 중복 생성 사고가 있었음.
 ```yaml
 ---
 Date: YYYY-MM-DD          # 入金日
