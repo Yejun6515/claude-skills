@@ -57,3 +57,4 @@ views:
 - Base `file.folder`는 반드시 **vault 상대경로·슬래시(/)** — 절대경로·백슬래시는 매칭 실패.
 - BOM 없는 UTF-8, 날짜 `YYYY-MM-DD`, 한국어 개조식(~함).
 - 위키/상위 MOC 연결이나 소스→노트 정리는 이 스킬 밖 — 각각 [[wiki-ingest]]·[[note-digest]] 소관. `meeting-folder-brief`가 새 프로젝트 감지 시 이 스킬을 호출할 수 있다.
+- §4.3 Billing & Payment는 **빈 스캐폴드로만 생성**한다(계약 전 프로젝트면 비워둠). 계약 기준선(PO 총액·지급조건) 확정과 입금 이력 갱신은 [[payment-log]] 소관.
