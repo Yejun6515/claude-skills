@@ -1,0 +1,41 @@
+{
+  "_comment": "china-entertainment-expense case file. UTF-8. Keys under meal/scorecard are Excel cell addresses; 'YYYY-MM-DD' strings are auto-converted to Excel dates. Delete the _comment keys before use if you like - they are ignored only if they are not valid cell addresses, so keep them OUT of meal/scorecard/participants objects.",
+  "case_name": "260723_Hengtong",
+
+  "meal": {
+    "I2": "20260722-000036",
+    "I6": "2026-07-23",
+    "I8": "湖州老土家餐饮有限公司",
+    "I10": "外貨取引",
+    "K12": "NO",
+    "K41": 1323.55,
+    "K42": "CNY",
+    "K43": 24.861,
+    "H50": "中国・湖州出張中、得意先Hengtong社および代理店TEX社との会食（2026年7月23日）。店名：湖州老土家餐饮有限公司（Laotujia Restaurant, Huzhou）。現地通貨（CNY）にて支払い、レートはデビットカード利用明細（1,323.55CNY＝32,904円、レート24.861）による。参加者8名（社外6名、PTJ2名）。"
+  },
+
+  "attendees": [
+    { "company": "Hengtong", "title": "General manager", "name": "Jang Chong" },
+    { "company": "Hengtong", "title": "Senior Manager", "name": "Zhang Wei" },
+    { "company": "TEX", "title": "Senior Manager", "name": "Sou Kei" },
+    { "company": "TEX", "title": "Manager", "name": "Lei Shi" },
+    { "company": "PTCN", "title": "Senior Manager", "name": "Han Wen Guang" },
+    { "company": "SEJAL", "title": "Director", "name": "Kuchi Masahiro" },
+    { "company": "PTJ", "title": "Senior Manager", "name": "Fujii Motoyuki" },
+    { "company": "PTJ", "title": "Manager", "name": "Kim Yejun" }
+  ],
+
+  "scorecard": {
+    "D8": "Hengtong / TEX",
+    "D9": "Jang Chong and 3 others (see participants tab)",
+    "D10": "2026-07-23",
+    "J17": "Business dinner in Huzhou, China on 23 July 2026, held after the business meeting with Hengtong (customer) and TEX (agent). Host: Kim Yejun, Business Development Dep. No.2, PTJ. Total 8 participants (4 guests from Chinese companies, 4 from Primetals side). Estimated value approx. JPY 5,000 (approx. RMB 201) per person. No public sector members, no spouse/partner/guest invited. Payment made by corporate card; receipt and card statement attached."
+  },
+
+  "participants": [
+    { "A": "2026-07-23", "B": "Jang", "C": "Chong", "D": "Mr", "G": "General manager", "H": "Hengtong", "J": "No", "K": "Meal", "L": "China", "M": "Huzhou", "N": "JPY", "O": 5000, "P": "RMB", "Q": 201, "R": "PTJ", "S": "Kim Yejun" },
+    { "A": "2026-07-23", "B": "Zhang", "C": "Wei", "D": "Mr", "G": "Senior Manager", "H": "Hengtong", "J": "No", "K": "Meal", "L": "China", "M": "Huzhou", "N": "JPY", "O": 5000, "P": "RMB", "Q": 201, "R": "PTJ", "S": "Kim Yejun" },
+    { "A": "2026-07-23", "B": "Sou", "C": "Kei", "D": "Mr", "G": "Senior Manager", "H": "TEX", "J": "No", "K": "Meal", "L": "China", "M": "Huzhou", "N": "JPY", "O": 5000, "P": "RMB", "Q": 201, "R": "PTJ", "S": "Kim Yejun" },
+    { "A": "2026-07-23", "B": "Lei", "C": "Shi", "D": "Mr", "G": "Manager", "H": "TEX", "J": "No", "K": "Meal", "L": "China", "M": "Huzhou", "N": "JPY", "O": 5000, "P": "RMB", "Q": 201, "R": "PTJ", "S": "Kim Yejun" }
+  ]
+}
