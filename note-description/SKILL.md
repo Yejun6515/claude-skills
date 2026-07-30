@@ -13,7 +13,7 @@ You organize Obsidian note frontmatter so notes are identifiable in AI search an
 
 When pointed at a folder, process **every in-scope note** in it (and nested subfolders).
 
-**Default: edit frontmatter only.** Two body exceptions: (a) when following linked source materials, add a brief `## 핵심요약` summary under the note's `# 클대리 정리` section (see "Following linked source materials"); (b) if normalization would drop a non-standard field that holds real data, move it into the body rather than deleting it (see Normalization). In all cases Claude writes **only inside `# 클대리 정리`** and never touches `# Yejun's memo` (or 회의록 notes' `# 티대리 정리`).
+**Default: edit frontmatter only.** Two body exceptions: (a) when following linked source materials, add a brief `## 핵심요약` summary under the note's `# 클대리 정리` section (see "Following linked source materials"); (b) if normalization would drop a non-standard field that holds real data, move it into the body rather than deleting it (see Normalization). In all cases Claude writes **only inside `# 클대리 정리`** and never touches `# Yejun's memo` (or an existing `# 티대리 정리`, which is no longer created for new notes — see "Two note templates").
 
 ## Vault location
 
@@ -71,7 +71,7 @@ Rules:
 
 Connect the **people** named in a note to their contact notes under `20. Contacts`, recorded in `mentions:`. **Apply only after the user confirms — never auto-fill.**
 
-1. **Extract names** — for 회의록, from `# 티대리 정리` transcript / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
+1. **Extract names** — for 회의록, from the meeting body (`# 클대리 정리`, plus `# 티대리 정리` transcript if the note has one) / `# Yejun's memo` / 참석자; for Event/email notes, from sender·recipients·body. Include the user (Kim Yejun) when they attended.
 2. **Match against Contacts** — match each name to a contact **filename** under `{vault}\20. Contacts\**`, tolerant of name-order / spacing / comma / romanization·Korean·Kanji variants (e.g. "Yang yohan"=양요한, "Doho, Haruka"=道法 春香). Use the **exact contact filename** so the wikilink resolves.
 3. **Split the proposal** — (a) **has a contact** → `- "[[filename]]"` candidates; (b) **no contact (new person)** → report separately; don't silently add — ask whether to create a contact stub or skip.
 4. **Confirm (required)** — show the proposed list and write **only the approved names**. Even an obvious match is not written without confirmation.
@@ -79,7 +79,7 @@ Connect the **people** named in a note to their contact notes under `20. Contact
 
 ## Two note templates — Event vs 회의록 (meeting)
 
-There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# 클대리 정리` and never touches `# Yejun's memo` (or 회의록 notes' `# 티대리 정리`).
+There are **two** templates. Pick by note type. **Both now carry body sections** — Claude writes only inside `# 클대리 정리` and never touches `# Yejun's memo` (or an existing `# 티대리 정리` in a 회의록 note).
 
 - **Event template** (default, non-meeting log notes). Reference: `{vault}\50. Template\Event template.md`.
   - Frontmatter: `Date / Category / mentions / Google Drive / description / tags`.
@@ -97,7 +97,8 @@ There are **two** templates. Pick by note type. **Both now carry body sections**
   description:
   tags:
   ```
-  Body sections (standard order): **`# Yejun's memo`** → **`# 클대리 정리`** → **`# 티대리 정리`**. Claude's organized summary/안건 정리는 **`# 클대리 정리`에만** 작성하고 `# Yejun's memo`·`# 티대리 정리`는 손대지 않음(비어 있으면 빈 헤더만 유지). Tiro 전사 본문은 `# 티대리 정리` 아래에 들어감.
+  Body sections (standard order): **`# Yejun's memo`** → **`# 클대리 정리`**. Claude's organized summary/안건 정리는 **`# 클대리 정리`에만** 작성하고 `# Yejun's memo`는 손대지 않음(비어 있으면 빈 헤더만 유지).
+  - **`# 티대리 정리` 생략 규칙 (2026-07-29 예준님 결정, 전 옵시디언 작성 스킬 공통):** Tiro 요약을 바탕으로 `# 클대리 정리`를 쓰면 **`# 티대리 정리` 섹션은 새로 만들지 않는다**(중복 방지). 원문 추적은 링크만 — frontmatter `Tiro Address` + `# Yejun's memo`의 Tiro 바로가기. **기존 노트에 이미 있는 `# 티대리 정리`는 불가침**(내용 유지, 지우지도 옮기지도 않음).
   - Meetings often cover **multiple 안건(cases)** — number them and organize each one's 관련메일·배경·진척·결론 separately under `# 클대리 정리`. Write `description`/`tags` **last**, after all 안건 are organized.
 
 ## Job 3b — Title (filename) when missing
@@ -138,4 +139,4 @@ When the target is a folder, enumerate it (including nested subfolders) and proc
 
 - When processing multiple notes, **briefly list each note with the tags (and any new/updated description) you wrote** so the user can review.
 - Note any skipped notes (`0_` indexes, stubs) and any **new `entity/` tags** you introduced so the vocabulary stays consistent.
-- Both templates use body section headers (`# Yejun's memo` / `# 클대리 정리`, plus `# 티대리 정리` for 회의록). Claude writes the `## 핵심요약`/summary **only under `# 클대리 정리`** and leaves `# Yejun's memo` / `# 티대리 정리` content untouched.
+- Both templates use body section headers (`# Yejun's memo` / `# 클대리 정리`; `# 티대리 정리` only if the note already has one — never add it). Claude writes the `## 핵심요약`/summary **only under `# 클대리 정리`** and leaves `# Yejun's memo` / any existing `# 티대리 정리` content untouched.
