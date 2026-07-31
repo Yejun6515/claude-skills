@@ -316,9 +316,11 @@ def check_row_arithmetic(table):
     out = []
     rows, loc = table["rows"], table["loc"]
     for h, s, e in segment_blocks(rows):
+        # 순서대로 잡고, 이미 잡힌 열은 제외한다.
+        # 'Price/EA(JPY)' 와 'Price(JPY)' 가 둘 다 'price' 를 포함하므로 exclude 가 없으면 같은 열이 된다.
         cq = find_col(rows, h, QTY_HINTS)
-        cp = find_col(rows, h, PRICE_HINTS)
-        ca = find_col(rows, h, AMOUNT_HINTS)
+        cp = find_col(rows, h, PRICE_HINTS, exclude={cq})
+        ca = find_col(rows, h, AMOUNT_HINTS, exclude={cq, cp})
         if cq is None or cp is None or ca is None or len({cq, cp, ca}) < 3:
             continue
         for i in range(s, e):
@@ -701,10 +703,27 @@ def run_crossref(folder, target=None, min_abs=1000, scope="folder"):
                                 "samples": srcs[:6]}
     if target:
         tn = os.path.basename(target)
+        # 같은 견적서의 .xlsx / .pdf 는 '다른 근거'가 아니라 같은 문서다 — 한 그룹으로 묶는다.
+        stem = os.path.splitext(tn)[0].lower()
+        group = set(n for e in res["index"].values() for n in e["files"]
+                    if os.path.splitext(n)[0].lower() == stem)
+        group.add(tn)
+        res["target_group"] = sorted(group)
+        only = [d for d, e in res["index"].items() if set(e["files"]) <= group]
+        # 단위 배율 대조 — 내부 계산서는 千円, 제출본은 円 인 경우가 흔하다.
+        # 대상에만 있는 값이 다른 자료의 값 x1000(또는 /1000)과 같으면 근거를 찾은 것이다.
+        byval = {e["value"]: (d, e) for d, e in res["index"].items()}
+        scaled = []
+        for d in only:
+            v = res["index"][d]["value"]
+            for factor in (1000.0, 0.001, 1000000.0, 100.0):
+                other = byval.get(round(v / factor, 4))
+                if other and not (set(other[1]["files"]) <= group):
+                    scaled.append({"target_value": d, "other_value": other[0],
+                                   "factor": factor, "files": other[1]["files"]})
+                    break
         res["target"] = {
-            "name": tn,
-            "only_in_target": [d for d, e in res["index"].items()
-                               if e["files"] == [tn]],
+            "name": tn, "only_in_target": only, "scaled": scaled,
             "shared": [d for d, e in res["index"].items()
                        if tn in e["files"] and len(e["files"]) > 1]}
     return res
@@ -807,7 +826,16 @@ def main():
             t = res["target"]
             solo = [d for d in t["only_in_target"]
                     if show_id or res["index"][d]["class"] != "식별자"]
-            print("--- 대상 '%s' 에만 있고 폴더의 다른 자료에는 없는 숫자 ---" % t["name"])
+            if t.get("scaled"):
+                print("--- 단위 배율로 근거를 찾은 값 (千円 ↔ 円 등) ---")
+                for s in t["scaled"]:
+                    print("  %16s  =  %s x %s   [%s]"
+                          % (s["target_value"], s["other_value"],
+                             fmt(s["factor"]), " / ".join(s["files"])))
+                print("")
+                sc = set(x["target_value"] for x in t["scaled"])
+                solo = [d for d in solo if d not in sc]
+            print("--- 대상 '%s' 에만 있고 폴더의 다른 자료에도 근거가 없는 숫자 ---" % t["name"])
             print("  " + (", ".join(solo[:60]) if solo else "없음"))
         if outjson:
             with open(outjson, "w", encoding="utf-8") as fh:
