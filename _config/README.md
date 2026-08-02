@@ -8,6 +8,7 @@ SKILL.md 본문은 모든 PC에서 동일하게 유지하고, **PC마다 다른 
 ## local-paths.md 형식 — `키: 값` 한 줄씩
 
 ```
+project_root: C:\Users\<사용자>\Desktop\Claude Code
 vault_root: C:\Users\<사용자>\Desktop\Yejun
 tts_output_root: C:\Users\<사용자>\Desktop\TTS
 mail_automation_root: C:\Users\<사용자>\Desktop\Workplace\메일 자동화
@@ -16,6 +17,7 @@ business_trip_output_root: U:\新_海外営業部\Kim Yejun\99_Business trip
 
 | 키 | 무엇 | 쓰는 스킬 |
 |---|---|---|
+| `project_root` | 새 코딩 프로젝트를 만드는 기본 폴더 | (글로벌 규칙 `CLAUDE-global.md`) |
 | `vault_root` | Obsidian 볼트 루트 | note-digest · note-description · wiki-ingest · wiki-link · steel-project-wiki-context · tiro-meeting-note · mail-bridge · meeting-folder-brief · youtube-obsidian |
 | `tts_output_root` | word-tts MP3 출력 루트 | word-tts |
 | `mail_automation_root` | 메일 자동화 작업 폴더 (업무 PC에만 있음) | mail-bridge |

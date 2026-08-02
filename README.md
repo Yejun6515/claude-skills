@@ -10,7 +10,13 @@ GitHub로 동기화한다. 클론 위치는 모든 PC 공통: `%USERPROFILE%\.cl
    git clone https://github.com/Yejun6515/claude-skills.git "%USERPROFILE%\.claude\skills"
    ```
 2. `_config\local-paths.md` 생성 — 이 PC의 경로(볼트 루트 등)를 적는다. 형식·키 목록은 `_config\README.md`.
-3. (Obsidian 볼트가 있는 PC) push/pull 후 `_scripts\update-index.ps1` 실행 → 볼트의 스킬 인덱스 노트 갱신.
+3. **글로벌 규칙 연결** — `%USERPROFILE%\.claude\CLAUDE.md`를 만들고 아래 한 줄만 넣는다:
+   ```
+   @~/.claude/skills/_config/CLAUDE-global.md
+   ```
+   본체는 레포 안(`_config\CLAUDE-global.md`)이라 pull하면 따라오고, 레포 밖에 남는 건 이 한 줄뿐이다.
+4. (Obsidian 볼트가 있는 PC) push/pull 후 `_scripts\update-index.ps1` 실행 → 볼트의 스킬 인덱스 노트 갱신.
+5. (선택) 작업완료 알림 훅 — `settings.json`에 Stop 훅 등록(`_scripts\notify-done.ps1`). 레포 밖이라 PC마다 1회.
 
 ## 리포 규칙
 
