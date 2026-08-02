@@ -1,6 +1,6 @@
 ---
 name: map-memory-note
-description: 구글맵/네이버맵 링크 + "○○랑 왔어/갔어" 한 줄을 받아 Obsidian "30. Map view"에 추억 노트를 자동 생성. 링크에서 가게명·좌표(Location)를 추출해 frontmatter에 넣고, 동행자는 "20. Contacts"에서 찾아 [[위키링크]]로, 당일 Tiro 녹음이 있으면 링크도 삽입. 사진은 수동(처리 안 함). 트리거 - 맵 링크(maps.app.goo.gl, goo.gl/maps, naver.me, map.naver.com)와 함께 "~랑 왔어/갔어", "추억 노트", "맵 노트", "여기 저장", "map view에 추가" 류 요청. 슬랙 #작업 채널에서 폰으로 보내는 게 주 사용처.
+description: 구글맵/네이버맵 링크 + "○○랑 왔어/갔어" 한 줄을 받아 Obsidian "30. Map view"에 추억 노트를 자동 생성. 링크에서 가게명·좌표(Location)를 추출해 frontmatter에 넣고, 동행자는 "20. Contacts"에서 찾아 [[위키링크]]로, 당일 Tiro 녹음이 있으면 링크도 삽입. 사진은 수동(처리 안 함). 트리거 - 맵 링크(maps.app.goo.gl, goo.gl/maps, naver.me, map.naver.com)와 함께 "~랑 왔어/갔어", "추억 노트", "맵 노트", "여기 저장", "map view에 추가" 류 요청. 집에 손님을 초대해 먹은 경우는 맵 링크 없이 "집손님", "집에서", "손님 초대" 키워드로 발동해 같은 노트를 만든다(가게명·좌표는 집 상수). 맵 링크도 집 키워드도 없는 요청에는 발동하지 않는다. 슬랙 #작업 채널에서 폰으로 보내는 게 주 사용처.
 ---
 
 # map-memory-note — 맵 링크 → 추억 노트
@@ -17,12 +17,27 @@ description: 구글맵/네이버맵 링크 + "○○랑 왔어/갔어" 한 줄�
 
 ### 1. 입력 파싱
 메시지에서 뽑는다:
-- **맵 링크** (필수): `maps.app.goo.gl`, `goo.gl/maps`, `naver.me`, `map.naver.com` 등
+- **장소** (필수 — 둘 중 하나):
+  - **맵 링크**: `maps.app.goo.gl`, `goo.gl/maps`, `naver.me`, `map.naver.com` 등 → §2로
+  - **집 키워드**: "집손님", "집에서", "손님 초대", "집들이" 등 → §2 건너뛰고 집 상수 사용
+  - 둘 다 없으면 이 스킬 대상이 아니다
 - **동행자**: "미즈키랑", "엄마와", "with ○○" 등. 없으면 Participants 비움(혼자)
 - **날짜**: "어제", "그저께", 명시 날짜. 없으면 오늘(KST)
 - **메모/한줄평**: 나머지 텍스트가 있으면 Event 본문에 넣는다
 
 ### 2. 맵 링크 해석 → 가게명·좌표
+
+**집 경로(맵 링크 없음)**: 이 절 전체를 건너뛰고 아래 상수를 그대로 쓴다. curl·WebFetch·WebSearch 불필요.
+
+| 항목 | 값 |
+|---|---|
+| 가게명 | `집` |
+| Location | `34.3814,132.4492` |
+| Country | `Japan` |
+| City | `Hiroshima` |
+
+이후 §3 Contacts 매칭·§4 Tiro 매칭·§5 노트 생성·§6 응답·중복 노트 체크는 맵 링크 경로와 **완전히 동일**하게 탄다.
+
 **구글맵** (`maps.app.goo.gl`, `goo.gl/maps`):
 ```bash
 curl -sI -o /dev/null -w '%{redirect_url}' '<링크>'
@@ -67,6 +82,7 @@ Tiro MCP(`mcp__tiro__list_notes`)로 해당 날짜(KST 0시~24시 → UTC로 변
 
 ### 5. 노트 생성
 파일명: `YYMMDD_<가게명> with <동행자>.md` (동행자 없으면 `YYMMDD_<가게명>.md`). 특수문자 `\ / : * ? " < > |` 제거.
+집 경로는 가게명 자리가 `집` → `YYMMDD_집 with <동행자>.md` (동행자 없으면 `YYMMDD_집.md`).
 
 ```markdown
 ---
@@ -77,7 +93,7 @@ City:
   - <도시>
 Participants:
   - "[[<Contacts 파일명>]]"
-Url: <원래 단축링크>
+Url: <원래 단축링크 — 집 경로면 이 키 자체를 넣지 않음>
 Tiro: <tiro webUrl — 매칭된 녹음 있을 때만 이 키 추가>
 tags:
 Location: <위도>,<경도>
@@ -98,6 +114,7 @@ Location: <위도>,<경도>
 ```
 - **UTF-8 BOM 없음**, 날짜 `YYYY-MM-DD` (볼트 규칙)
 - `Location`은 반드시 `위도,경도` 한 줄 문자열 (map-view-plugin이 읽는 키)
+- 집 경로는 링크가 없으므로 `Url:` 키를 **넣지 않는다** (`Tiro:` 관례와 동일 — 빈 값으로 남기지 말 것). 본문의 `<주소>` 줄도 생략하고 `[집](geo:34.3814,132.4492)`만 남긴다
 - 사진은 넣지 않는다 — 예준님이 Google Drive에서 수동으로 `![image](https://lh3.googleusercontent.com/d/<id>)` 추가
 
 ### 6. 응답 (슬랙용)
