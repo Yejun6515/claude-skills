@@ -1,6 +1,6 @@
 ---
 name: tiro-meeting-note
-description: Tiro 음성 회의를 Tiro MCP로 끌어와 사용자의 회의록_Template 노트 `# 클대리 정리`에 옮겨 담고, 맞는 프로젝트 폴더에 파일링한다. Tiro에 이미 생성된 '옵시디언 회의록' 문서가 있으면 그대로 가져오고(재요약 금지), 없으면 요약·전사를 받아 스킬에 내장된 '옵시디언 회의록' 양식(Background/Meeting Minutes/Follow ups)으로 직접 정리한다 — 예준님이 Tiro 앱에서 문서 생성을 안 눌러도 됨. 내용이 클대리 정리에 들어가므로 `# 티대리 정리` 섹션은 생략(Tiro 링크만 유지). 확정된 고유명사 오인식만 치환(Tiro Edited: corrected). 트리거 - "Tiro 회의록 정리해줘", "어제 미팅 옵시디언에 정리", "Tiro에서 회의록 가져와", "미팅 노트 만들어줘", "회의록 작성", "meeting minutes". Tiro 미팅 1건을 골라 볼트 프로젝트 폴더에 회의록으로 넣고 싶을 때.
+description: Tiro 음성 회의를 Tiro MCP로 끌어와 사용자의 회의록_Template 노트 `# 클대리 정리`에 옮겨 담고, 맞는 프로젝트 폴더에 파일링한다. Tiro에 이미 생성된 '옵시디언 회의록' 문서가 있으면 그대로 가져오고(재요약 금지), 없으면 요약·전사를 받아 스킬에 내장된 '옵시디언 회의록' 양식(Background/Meeting Minutes/Follow ups)으로 직접 정리한다 — 예준님이 Tiro 앱에서 문서 생성을 안 눌러도 됨. 내용이 클대리 정리에 들어가므로 `# 티대리 정리` 섹션은 생략(Tiro 링크만 유지). 확정된 고유명사 오인식만 치환(Tiro Edited: corrected). **PTJ 주간 팀 미팅 전용 모드 내장(§0)** — "팀 주간 미팅", "weekly meeting", "주간회의 정리해줘"라고만 하면 Tiro에서 `YYMMDD_Team meeting` 녹음을 찾아 `01. Projects\01.05 Monthly meeting\PTJ Weekly team meeting\YYMMDD.md`에 노트를 새로 만든다(폴더 확인 생략). 트리거 - "Tiro 회의록 정리해줘", "어제 미팅 옵시디언에 정리", "Tiro에서 회의록 가져와", "미팅 노트 만들어줘", "회의록 작성", "meeting minutes", "팀 주간 미팅", "weekly meeting". Tiro 미팅 1건을 골라 볼트 프로젝트 폴더에 회의록으로 넣고 싶을 때.
 ---
 
 # tiro-meeting-note — Tiro 요약 → Obsidian 회의록
@@ -18,7 +18,34 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 ## 언제 사용하나
 - "Tiro 회의록 정리해줘", "어제 미팅 옵시디언에 정리", "Tiro에서 회의록 가져와", "미팅 노트 만들어줘", "회의록 작성", "meeting minutes"
 - Tiro 미팅 1건을 골라 볼트의 프로젝트 폴더에 회의록으로 넣고 싶을 때.
+- **"팀 주간 미팅"·"weekly meeting"** — 경로·폴더를 안 줘도 §0 프리셋으로 바로 진행.
 - (전사본·이메일·PDF만으로 회의록을 만드는 경우는 이 스킬이 아니라 `note-digest`.)
+
+## §0. PTJ 주간 팀 미팅 모드 (weekly meeting) — 고정 경로 프리셋
+
+**트리거:** "팀 주간 미팅", "주간 미팅", "주간회의", "weekly meeting", "팀 미팅 정리해줘" — 폴더·경로를 주지 않고 이 말만 해도 발동.
+
+주간 팀 미팅은 **소스 폴더(U:\ 메일·문서)가 없고 Tiro 녹음만 있는 회의**라, 아래 프리셋으로 되묻지 않고 끝까지 진행한다.
+
+| 항목 | 고정값 |
+|---|---|
+| Tiro 매칭 | 제목 `YYMMDD_Team meeting` (`list_notes` 최근 목록 또는 `search_notes "Team meeting"`). 날짜를 안 주면 **오늘 자**, 오늘 게 없으면 가장 최근 것 |
+| 저장 경로 | `{vault}\01. Projects\01.05 Monthly meeting\PTJ Weekly team meeting\` |
+| 파일명 | **`YYMMDD.md`** (주제 접미사 없음 — 이 폴더 컨벤션) |
+| §3 폴더 확인 | **생략** (경로가 고정이므로 AskUserQuestion 안 함) |
+| `Category` | `meeting` |
+| `Venue` | 회의 형태(온라인/회의실) + `PTJ 주간 팀 미팅` |
+| `tags` | `topic/meeting` + 회의에서 실제 다룬 `entity/<고객사>` |
+| §5.5 단어 피커 | **자동 실행 안 함** (정례 사내 미팅 — "단어 피커도" 라고 명시할 때만) |
+
+**절차** — §1(요약 확보) → §1.5 양식으로 `# 클대리 정리` 작성 → §2 템플릿 조립 → **§3 대신 위 고정 경로에 저장** → §4 mentions(확인 후) → §5 위키 연결 → §6 보고.
+
+**주간 미팅 고유 규칙**
+- **파일이 이미 있으면** — 비어 있으면 그대로 채운다. 내용이 있으면 **덮어쓰지 말고** 사용자에게 갱신/추가 여부를 물은 뒤, 승인 시에도 `# Yejun's memo`는 손대지 않는다.
+- **본문은 안건 나열형** — 주간 미팅은 프로젝트별 진행 상황 보고가 대부분이라, §1.5 `## 2. Meeting Minutes` 아래를 **안건(프로젝트)별 소제목**으로 쪼개도 된다(합의/이슈/Q&A 구분이 억지스러우면 그렇게).
+- **`## 직전 주 대비 변화`** — 같은 폴더에서 **날짜가 바로 앞선 노트**를 읽어, 상태가 바뀐 안건만 3~6줄로 정리해 `# 클대리 정리`에 넣는다(직전 노트가 없으면 생략).
+- **Follow ups는 「할 일」 단일 표** — 사내 팀 미팅이라 PTJ/협력사/고객사 구분을 두지 않는다. 담당은 팀원 실명 1명, 마감 `YYYY.MM.DD`.
+- 나머지(티대리 생략, 용어 치환+보정표, 추측 금지, mentions 확인 후 기입)는 이 스킬 공통 규칙 그대로.
 
 ## 사전 조건 — Tiro MCP 연결
 - 등록(전역, 1회): `claude mcp add --scope user --transport http tiro https://mcp.tiro.ooo/mcp`
@@ -114,7 +141,7 @@ Tiro 템플릿 "옵시디언 회의록"(templateId 7213)과 동일 구조. 양�
 - `# Yejun's memo` 아래에 Tiro 노트 바로가기(webUrl 링크 또는 `[<제목>](<webUrl>)`)를 둔다. **기존 메모·바로가기는 손대지 않는다.**
 
 ### 3. 볼트 프로젝트 폴더 찾기 → 확인 → 저장
-**`note-digest` §4 정책을 그대로 따른다.** 확인 전에는 절대 쓰지 않는다.
+**`note-digest` §4 정책을 그대로 따른다.** 확인 전에는 절대 쓰지 않는다. (**예외: §0 주간 팀 미팅 모드** — 경로가 고정이라 이 단계를 건너뛴다.)
 1. 요약 내용에서 프로젝트·고객명 추론(POSCO·FCT·Zhengrui·SEJAL 등).
 2. `{vault}\01. Projects\<카테고리>\<프로젝트>` 스캔 → 후보 1~3개.
 3. **AskUserQuestion**으로 대상 폴더 확인. 못 찾으면 경로 직접 받기 / 새 폴더 생성 여부 질문.
@@ -135,7 +162,7 @@ Tiro 템플릿 "옵시디언 회의록"(templateId 7213)과 동일 구조. 양�
 
 ### 5.5 일본어 단어 피커 (자동 — tiro-word-tts 1단계)
 회의가 **일본어 회의**(전사·요약이 일본어 기반)면, 노트 저장 후 `tiro-word-tts` 스킬 1단계를 자동 실행한다:
-`get_note_transcript`로 전사 확보 → 학습가치 단어 추출(`_tiro_words.json`) → `build_picker.py`로 **단어 피커 HTML** 생성. 위치는 소스 폴더(U:\)가 있으면 거기, 없으면 `{tts_output_root}\12_TTS\YYMMDD_Primetals\`. 이후(단어 목록 붙여넣기 → TTS·Drive 업로드)는 tiro-word-tts 2단계. 한국어 회의면 건너뛴다.
+`get_note_transcript`로 전사 확보 → 학습가치 단어 추출(`_tiro_words.json`) → `build_picker.py`로 **단어 피커 HTML** 생성. 위치는 소스 폴더(U:\)가 있으면 거기, 없으면 `{tts_output_root}\12_TTS\YYMMDD_Primetals\`. 이후(단어 목록 붙여넣기 → TTS·Drive 업로드)는 tiro-word-tts 2단계. 한국어 회의면 건너뛴다. **§0 주간 팀 미팅 모드도 건너뛴다**(사용자가 "단어 피커도"라고 할 때만).
 
 ### 6. 보고
 저장 경로 + 핵심 2~3줄 요약 + 추가한 위키 링크 / 신규 ingest 후보 / 확인이 필요한 숫자·인물 + (일본어 회의면) 단어 피커 HTML 경로를 보고한다.
