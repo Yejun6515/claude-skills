@@ -4,6 +4,8 @@
 
 수식(자동, **건드리지 말 것**): `W28=SUM(W24:W27)` 장비소계 · `W34=N34*L34` SV가격 · `W37=W28+W34` 총계
 
+**문구 표준(2026-08 승인 지적 반영) → C-2 필독.** 결제·보증 조항의 콜론·일수 표기·어순 규칙. verify가 [FAIL]로 잡는다.
+
 **T&C 섹션 구성(2026-06 개정):** 1.Price · 2.Terms of Payment(Equipment + Supervising) · 3.Time of Delivery · 4.Terms of Delivery · 5.General conditions · 6.Guarantee Period · 7.Validity · 8.Other Conditions(우선순위 조항만). 세금·Export Control은 표준약관(첨부 PDF) Art.6/Art.22가 커버하므로 본문 미포함.
 
 **1.Price 하위 넘버링:** `(1)` 견적건명 → 그 아래 `1) Equipment / 2) Supervising / 3) Total`, `(2)` Conditions of dispatching SV. (상위 `1.~8.`와 구분)
@@ -59,9 +61,28 @@
   - (1) D67 `50% of Supervisory Services price shall be paid by T/T within (30) days of receiving Seller's Invoice with report showing 50% of man-days used.`
   - (2) D68 `Remaining 50% shall be paid by T/T within (30) days of receiving invoice with report showing all contract man-days used.`
 - **옵션 B** (time sheet 일괄) — `"sv_payment":"B"`:
-  - (1) D67 `100% of the total price: Shall be paid by T/T within 1 month after the signing of a time sheet.`
+  - (1) D67 `100% of the total price shall be paid by T/T within (30) days after the signing of a time sheet.`
   - (2) **삭제** — `fill`이 C68/D68을 자동으로 비움(행은 지우지 않아 아래 참조 보존).
 - B는 `fill`이 D67 교체 + C68/D68 비움까지 한 번에 처리하므로 `cells`로 손댈 필요 없음. A↔B 전환이 필요하면 master에서 새 `new`로 다시 시작(B는 비가역적으로 D68을 비우므로).
+
+## C-2. ⚠ 결제·보증 문구 표준 (2026-08 승인절차 지적 반영)
+
+승인에서 지적받은 문구 규칙. **master는 이미 수정됨**. 고객 조건에 맞춰 결제줄을 손으로 고쳐 쓸 때도 이 형태를 유지할 것 — `verify`가 아래 패턴을 **[FAIL]로 검출**한다(`quote.py`의 `BANNED_PHRASES`).
+
+| # | 금지 | 표준 | 이유 |
+|---|---|---|---|
+| 1 | `...total price: Shall be paid...` | `...total price shall be paid...` | 콜론+대문자 시작은 문장 아님. 모든 결제줄 동일 양식 |
+| 2 | `within 30days`, `within 90days` | `within (30) days`, `within (90) days` | 일수는 **괄호 + 띄어쓰기**로 통일 |
+| 3 | `shall be paid ... within 1 month` | `... within (30) days` | 결제기간은 **일(days)**로 통일 (납기의 months는 정상) |
+| 4 | `paid by T/T as for Advance Payment within (30) days` | `paid by T/T within (30) days as for Advance Payment` | 기간을 `by T/T` 바로 뒤에 — 어느 기간인지 모호해짐 방지 |
+| 5 | `from the date of presentation of Final Acceptance Certificate` | `from the date of Final Acceptance Certificate` | "presentation"이 애매한 표현 |
+
+**적용 후 master 표준문구:**
+- D59 `{{PAY_ADV_PCT}}% of the total price shall be paid by T/T within (30) days as for Advance Payment against our invoice after the contract.`
+- D60/D61 `{{PAY_LC_PCT}}% of the total price shall be paid by the way of an irrevocable letter of credit (L/C) issued by the customer's Bank in favor of the Seller within (90) days after contract.`
+- D62/D63 `{{PAY_FINAL_PCT}}% of the total price shall be paid by T/T within (30) days after the Buyer's receipt of the Seller's invoice, Final Acceptance Certificate issued by Buyer.`
+- D81/D82 `Guarantee Period is 12months from the date of Final Acceptance Certificate, or 22 months after FOB/FCA date, whichever comes earlier.`
+  - ※ 소프트웨어 건은 D82를 `or 22 months after the Seller's delivery of the software, whichever comes earlier.` 로 교체(사례 있음).
 
 ## D. 고정 조항 (보통 그대로, 필요시만 손댐)
 - **4. Terms of Delivery** (D74): `FOB / FCA ... INCOTERMS 2020` 기본.
@@ -72,6 +93,7 @@
 ## 검증 체크리스트 (draft 완성 후 자동 실행)
 
 1. **마커 잔존 스캔**: `{{` 하나라도 남으면 → 안 채운 칸. 전부 0이어야 통과.
+1-b. **문구 표준 스캔**(C-2): 콜론+`Shall be paid` / `30days` / 결제 `1 month` / Advance 어순 / `presentation of` → [FAIL]. 고객 요구로 예외를 써야 하면 사용자에게 확인 후 `BANNED_PHRASES`가 아닌 표현으로 재작성.
 2. **이전 건 잔존**: Subject/Ref.No/Spec번호에 다른 프로젝트 코드(0422N522 등) 안 남았는지.
 3. **Ref.No 개정 버전**: 재제출이면 `-R1`,`-R2` 표기했는지 (verify가 Ref.No 표면화).
 4. **결제 % 합**: `PAY_ADV + PAY_LC + PAY_FINAL = 100` (Equipment). Supervising은 옵션 A(50/50) 또는 B(100%/time sheet) — verify가 어느 쪽인지 표면화하니 의도한 쪽인지 확인.

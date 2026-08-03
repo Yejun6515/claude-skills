@@ -15,7 +15,7 @@ Subcommands:
           cells:  direct cell writes (numbers, dates as ISO yyyy-mm-dd).
           sv_payment (machine only): Supervising Services 결제조건 선택.
             "A" (기본) = 50/50 man-day 리포트 기준 (master 기본값, no-op).
-            "B" = 100% time sheet 서명 후 1개월 (D67 교체, C68/D68 삭제).
+            "B" = 100% time sheet 서명 후 (30)일 (D67 교체, C68/D68 삭제).
 
   verify  <out.xlsx> <machine|spare>
           Mechanical checks -> prints a report. Exit 1 if any FAIL.
@@ -169,8 +169,38 @@ def _coerce(v):
 
 
 # Supervising Services 결제조건 (machine). Master 기본값은 A(50/50). B는 100%/time-sheet.
-SV_PAY_B_D67 = ("100% of the total price: Shall be paid by T/T within 1 month "
+SV_PAY_B_D67 = ("100% of the total price shall be paid by T/T within (30) days "
                 "after the signing of a time sheet.")
+
+# 결제·보증 문구 표준 (2026-08 승인절차 지적 반영). 조건문에 아래 패턴이 남으면 FAIL.
+BANNED_PHRASES = [
+    (r"price\s*:\s*[Ss]hall be paid",
+     "'price: Shall be paid' → 'price shall be paid' (콜론·대문자 제거)"),
+    (r"within\s+\d+\s*days",
+     "일수는 괄호+띄어쓰기: 'within 30days' → 'within (30) days'"),
+    (r"[Ss]hall be paid[^.]*within\s+\d+\s*months?\b",
+     "결제기간 'within 1 month' → 'within (30) days' (일수로 통일). "
+     "※ 납기(Time of Shipment/Delivery)의 months 표기는 정상"),
+    (r"as for Advance Payment\s+within",
+     "'by T/T as for Advance Payment within (30) days' → "
+     "'by T/T within (30) days as for Advance Payment' (기간을 T/T 바로 뒤로)"),
+    (r"presentation of Final Acceptance Certificate",
+     "'from the date of presentation of Final Acceptance Certificate' → "
+     "'from the date of Final Acceptance Certificate' ('presentation of' 삭제)"),
+]
+
+
+def _check_phrases(ws):
+    """승인 지적 문구 패턴 스캔. [(cell, text, 안내), ...] 반환."""
+    hits = []
+    for row in ws.iter_rows():
+        for c in row:
+            if not isinstance(c.value, str):
+                continue
+            for pat, msg in BANNED_PHRASES:
+                if re.search(pat, c.value):
+                    hits.append((c.coordinate, c.value.strip(), msg))
+    return hits
 
 
 def _apply_spare_heading(ws, spare):
@@ -197,7 +227,7 @@ def _apply_sv_payment(ws, opt):
     """Switch the Supervising Services payment block (B66 아래 C67/D67, C68/D68).
 
     A = master 기본(50/50 man-day 리포트) → no-op.
-    B = 100% time sheet 서명 후 1개월 → D67 교체, (2)줄(C68/D68) 삭제.
+    B = 100% time sheet 서명 후 (30)일 → D67 교체, (2)줄(C68/D68) 삭제.
     행은 지우지 않고 값만 비워 아래 셀 참조(D71/D85 등) 보존.
     """
     if not opt or str(opt).upper() == "A":
@@ -209,12 +239,12 @@ def _apply_sv_payment(ws, opt):
     ws["D67"] = SV_PAY_B_D67
     ws["C68"] = None
     ws["D68"] = None
-    print("FILL sv_payment: B (100% / time sheet 서명 후 1개월) — C68/D68 비움")
+    print("FILL sv_payment: B (100% / time sheet 서명 후 (30)일) — C68/D68 비움")
 
 
 def cmd_fill(argv):
     out, vjson = argv[0], argv[1]
-    with open(vjson, encoding="utf-8") as f:
+    with open(vjson, encoding="utf-8-sig") as f:  # -sig: PowerShell이 붙이는 BOM 허용
         vals = json.load(f)
     tokens = vals.get("tokens", {})
     cells = vals.get("cells", {})
@@ -270,6 +300,14 @@ def cmd_verify(argv):
     else:
         oks.append("마커 잔존 없음")
 
+    # 1-b. 결제·보증 문구 표준 (2026-08 승인절차 지적)
+    bad = _check_phrases(ws)
+    if bad:
+        fails.append("문구 표준 위반 (승인 지적 패턴):\n      " + "\n      ".join(
+            f"{coord}: {txt!r}\n        -> {msg}" for coord, txt, msg in bad))
+    else:
+        oks.append("결제·보증 문구 표준 준수 (콜론·(30)days·Advance 어순·presentation of)")
+
     if kind == "machine":
         # equipment subtotal Σ(W24:W27)
         eq = [_num(ws[f"W{r}"].value) for r in range(24, 28)]
@@ -304,7 +342,7 @@ def cmd_verify(argv):
         d67 = str(ws["D67"].value or "")
         d68 = str(ws["D68"].value or "")
         if d67.startswith("100%"):
-            oks.append("SV 결제 = 옵션 B (100% / time sheet 서명 후 1개월)")
+            oks.append("SV 결제 = 옵션 B (100% / time sheet 서명 후 (30)일)")
             if d68.strip():
                 warns.append(f"SV 옵션 B인데 D68에 (2)줄 잔존={d68!r} — 비워야 함")
         elif d67.startswith("50%"):

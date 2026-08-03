@@ -34,7 +34,7 @@
 
 | 마커/셀 | 표준값 | 확인 포인트 |
 |---|---|---|
-| `{{PAYMENT_TERMS}}` (I37) | — | **고객마다 전혀 다름.** 예: "100% T/T 30일 후 납기" / "50% T/T 계약+50% L/C at sight" |
+| `{{PAYMENT_TERMS}}` (I37) | — | **고객마다 전혀 다름.** 예: "100% T/T 30일 후 납기" / "50% T/T 계약+50% L/C at sight". 영문으로 쓸 때는 기계와 **같은 문구 표준**(`machine_fields.md` C-2): `... shall be paid by T/T within (30) days ...` — 콜론+`Shall`, `30days`, `1 month` 금지(verify가 [FAIL]) |
 | `{{SHIPMENT_MONTHS}}` (I39) | — | 발주 후 선적 개월수 |
 | I38 (Terms of Delivery) | `FOB JAPAN (INCOTERMS 2020)` | 기본 유지, 다르면만 수정 |
 | Other Conditions (C48~) | Singapore 준거법·중재 | 고객/계약 따라 바뀔 수 있음 — 확인 |

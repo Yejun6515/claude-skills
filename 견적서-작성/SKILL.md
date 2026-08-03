@@ -14,6 +14,12 @@ description: "Primetals 고객 제출용 견적서(Quotation) 작성. 견적 내
 - **두 가지 사고를 반드시 잡는다**:
   - **C 빠뜨림** → `{{마커}}` 잔존 스캔 (안 바꾼 고객명·Ref.No·Subject·Spec번호)
   - **D 틀림** → 결제·L/C·납기·준거법은 **자동통과 금지**, 매번 사용자에게 확인 질문.
+- **결제·보증 문구 표준 (2026-08 승인 지적)** — 결제줄을 손으로 고쳐 쓸 때도 반드시 이 형태로. `verify`가 [FAIL]로 잡는다:
+  - `price: Shall be paid` ❌ → `price shall be paid` (콜론·대문자 금지, 모든 줄 같은 양식)
+  - `within 30days` ❌ → `within (30) days` (일수는 괄호+띄어쓰기)
+  - 결제기간 `within 1 month` ❌ → `within (30) days` (일수로 통일. 납기의 months는 정상)
+  - `by T/T as for Advance Payment within (30) days` ❌ → `by T/T within (30) days as for Advance Payment`
+  - `from the date of presentation of Final Acceptance Certificate` ❌ → `from the date of Final Acceptance Certificate` ("presentation" 애매)
 
 ## 워크플로
 
@@ -35,7 +41,7 @@ python <skill>/scripts/quote.py new <machine|spare> "견적서/<폴더>/YYYYMMDD
 - **추천 예비품(Spare) 유무**: 없으면 1.(1).1 헤더가 `Equipment`로 자동 정리됨(`fill` 자동감지; 강제는 `"spare":false`). 예비품 빠진 개정건에서 흔함.
 - **기계 Supervising Services 결제는 2지선다 — 반드시 물어본다**:
   - **A**: (1) 50% (man-day 50% 리포트 시) + (2) 나머지 50% (전체 man-day 리포트 시) ← 기본
-  - **B**: (1) 100% (time sheet 서명 후 1개월 내 일괄)
+  - **B**: (1) 100% (time sheet 서명 후 (30)일 내 일괄)
 - **SV 단가 220,000/MD 확인**: 표준 일비. MD수(L34)는 내부견적 `見積纏め` §4 計 C-MD와 일치해야. verify가 SV 알라밍으로 표면화.
 - **SV dispatch 조건(표준)**: MD는 **CMD(calendar man-days)** — 표 라벨 `CMDs`. 근무 **주6일(월~토)·8h(08:00–17:00, 점심1h)**, **이동일 MD 산입(일본 왕복=편도당 1일)**, Overtime 요율 + 통역 고객부담. 상세·요율표·요일그룹핑(6일제 월~토/일·휴일) → `assets/machine_fields.md` B-2.
 
@@ -47,7 +53,7 @@ python <skill>/scripts/quote.py new <machine|spare> "견적서/<폴더>/YYYYMMDD
              "PAY_ADV_PCT":"20","PAY_LC_PCT":"70","PAY_FINAL_PCT":"10"},
   "cells":  {"W24":76766000,"N24":76766000,"L34":95} }
 ```
-> 기계 Supervising 결제는 **2지선다**(토큰 아님) — `values.json`에 `"sv_payment":"A"`(50/50, 기본) 또는 `"B"`(100%/time sheet 서명 후 1개월)를 넣는다. B는 `fill`이 D67 교체 + C68/D68 비움까지 자동 처리. 인터뷰에서 어느 쪽인지 반드시 확인.
+> 기계 Supervising 결제는 **2지선다**(토큰 아님) — `values.json`에 `"sv_payment":"A"`(50/50, 기본) 또는 `"B"`(100%/time sheet 서명 후 (30)일)를 넣는다. B는 `fill`이 D67 교체 + C68/D68 비움까지 자동 처리. 인터뷰에서 어느 쪽인지 반드시 확인.
 > **Ref.No 개정**: REF_NO 토큰에 `-R1` 등 접미를 포함해 넣는다(예 `"REF_NO":"0025S242-R1"`).
 > **Spare 헤더**: 예비품 품목 없으면 `fill`이 E22를 `Equipment`로 자동 정리(E24:E27에 'spare' 없을 때). 강제 유지/삭제는 `"spare": true|false`.
 > **세금(Tax) 조항은 기본 미포함.** 고객이 본문에 명시적 세금조건을 요구하는 건에만 추가(표준약관 PDF 커버 여부는 원문 확인).
@@ -59,7 +65,7 @@ python <skill>/scripts/quote.py fill "<draft.xlsx>" values.json
 ```
 python <skill>/scripts/quote.py verify "<draft.xlsx>" <machine|spare>
 ```
-- `[FAIL]` (마커 잔존, 견적일 누락 등) → 반드시 수정 후 재실행.
+- `[FAIL]` (마커 잔존, **결제·보증 문구 표준 위반**, 견적일 누락 등) → 반드시 수정 후 재실행.
 - `[확인]` (결제%합·L/C·Validity 미래·준거법) → **Claude가 사용자와 직접 점검**. 통과 못 하면 멈춘다.
 - 필요시 `quote.py dump` 로 전체 셀을 눈으로 재확인.
 
