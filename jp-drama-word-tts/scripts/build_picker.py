@@ -4,32 +4,26 @@ r"""분석완성.xlsx B열 → TTS 단어 피커 HTML 생성.
 사용법: python build_picker.py <화 폴더> <제목>
   예:   python build_picker.py "...\260712_쿠조1" 쿠조1
 - 입력: {폴더}\{제목}_분석완성.xlsx (B열: 단어(읽기) - 뜻, ...)
-- 단어장: {폴더 부모}\_tts단어장.csv (없으면 생성) — 등록 단어는 회색·선택불가
+- 단어장: 볼트 15.10. 일본어\_tts단어장.csv (없으면 생성) — 등록 단어는 회색·선택불가
 - 출력: {폴더}\단어피커_{제목}.html
 """
-import csv
 import html
 import os
 import re
 import sys
 
+sys.path.insert(0, os.path.expanduser(r"~\.claude\skills\_config"))
+from vocab_db import load_done_words, vocab_csv_path  # noqa: E402
+
 EP_DIR = sys.argv[1]
 TITLE = sys.argv[2]
-PARENT = os.path.dirname(os.path.abspath(EP_DIR))
 XLSX = os.path.join(EP_DIR, f"{TITLE}_분석완성.xlsx")
-DB_CSV = os.path.join(PARENT, "_tts단어장.csv")
+DB_CSV = vocab_csv_path()
 OUT = os.path.join(EP_DIR, f"단어피커_{TITLE}.html")
 
 import openpyxl  # noqa: E402
 
-if not os.path.exists(DB_CSV):
-    with open(DB_CSV, "w", encoding="utf-8-sig", newline="") as f:
-        csv.writer(f).writerow(["단어", "읽기", "뜻", "생성일", "출처", "mp3파일명"])
-done_words = set()
-with open(DB_CSV, encoding="utf-8-sig", newline="") as f:
-    for i, row in enumerate(csv.reader(f)):
-        if i and row:
-            done_words.add(row[0].strip())
+done_words = load_done_words()
 
 wb = openpyxl.load_workbook(XLSX)
 ws = wb.active
@@ -208,4 +202,5 @@ with open(OUT, "w", encoding="utf-8") as f:
     f.write(page)
 
 print("어휘:", len(words), "| 문법:", len(grammar), "| 이미 TTS:", len(done_words))
+print("단어장:", DB_CSV)
 print("OUT:", OUT)

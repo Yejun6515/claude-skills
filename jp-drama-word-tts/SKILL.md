@@ -18,7 +18,7 @@ LLN 드라마 파이프라인의 **단어 학습 구간**을 담당한다. 전�
                  "N. 単語_대본.txt"(한자, 눈용) + "N. 単語_대본tts.txt"(히라가나, TTS용)
 5. 배치 실행   : run_tts_batch.py → {화폴더}\TTS\N. 単語.mp3 (번호 = 피커 선택 순서)
 6. 단어정리 txt: Claude가 {화폴더}\TTS\{제목}_단어정리.txt 작성 (글라스용, 아래 양식)
-7. 단어장 기록 : record_vocab.py → {부모폴더}\_tts단어장.csv (다음 화 피커에서 회색 처리)
+7. 단어장 기록 : record_vocab.py → 볼트 15.10. 일본어\_tts단어장.csv (다음 화 피커에서 회색 처리)
 8. 정리        : {제목}_대사단어_글라스.txt(jp-smartglass-vocab 산출물)를 media 폴더로 이동,
                  media 폴더의 jpg(장면 캡처) 전부 삭제. 탐색기로 TTS 폴더 열어 안내.
 ```
@@ -69,7 +69,9 @@ word-tts 스킬의 "스마트 글라스용 단어 정리 txt"와 동일. 번호�
 
 ## _tts단어장.csv (누적 단어장)
 
-- 위치: **화 폴더의 부모**(= `일본어 공부`)`\_tts단어장.csv`, UTF-8 BOM
+- 위치: **볼트** `{vault_root}\15. Training\15.10. 일본어\_tts단어장.csv`, UTF-8 BOM
+  — 경로는 `_config\vocab_db.py`가 `local-paths.md`의 `vault_root`로 계산한다(하드코딩 금지).
+  볼트는 집·회사 PC가 동기화되므로 **드라마·Tiro 회의·Primetals 단어가 한 파일**로 모인다.
 - 스키마: `단어,읽기,뜻,생성일,출처,mp3파일명`
 - build_picker.py가 읽어 이미 만든 단어를 회색·선택불가 처리 → 화가 거듭될수록 중복 없음
 

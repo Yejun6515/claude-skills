@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""단어정리 txt를 파싱해 {부모 폴더}\_tts단어장.csv에 기록.
+r"""단어정리 txt를 파싱해 볼트 15.10. 일본어\_tts단어장.csv에 기록.
 
 사용법: python record_vocab.py <화 폴더> <제목> <출처라벨> <날짜 YYYY-MM-DD>
   예:   python record_vocab.py "...\260712_쿠조1" 쿠조1 "쿠조의 대죄 1화" 2026-07-12
@@ -11,23 +11,18 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.expanduser(r"~\.claude\skills\_config"))
+from vocab_db import load_done_words, vocab_csv_path  # noqa: E402
+
 EP_DIR, TITLE, SOURCE, DATE = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 TXT = os.path.join(EP_DIR, "TTS", f"{TITLE}_단어정리.txt")
 MP3DIR = os.path.join(EP_DIR, "TTS")
-DB = os.path.join(os.path.dirname(os.path.abspath(EP_DIR)), "_tts단어장.csv")
+DB = vocab_csv_path()
 
 with open(TXT, encoding="utf-8") as f:
     blocks = [b for b in f.read().strip().split("\n\n") if b.strip()]
 
-existing = set()
-if os.path.exists(DB):
-    with open(DB, encoding="utf-8-sig", newline="") as f:
-        for i, row in enumerate(csv.reader(f)):
-            if i and row:
-                existing.add(row[0])
-else:
-    with open(DB, "w", encoding="utf-8-sig", newline="") as f:
-        csv.writer(f).writerow(["단어", "읽기", "뜻", "생성일", "출처", "mp3파일명"])
+existing = load_done_words()
 
 added = 0
 with open(DB, "a", encoding="utf-8-sig", newline="") as f:

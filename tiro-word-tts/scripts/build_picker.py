@@ -5,10 +5,9 @@ r"""_tiro_words.json → Tiro 회의 단어 피커 HTML 생성.
   예:   python build_picker.py "U:\...\260723_Hengtong미팅" Hengtong0723
 - 입력: {작업폴더}\_tiro_words.json  [{"word","reading","meaning","count","lines":[{"jp","ko"}]}]
 - 중복 사전: {vault}\15. Training\15.10. 일본어\*.md 의 |T|D|P|E| 표 단어
-             (+ 같은 폴더 _tts단어장.csv 있으면 병합) — 기존 단어는 회색·선택불가
+             + 누적 단어장 _tts단어장.csv(같은 폴더) — 기존 단어는 회색·선택불가
 - 출력: {작업폴더}\단어피커_{제목}.html
 """
-import csv
 import glob
 import html
 import json
@@ -16,21 +15,17 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.expanduser(r"~\.claude\skills\_config"))
+from vocab_db import jp_dir, load_done_words  # noqa: E402
+
 WORK_DIR = sys.argv[1]
 TITLE = sys.argv[2]
 JSON_IN = os.path.join(WORK_DIR, "_tiro_words.json")
 OUT = os.path.join(WORK_DIR, f"단어피커_{TITLE}.html")
 
-# --- 볼트 단어 노트에서 기존 단어 수집 ---
-LOCAL_PATHS = os.path.expanduser(r"~\.claude\skills\_config\local-paths.md")
-vault_root = ""
-with open(LOCAL_PATHS, encoding="utf-8") as f:
-    for line in f:
-        if line.startswith("vault_root:"):
-            vault_root = line.split(":", 1)[1].strip()
-JP_DIR = os.path.join(vault_root, "15. Training", "15.10. 일본어")
-
-done_words = set()
+# --- 볼트 단어 노트 + 누적 단어장에서 기존 단어 수집 ---
+JP_DIR = jp_dir()
+done_words = load_done_words()
 for path in glob.glob(os.path.join(JP_DIR, "*.md")):
     with open(path, encoding="utf-8") as f:
         for line in f:
@@ -40,12 +35,6 @@ for path in glob.glob(os.path.join(JP_DIR, "*.md")):
             cells = [c.strip() for c in line.strip("|").split("|")]
             if len(cells) >= 4 and cells[0] not in ("T", ""):
                 done_words.add(cells[0])
-csv_db = os.path.join(JP_DIR, "_tts단어장.csv")
-if os.path.exists(csv_db):
-    with open(csv_db, encoding="utf-8-sig", newline="") as f:
-        for i, row in enumerate(csv.reader(f)):
-            if i and row:
-                done_words.add(row[0].strip())
 
 with open(JSON_IN, encoding="utf-8") as f:
     items = json.load(f)

@@ -117,8 +117,9 @@ python scripts\upload_drive.py   "<스테이징>" <YYMMDD_Primetals>   # rclone 
 
 - Anki 반영·`_tts단어장.csv` 기록은 **primetals-word-anki**가 담당(집 PC에서 리빌드).
   이 스킬이 만든 단어 노트·Drive mp3를 그대로 재료로 쓴다.
-- 중복 방지: 피커가 볼트 단어 노트 전체(+ 있으면 `_tts단어장.csv`)를 읽어 기존 단어를
-  회색 처리하므로 회의가 거듭돼도 중복 생성 없음.
+- 중복 방지: 피커가 볼트 단어 노트 전체 + 누적 `_tts단어장.csv`를 읽어 기존 단어를
+  회색 처리하므로 회의가 거듭돼도 중복 생성 없음. 단어장 경로는 `_config\vocab_db.py`가
+  `vault_root` 기준으로 계산 — **드라마·Primetals 스킬과 같은 한 파일**을 본다.
 
 **Version**: 1.1 — 2026-07-31 예문 출처 규칙 강화(발화 `voice` → 자료 `doc` → 창작 `made` 3단계,
 `lines[].src` 필드, 출처 내역 보고 의무, 볼트 노트 `출처:` 줄에 자료 파일명·집계 병기).

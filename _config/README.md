@@ -18,10 +18,18 @@ business_trip_output_root: U:\新_海外営業部\Kim Yejun\99_Business trip
 | 키 | 무엇 | 쓰는 스킬 |
 |---|---|---|
 | `project_root` | 새 코딩 프로젝트를 만드는 기본 폴더 | (글로벌 규칙 `CLAUDE-global.md`) |
-| `vault_root` | Obsidian 볼트 루트 | note-digest · note-description · wiki-ingest · wiki-link · steel-project-wiki-context · tiro-meeting-note · mail-bridge · meeting-folder-brief · youtube-obsidian |
+| `vault_root` | Obsidian 볼트 루트 | note-digest · note-description · wiki-ingest · wiki-link · steel-project-wiki-context · tiro-meeting-note · mail-bridge · meeting-folder-brief · youtube-obsidian · (vocab_db.py 경유) jp-drama-word-tts · tiro-word-tts · primetals-word-anki |
 | `tts_output_root` | word-tts MP3 출력 루트 | word-tts |
 | `mail_automation_root` | 메일 자동화 작업 폴더 (업무 PC에만 있음) | mail-bridge |
 | `business_trip_output_root` | 출장 일정 Excel 출력 루트 | travel-schedule-excel |
+
+## 공용 모듈
+
+- `vocab_db.py` — 누적 TTS 단어장(`_tts단어장.csv`) 한 곳 접근.
+  정본은 `{vault_root}\15. Training\15.10. 일본어\_tts단어장.csv` 하나이며(볼트는 집·회사 PC가
+  동기화되므로 어디서 만든 단어든 중복 방지가 이어짐), 스킬 스크립트는 경로를 직접 조립하지 말고
+  `vocab_csv_path()` / `load_done_words()` / `jp_dir()`를 쓴다.
+- `pdf_read.py` — PDF 텍스트 판독.
 
 ## 규칙
 
