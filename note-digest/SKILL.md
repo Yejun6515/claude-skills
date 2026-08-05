@@ -19,6 +19,14 @@ description: Read the source files behind an Obsidian note — Outlook emails (.
 ## 볼트 루트
 볼트 경로는 **PC마다 다르다** — `%USERPROFILE%\.claude\skills\_config\local-paths.md`의 `vault_root:` 값을 읽는다(파일/키 없으면 사용자에게 물어 거기 저장 — `_config\README.md`). 아래 `{vault}` = 그 값.
 
+## 프로젝트 폴더 경로 (공통 정본)
+
+**새 노트·새 폴더를 만들거나 프로젝트 자료를 찾을 때, 탐색하지 말고 매핑표에서 볼트 경로와 U: 경로를 동시에 얻는다.**
+
+- 정본: `C:\Users\Z006K14G\Desktop\Yejun\01. Projects\0_노트정리 진행상황.md` 의 「📁 프로젝트 폴더 매핑」 절 (포인터: `.claude\skills\_config\project-folder-map.md`)
+- 볼트 전체 Grep·U: 전체 탐색 금지. 표에 **없는 프로젝트는 지어내지 말고 예준님께 확인**하고, 확인되면 그 표에 한 줄 추가한다
+- 폴더 규칙도 같은 절에 있다 — 3계층(회사→프로젝트→케이스) · 케이스 `YYMMDD_주제` · `_attachments\<메일번호>__<파일명>` · 제출물 `submission\` · HTML은 U:에 두고 노트엔 `file:///` 링크
+- 노트를 만들면 `# Yejun's memo`에 **소스 폴더 `file:///` 바로가기 필수** — 표가 이 링크에서 재도출되므로 빠뜨리면 표가 늙는다
 ## 입력 두 가지
 1. **소스 폴더** — 사용자가 폴더 경로를 줌. 그 안의 `.msg`/`.docx`/`.xlsx`/`.pptx`/`.pdf`를 모두 읽음.
 2. **기존 노트** — 노트 본문의 바로가기(`[...](<file:///U:\...>)`)가 가리키는 폴더를 읽어 그 노트를 채움. **바로가기 링크는 그대로 둔다.**
@@ -37,6 +45,19 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skillDir>\scripts\extract_
 - PDF는 덤프에 포인터만 남으므로, 중요 PDF는 **Read 도구로 직접** 읽는다.
 - **메일 본문에 박힌 스크린샷/사진(`image003.png` 등)은 텍스트 덤프에 안 나온다.** 본문이 "사양서에는 / 아래 사진처럼 / ITB에는" 하며 이미지를 가리키면, Outlook COM으로 첨부를 임시폴더에 `SaveAsFile` 한 뒤 **Read 도구로 그 이미지를 직접 본다**(효율 규정 표·능효 라벨 등급·현품 사진이 거기 들어 있는 경우가 많다). 작업 후 임시폴더는 지운다.
 
+### PDF 읽기 — poppler 없이
+
+Read 툴의 PDF 경로는 `pdftoppm`(poppler)을 요구하는데 이 PC엔 없다(설치에 관리자 권한 필요). **PyMuPDF가 이미 깔려 있으므로 그걸 쓴다** — 「PDF 렌더러 미설치」로 포기하지 말 것.
+
+```powershell
+# 텍스트 레이어 추출 (도면·스캔이 아니면 이것으로 충분, 토큰 저렴)
+python "C:\Users\Z006K14G\.claude\skills\_config\pdf_read.py" "<file.pdf>"
+# 도면·스캔·색 정보가 필요하면 PNG로 렌더한 뒤 Read 툴로 이미지를 본다
+python "C:\Users\Z006K14G\.claude\skills\_config\pdf_read.py" "<file.pdf>" --png <outdir> --dpi 110 --pages 1-4
+```
+
+- **색·취소선·말풍선은 텍스트로 안 잡힌다** — 「청색 착색 항목」 같은 지시가 있으면 반드시 PNG 렌더 후 눈으로 확인한다(2026-08-05 P2H 5000t 스코프표에서 실증)
+- dpi 110이면 A4 가로 표가 읽힌다. 페이지가 많으면 필요한 페이지만 `--pages`로 잘라 토큰을 아낀다
 ### 2. 내용 파악
 - **주체(회사/담당)**, **쟁점**, **책임소재**, **합의/미결**, **다음 액션**, 문서면 **핵심 수치·일정·조건**을 잡는다.
 - 답장 체인은 시간순으로 흐름을 푼다. 메일/문서에 **없는 사실은 지어내지 않는다**(불명확은 "미확인").

@@ -49,6 +49,14 @@ Tiro가 **이미 만들어 둔 회의 요약본**(한 페이지 문서, Obsidian
 - **Follow ups는 「할 일」 단일 표** — 사내 팀 미팅이라 PTJ/협력사/고객사 구분을 두지 않는다. 담당은 팀원 실명 1명, 마감 `YYYY.MM.DD`.
 - 나머지(티대리 생략, 용어 치환+보정표, 추측 금지, mentions 확인 후 기입)는 이 스킬 공통 규칙 그대로.
 
+## 프로젝트 폴더 경로 (공통 정본)
+
+**새 노트·새 폴더를 만들거나 프로젝트 자료를 찾을 때, 탐색하지 말고 매핑표에서 볼트 경로와 U: 경로를 동시에 얻는다.**
+
+- 정본: `C:\Users\Z006K14G\Desktop\Yejun\01. Projects\0_노트정리 진행상황.md` 의 「📁 프로젝트 폴더 매핑」 절 (포인터: `.claude\skills\_config\project-folder-map.md`)
+- 볼트 전체 Grep·U: 전체 탐색 금지. 표에 **없는 프로젝트는 지어내지 말고 예준님께 확인**하고, 확인되면 그 표에 한 줄 추가한다
+- 폴더 규칙도 같은 절에 있다 — 3계층(회사→프로젝트→케이스) · 케이스 `YYMMDD_주제` · `_attachments\<메일번호>__<파일명>` · 제출물 `submission\` · HTML은 U:에 두고 노트엔 `file:///` 링크
+- 노트를 만들면 `# Yejun's memo`에 **소스 폴더 `file:///` 바로가기 필수** — 표가 이 링크에서 재도출되므로 빠뜨리면 표가 늙는다
 ## 사전 조건 — Tiro MCP 연결
 - 등록(전역, 1회): `claude mcp add --scope user --transport http tiro https://mcp.tiro.ooo/mcp`
 - 인증: 첫 연결 시 `/mcp`에서 **Tiro 선택 → OAuth(Google) 로그인**. `auth_status` 도구로 세션 확인.
