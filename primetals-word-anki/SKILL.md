@@ -45,11 +45,19 @@ description: "Primetals 업무 일본어 단어 배치 워크플로우 — 옵�
                        → 이어서 아래 '임포트' 명령으로 Anki 임포트 창까지 띄워준다
                        (guid=(단어,읽기) 고정이라 재임포트해도 학습기록 유지·신규만 추가)
 5. 임포트·동기화     : 클대리가 창을 띄우고, 사용자가 Import 클릭 + 동기화(Y)
-6. 단어장 기록       : 새 단어를 볼트 15.10. 일본어\_tts단어장.csv에 추가
+6. 단어장 기록       : word-tts\scripts\record_vocab.py 로 볼트 _tts단어장.csv에 추가
                        (경로는 _config\vocab_db.py의 vocab_csv_path()로 구한다)
                        (단어,읽기,뜻,생성일,출처=Primetals YYMMDD,mp3파일명)
                        → 드라마 피커에서도 중복 방지됨
 ```
+
+> ★ **Anki 리빌드·임포트는 배치당 한 PC에서 1회만** (2026-08-07 예준님 지시).
+> Anki는 AnkiWeb으로 자체 동기화되므로, 같은 배치를 다른 PC에서 다시 처리할 땐
+> **4·5단계를 건너뛴다.** 양쪽에서 임포트하면 동기화 충돌 화면이 뜨고, 거기서
+> **Upload to AnkiWeb을 누르면 반대쪽 학습기록이 덮어써진다.** 헷갈리면 Download 쪽을
+> 고르고 사용자에게 물을 것. 나머지 단계(TTS·txt·csv·드라이브)는 재실행해도 무해.
+
+> 배치 6단계 절차의 **정본은 `word-tts\references\full-pipeline.md`** — 이 스킬은 그중 뒷단.
 
 ## 스크립트
 
@@ -93,7 +101,10 @@ Start-Process "$env:LOCALAPPDATA\Programs\Anki\anki.exe" -ArgumentList "`"<apkg 
 - Anki 백업이 필요한 작업(덱 삭제 등)은 **Anki 완전 종료 후** `%APPDATA%\Anki2` 폴더째 복사.
 - 노트 내 중복 단어(같은 단어+읽기)는 첫 등장만 카드화.
 
-**Version**: 1.1 — 2026-07-31 텍스트 전용 기본화(`--audio`로 예전 동작), 볼트 경로 자동 탐색,
+**Version**: 1.2 — 2026-08-07 Anki 단계는 **배치당 한 PC에서 1회**(다른 PC는 AnkiWeb 동기화로
+이미 반영 — 재임포트 시 충돌·덮어쓰기 위험), 단어장 기록은 `word-tts\scripts\record_vocab.py`,
+절차 정본은 `word-tts\references\full-pipeline.md`. 265단어 리빌드 검증.
+1.1 — 2026-07-31 텍스트 전용 기본화(`--audio`로 예전 동작), 볼트 경로 자동 탐색,
 회사 PC Anki 설치 + 임포트 자동 실행. 노트 8개·192단어로 임포트 검증 완료.
 1.0 — 2026-07-12 초기 구축(노트 6개·164단어·음성 144, 무음 22개는 보류).
 관련: word-tts(음성 생성·txt 양식), jp-drama-word-tts(드라마 쪽 대응 스킬), _tts단어장.csv 공유.

@@ -1,6 +1,6 @@
 ---
 name: tiro-word-tts
-description: "Tiro 회의 단어 TTS 워크플로우 — 일본어 회의 전사에서 단어를 추출해 ①단어 피커 HTML 생성(LLN 드라마 피커의 회의 버전) ②사용자가 고른 단어를 볼트 YYMMDD_Primetals.md 단어 노트에 추가 ③word-tts로 MP3 배치 생성(예문=실제 회의 발화 우선, 부족분만 창작) ④스마트 글라스용 단어정리 txt ⑤rclone으로 구글 드라이브 12_TTS 자동 업로드. 트리거: 'Tiro 단어 피커', '회의 단어 피커 만들어줘', 피커에서 복사한 단어 목록 붙여넣기('단어 골랐어'), '회의 단어 TTS'. tiro-meeting-note/meeting-folder-brief가 일본어 회의를 정리할 때 1단계(피커)를 자동 실행한다."
+description: "Tiro 회의 단어 TTS 워크플로우 — 일본어 회의 전사에서 단어를 추출해 ①단어 피커 HTML 생성(LLN 드라마 피커의 회의 버전) ②사용자가 고른 단어를 볼트 YYMMDD_Primetals.md 단어 노트에 추가 ③word-tts로 MP3 배치 생성(예문=실제 회의 발화 우선, 부족분만 창작) ④스마트 글라스용 단어정리 txt ⑤rclone으로 구글 드라이브 12_TTS 자동 업로드 ⑥누적 _tts단어장.csv 기록 ⑦Anki 덱 리빌드·임포트 창까지 **끝까지** 실행. 트리거: 'Tiro 단어 피커', '회의 단어 피커 만들어줘', 피커에서 복사한 단어 목록 붙여넣기('단어 골랐어'), '회의 단어 TTS'. tiro-meeting-note/meeting-folder-brief가 일본어 회의를 정리할 때 1단계(피커)를 자동 실행한다."
 ---
 
 # tiro-word-tts (Tiro 회의 단어 TTS 워크플로우)
@@ -32,8 +32,14 @@ jp-drama-word-tts(넷플릭스 LLN 파이프라인)의 **회의 버전**. Tiro �
                   (N = 단어정리 txt 번호 = 피커 선택 순서)
 9. 업로드       : upload_drive.py → 구글 드라이브 12_TTS\YYMMDD_Primetals\
                   (mp3 + 단어정리 txt만. 집 PC처럼 G: 마운트가 있으면 이 단계 불필요)
-10. 안내        : 탐색기로 스테이징 폴더 열기 + 보고
+10. 단어장 기록 : word-tts\scripts\record_vocab.py → 볼트 _tts단어장.csv (단어 기준 중복 스킵)
+11. Anki 리빌드 : primetals-word-anki\scripts\build_apkg.py → apkg 재생성 + 임포트 창 실행
+                  (Import 클릭·AnkiWeb 동기화는 사용자. **배치당 한 PC에서 1회만**)
+12. 안내        : 탐색기로 스테이징 폴더 열기 + 보고(예문 출처 내역 포함)
 ```
+
+> ★ 2026-08-07 예준님 지시: **10·11단계까지가 이 스킬의 범위**다. 예전엔 "Anki는 집 PC에서
+> 나중에"였으나, 회사 PC에도 Anki가 깔려 있으므로 **한자리에서 끝까지 간다.** 되묻지 말 것.
 
 ## 경로 (PC별)
 
@@ -70,6 +76,8 @@ jp-drama-word-tts(넷플릭스 LLN 파이프라인)의 **회의 버전**. Tiro �
 python scripts\build_picker.py   "<작업폴더>" <제목>     # _tiro_words.json → 단어피커_{제목}.html
 python scripts\run_tts_batch.py  "<스테이징>"            # 대본\*_대본tts.txt → 単語(よみ).mp3
 python scripts\upload_drive.py   "<스테이징>" <YYMMDD_Primetals>   # rclone → gdrive:12_TTS/
+python ..\word-tts\scripts\record_vocab.py "<스테이징>\YYMMDD_단어정리.txt" --source "YYMMDD 회의명"
+python ..\primetals-word-anki\scripts\build_apkg.py                 # Anki 덱 전체 리빌드
 ```
 
 - **한글 경로 주의**: 파이썬 코드를 stdin으로 넘기지 말고 .py 파일 실행 + `PYTHONIOENCODING=utf-8`.
@@ -113,15 +121,25 @@ python scripts\upload_drive.py   "<스테이징>" <YYMMDD_Primetals>   # rclone 
 - 볼트 단어 노트 표: `| 単語 | 뜻 | よみ | 例文。(번역.) |` — 표 위에
   `출처: [회의명](Tiro webUrl) YYYY-MM-DD` 한 줄(파서는 표만 읽으므로 무해).
 
-## 이후 파이프라인 (이 스킬 밖)
+## 뒷단 (10·11단계 — 이 스킬이 직접 호출한다)
 
-- Anki 반영·`_tts단어장.csv` 기록은 **primetals-word-anki**가 담당(집 PC에서 리빌드).
-  이 스킬이 만든 단어 노트·Drive mp3를 그대로 재료로 쓴다.
+- `_tts단어장.csv` 기록 = **word-tts\scripts\record_vocab.py**. 단어정리 txt를 파싱해
+  `(단어,읽기,뜻,생성일,출처,mp3파일명)`을 append. 이미 있는 단어는 스킵.
+- Anki 리빌드 = **primetals-word-anki\scripts\build_apkg.py** (텍스트 전용 기본).
+  볼트 노트 전체를 다시 읽어 덱을 통째로 재생성 → 임포트 창까지 띄우고 사용자에게 넘긴다.
+  - ★ **다른 PC에서 같은 배치를 다시 돌릴 땐 Anki 단계 건너뛴다** (2026-08-07 예준님 지시).
+    Anki는 AnkiWeb으로 자체 동기화되므로 이미 반영돼 있고, 양쪽에서 임포트하면 동기화
+    충돌 화면이 뜬다. 거기서 **Upload to AnkiWeb을 누르면 반대쪽 학습기록이 날아간다.**
+  - 1~10단계는 다른 PC에서 재실행해도 무해(csv 중복 스킵, 드라이브 덮어쓰기).
+- 상세 절차는 **word-tts\references\full-pipeline.md** 한 곳에 정리돼 있다.
 - 중복 방지: 피커가 볼트 단어 노트 전체 + 누적 `_tts단어장.csv`를 읽어 기존 단어를
   회색 처리하므로 회의가 거듭돼도 중복 생성 없음. 단어장 경로는 `_config\vocab_db.py`가
   `vault_root` 기준으로 계산 — **드라마·Primetals 스킬과 같은 한 파일**을 본다.
 
-**Version**: 1.1 — 2026-07-31 예문 출처 규칙 강화(발화 `voice` → 자료 `doc` → 창작 `made` 3단계,
+**Version**: 1.2 — 2026-08-07 범위를 **누적 csv 기록 + Anki 리빌드까지** 확장(10·11단계),
+Anki는 배치당 한 PC에서 1회(다른 PC는 AnkiWeb 동기화로 이미 반영). 절차 정본은
+word-tts\references\full-pipeline.md.
+1.1 — 2026-07-31 예문 출처 규칙 강화(발화 `voice` → 자료 `doc` → 창작 `made` 3단계,
 `lines[].src` 필드, 출처 내역 보고 의무, 볼트 노트 `출처:` 줄에 자료 파일명·집계 병기).
 1.0 — 2026-07-27 신설(예준님 아이디어: LLN 피커의 Tiro 버전 + Drive 업로드 자동화).
 관련: jp-drama-word-tts(드라마 대응 스킬) · word-tts(대본·TTS 규칙) · primetals-word-anki(Anki)
