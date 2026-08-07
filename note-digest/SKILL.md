@@ -64,7 +64,7 @@ python "C:\Users\Z006K14G\.claude\skills\_config\pdf_read.py" "<file.pdf>" --png
 
 ### 3. 노트 작성 — 사용자 템플릿 준수
 **노트 템플릿이 항상 우선이다.** 본문 구조는 내가 보기 좋다고 바꾸지 말고 **정본 템플릿을 그대로 따른다**(사용자가 모든 노트를 이 템플릿 형태로 통일해 나가는 중이므로, 기존 노트가 옛 구조라도 새로 쓸 땐 템플릿 구조를 쓴다). 정본은 볼트 `{vault}\50. Template\`:
-- **Event template.md** — 메일·이벤트·문서 정리의 기본. frontmatter `Date / Catetory / mentions / Google Drive / description / tags`, **본문 `# Yejun's memo` / `# 클대리 정리`** (※ 더 이상 `## Event` 단일 구조가 아님 — 작업 전에 템플릿 파일을 **Read해 현재 섹션을 확인**할 것).
+- **Event template.md** — 메일·이벤트·문서 정리의 기본. frontmatter `Date / Updated / Category / Submission / Submitter / mentions / Google Drive / description / tags`, **본문 `# Yejun's memo` / `# 클대리 정리`** (※ 더 이상 `## Event` 단일 구조가 아님 — 작업 전에 템플릿 파일을 **Read해 현재 섹션을 확인**할 것. `Submission`·`Submitter`는 2026-08-07 추가, 제출 노트에서만 채운다).
 - **회의록_Template.md** — 실제 회의록일 때. frontmatter `Date / Catetory / Venue / mentions / Tiro Address / Tiro Edited / description / tags`, 본문 `# Yejun's memo` / `# 클대리 정리`. **정본 템플릿에 `# 티대리 정리` 헤더가 남아 있어도, 내가 Tiro 요약을 클대리 정리에 정리해 넣었으면 그 헤더는 빼고 쓴다**(아래 생략 규칙).
 
 **본문 섹션 규칙 (Event·회의록 공통, 중요):**
@@ -141,7 +141,11 @@ Event 본문 구조(템플릿 우선, 상황에 맞게 가감) — **소스 링�
 
 ## 작성 규칙
 - **볼트에 삽입할 땐 폴더를 반드시 사용자 확인** — 매칭이 확실해 보여도 AskUserQuestion으로 대상 프로젝트 폴더를 확인받기 전에는 노트를 쓰지 않는다(§4).
-- **템플릿 frontmatter를 변형하지 않는다** — 필드명·순서·철자(`Catetory` 포함) 유지, 임의 필드 추가 금지.
+- **템플릿 frontmatter를 변형하지 않는다** — 필드명·순서 유지, **임의 필드 추가 금지**. 정본은 `50. Template\Event template.md`이며 **작업 전에 Read해 현재 필드를 확인**한다(과거 `Catetory` 오타는 볼트 전체 교정 완료 → 현재는 `Category`).
+- 🔴 **제출 노트(`Category: submission`)는 `Submission`·`Submitter` 2개를 반드시 함께 채운다 (2026-08-07 예준님 지시)** — 위 「임의 필드 추가 금지」의 예외가 아니라, **템플릿에 이미 들어 있는 정규 필드**다.
+  - `Submission: 영업|기술` — 분류 축은 **누가 냈나가 아니라 문서 성격**. 판정: ①**경계에서 애매하면 무조건 영업** ②영업자료와 함께 제출하면 영업(견적서에 사양서 동반 시 전체 영업) ③**사양서 단독 제출만 기술** ④SV MD는 영업
+  - `Submitter:` — 실제 제출자 **평문**(위키링크 아님). 획득 순서 ① `.msg`/COM의 **SenderName** ② 본문 서명 ③ 불명이면 **지어내지 말고 질문**. note-digest는 소스 `.msg`를 손에 쥐고 작업하므로 **공란이 나올 이유가 없다**
+  - 상세는 볼트 `CLAUDE.md` 「일반」절 · [[submission-frontmatter-official-record]]
 - **내 분석은 `# 클대리 정리`에만 작성(Event·회의록 공통), 소스 폴더 바로가기는 `# Yejun's memo`에. `# 티대리 정리`는 새로 만들지 않고(Tiro 내용은 클대리 정리로, 링크만 유지), 기존 노트의 `# 티대리 정리`·`# Yejun's memo`의 사용자 메모는 손대지 않는다.**
 - **노트 템플릿이 우선** — 새로 쓰는 노트는 정본 템플릿 구조를 따른다(사용자가 전 노트를 이 형태로 통일 중). 옛 `## Event` 단일 구조로 쓰지 말 것. 작업 전 `50. Template\Event template.md`를 Read해 현재 섹션을 확인한다.
 - **`description:`은 영어로 ~2줄(약 2문장)** — progressive(미리보기)용. 고유명사(SEJAL, PTJ, K-104 등)·수치 유지. 콜론/특수문자 있으면 큰따옴표. ([[note-description]]와 동일 정책)

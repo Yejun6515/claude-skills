@@ -26,7 +26,7 @@ description: 새 프로젝트 폴더에 표준 개요 노트(`0_<폴더명>.md`)
    - PTJ/내부 담당자 이름을 `{vault}\20. Contacts` 노트와 대조 → **정확히 일치하는 노트가 있으면 `[[이름]]`** 으로 링크.
    - **동명이인 주의**: 성만 같은 경우(예 Kobayashi Munehito ↔ Toshimitsu) 메일주소·풀네임으로 인물을 특정한 뒤 링크. 확신 없으면 텍스트로 두고 보고.
    - **고객사·상사(TEX 등) 측 인물은 링크하지 않는다**(Contacts에 두지 않는 컨벤션). 고객사·제조파트너 자체는 위키 엔티티 링크(`[[Jiangsu Fullways]]`·`[[SEJAL]]`)로.
-6. **Base 생성** `0_<폴더명>_submission.base` — 아래 Base 템플릿. `file.folder`에 **vault 기준 상대경로**(백슬래시→슬래시, 예 `01. Projects/01.03 Other Customer/<폴더명>`)를 넣는다. 필터는 `Category.contains("submission")`, 정렬 Date DESC.
+6. **Base 생성** `0_<폴더명>_submission.base` — 아래 Base 템플릿(**뷰 4개: 전체/영업/기술/미분류**). `file.folder`에 **vault 기준 상대경로**(백슬래시→슬래시, 예 `01. Projects/01.03 Other Customer/<폴더명>`)를 4곳 모두 넣는다. 공통 필터는 `Category.contains("submission")`, 정렬 Date DESC.
 7. **보고**: 생성한 두 파일 경로 + 링크한 Contacts + (선택) 신규 프로젝트를 위키/상위 MOC에 이을지 제안.
 
 ## 개요 노트 = 정본 템플릿 복사
@@ -34,29 +34,101 @@ description: 새 프로젝트 폴더에 표준 개요 노트(`0_<폴더명>.md`)
 - 이 스킬이 정본에 **추가하는 것**: ① §2 리드줄·활동표를 폴더 맥락으로 초안 채움 ② §3 Stakeholder 이름을 `20. Contacts` 대조해 `[[링크]]`(절차 5) ③ 짝이 되는 submission Base 생성(아래).
 
 ## Base 템플릿 (`0_<폴더명>_submission.base`)
+
+**뷰 4개**로 만든다 — 전체 / 영업 / 기술 / 미분류. `Submission` 키가 없는 노트는 「미분류」에 떠서 이행 누락이 눈에 보인다(2026-08-07 신설). `<PATH>` 자리에 vault 기준 상대경로를 넣는다.
+
 ```yaml
 views:
   - type: table
-    name: 표
+    name: 전체
     filters:
       and:
-        - file.folder == "<vault 기준 상대경로>"
+        - file.folder == "<PATH>"
         - Category.contains("submission")
     order:
       - file.name
       - Date
-      - Category
+      - Submission
+      - Submitter
     sort:
       - property: Date
-        direction: DESC
-      - property: Category
         direction: DESC
       - property: file.name
         direction: ASC
     columnSize:
-      file.name: 573
-      note.Date: 253
+      file.name: 480
+      note.Date: 130
+      note.Submission: 90
+      note.Submitter: 140
+  - type: table
+    name: 영업
+    filters:
+      and:
+        - file.folder == "<PATH>"
+        - Category.contains("submission")
+        - Submission == "영업"
+    order:
+      - file.name
+      - Date
+      - Submitter
+    sort:
+      - property: Date
+        direction: DESC
+      - property: file.name
+        direction: ASC
+    columnSize:
+      file.name: 540
+      note.Date: 130
+      note.Submitter: 140
+  - type: table
+    name: 기술
+    filters:
+      and:
+        - file.folder == "<PATH>"
+        - Category.contains("submission")
+        - Submission == "기술"
+    order:
+      - file.name
+      - Date
+      - Submitter
+    sort:
+      - property: Date
+        direction: DESC
+      - property: file.name
+        direction: ASC
+    columnSize:
+      file.name: 540
+      note.Date: 130
+      note.Submitter: 140
+  - type: table
+    name: 미분류
+    filters:
+      and:
+        - file.folder == "<PATH>"
+        - Category.contains("submission")
+        - "!Submission"
+    order:
+      - file.name
+      - Date
+      - Submitter
+    sort:
+      - property: Date
+        direction: DESC
+    columnSize:
+      file.name: 540
+      note.Date: 130
+      note.Submitter: 140
 ```
+
+### `Submission` 영업/기술 판정 (2026-08-07 예준님 확정)
+
+분류 축은 **누가 냈나가 아니라 문서 성격**이다 — 예준님이 보내도 기술자료면 `기술`, 엔지니어가 직접 내도 견적이면 `영업`. 제출자는 `Submitter`가 따로 담는다.
+
+- 🔑 **경계에서 애매하면 무조건 영업**
+- **영업자료와 함께 제출하면 영업** — 견적서에 사양서가 붙어 나가면 전체가 `영업`
+- **사양서를 단독 제출할 때만 기술**
+- **SV MD(Supervision Man Day)는 영업**
+- 🔴 **`Submitter`는 신규 노트에 반드시 채운다 (2026-08-07 예준님 지시)** — 획득 순서: ① `.msg`/COM의 **SenderName** ② 본문 서명 ③ 불명이면 **지어내지 말고 질문**. 2026-08-07 이전 기존분 공란은 소급하지 않는다
 
 ## 제약
 - **덮어쓰기 금지**: 기존 `0_` 파일이 있으면 확인 없이 갱신/삭제하지 않는다.
